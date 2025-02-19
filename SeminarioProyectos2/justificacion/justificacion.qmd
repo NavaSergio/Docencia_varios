@@ -1,0 +1,120 @@
+---
+title: "Justificación en la Investigación"
+author: 
+  - name: Sergio M. Nava Muñoz
+    id: sn
+    email: s3rgio.nava@gmail.com
+    affiliation: 
+        - id: cimat
+          name: CIMAT/INFOTEC
+          city: Aguascalientes
+          state: Ags
+format: 
+  revealjs:
+    slide-number: true
+    theme: simple
+    fontsize: 2.1em
+    logo: figs/logo-infotec.jpeg
+    css: style.css
+    chalkboard: true
+    menu: TRUE
+    transition: slide
+    background-transition: fade
+    title-slide-attributes:
+      data-background-image: /figs/DCCD.png
+      data-background-size: 100% 100%;     
+date: 2025-02-05
+---
+
+# ¿Qué es la Justificación?
+
+- Explica el **por qué** de la investigación.
+- Fundamenta su **importancia** y **relevancia**.
+- Permite evaluar la **viabilidad** y **utilidad** del estudio.
+
+
+
+# Características de una Buena Justificación
+
+- **Específica**: Definir universos tangibles y delimitados.
+- **Relacionada con técnicas disponibles**: Debe ser comprobable.
+- **Evalúa costos y beneficios**: Justifica tiempo y recursos.
+- **Impacto social y académico**: Beneficios esperados.
+
+
+
+# Preguntas Clave para Justificar
+
+- ¿Es importante o prioritario?
+- ¿Justifica el dinero y el tiempo invertido?
+- ¿Beneficia a personas o instituciones?
+- ¿Genera nuevos conocimientos?
+- ¿Tiene aplicación en la práctica?
+
+
+
+# Criterios de Evaluación
+
+1. **Conveniencia**: ¿Para qué sirve?
+2. **Relevancia Social**: ¿Quiénes se beneficiarán?
+3. **Implicaciones Prácticas**: ¿Resuelve un problema real?
+4. **Valor Teórico**: ¿Aporta nuevos conocimientos?
+5. **Utilidad Metodológica**: ¿Mejora métodos de investigación?
+
+
+# ¿Cuándo se Justifica una Investigación?
+
+Si alguna de las siguientes situaciones se presenta, **se justifica realizar la investigación**:
+
+- **Existe un problema social, científico o tecnológico sin resolver.**
+- **Se requiere generar nuevo conocimiento en un área de estudio.**
+- **Es necesario evaluar o mejorar un método, técnica o procedimiento.**
+- **El tema tiene relevancia social y puede beneficiar a una comunidad.**
+- **Se busca llenar un vacío en la literatura académica.**
+
+# Ejemplo de Justificación
+
+## Predicción de la Contaminación del Aire en la CDMX Usando Modelos de Aprendizaje Automático
+
+### **1. Conveniencia** (*¿Para qué sirve?*)  
+La **Ciudad de México (CDMX)** es una de las urbes más contaminadas de América Latina. La exposición prolongada a contaminantes como el **PM2.5, PM10, ozono (O₃) y dióxido de nitrógeno (NO₂)** afecta la salud pública y el medio ambiente. Este proyecto busca desarrollar un modelo de aprendizaje automático para **predecir los niveles de contaminación en la CDMX**, permitiendo alertar a la población y optimizar estrategias de mitigación.  
+
+---
+
+### **2. Relevancia Social** (*¿Quiénes se beneficiarán y cómo?*)  
+El proyecto impactará a distintos sectores de la sociedad en la CDMX:  
+- **Gobierno de la CDMX y SEMARNAT**: Mejorará la toma de decisiones para implementar **contingencias ambientales y restricciones vehiculares**.  
+- **Población en riesgo (niños, adultos mayores y personas con enfermedades respiratorias)**: Podrá **anticiparse** a episodios de contaminación alta y ajustar sus actividades.  
+- **Sector salud**: Mejorará la planificación hospitalaria y la prevención de enfermedades respiratorias.  
+- **Investigadores y académicos**: Dispondrán de una metodología basada en datos para evaluar políticas ambientales.  
+
+---
+
+### **3. Implicaciones Prácticas** (*¿Resuelve un problema real?*)  
+Actualmente, la **CDMX enfrenta frecuentes contingencias ambientales**, afectando la movilidad, la salud y la economía. Este modelo ayudará a **predecir la calidad del aire con días de anticipación**, proporcionando información clave para la **implementación de restricciones vehiculares, cierres de industrias contaminantes y alertas de salud pública**.  
+
+---
+
+### **4. Valor Teórico** (*¿Aporta nuevos conocimientos?*)  
+- Se analizarán múltiples **factores meteorológicos y contaminantes** con técnicas avanzadas de Machine Learning.  
+- Se compararán modelos como **Redes Neuronales, XGBoost y LSTM** para identificar el más efectivo en la predicción de la contaminación.  
+- Se contribuirá al **desarrollo de modelos predictivos urbanos** que puedan aplicarse a otras ciudades con problemas similares.  
+
+---
+
+### **5. Utilidad Metodológica** (*¿Mejora métodos de investigación?*)  
+El proyecto generará una **metodología replicable**, con los siguientes elementos clave:  
+- Uso de **datos abiertos** de la **Red de Monitoreo Atmosférico de la CDMX (SIMAT)**.  
+- Desarrollo de un **modelo explicable**, con análisis de **importancia de variables**.  
+- Implementación de un **dashboard interactivo** para visualizar predicciones en tiempo real.  
+
+
+
+# Conclusión
+
+- La justificación es **esencial** en cualquier investigación.
+- Permite demostrar la **importancia** del estudio.
+- Responde a preguntas clave sobre **impacto y utilidad**.
+- Evalúa la **viabilidad** del proyecto.
+
+**¡Preguntas o dudas sobre la justificación?**
