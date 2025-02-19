@@ -39,6 +39,10 @@ date: 2025-02-18
 - Obtener el voto aprobatorio del Comité Dictaminador.
 - Cumplir con los requisitos administrativos, incluyendo la entrega de documentos y pago de trámites.
 
+::: footer
+[Reglamento de Posgrados 2024 - INFOTEC](https://www.infotec.mx/work/models/Infotec/Resource/22/39/images/Reglamento_Posgrados_2024_.pdf)
+:::
+
 ---
 
 ## Modalidades de Titulación
@@ -153,12 +157,19 @@ La MCDI ofrece seis modalidades de titulación:
 
 ## Contacto
 
-- **Servicios Escolares:** unidaddeposgrados@infotec.mx
-- **Biblioteca:** julieta.alcibar@infotec.mx
-- **Coordinación Académica:** eric.tellez@infotec.mx, luis.fuentes@infotec.mx
+- **Servicios Escolares:** 
+  - Lic. Graciela Cortés Martínez (unidaddeposgrados@infotec.mx)
+- **Coordinación MCDI:** 
+  - Dr. Eric Sadit Téllez Avila (eric.tellez@infotec.mx)
+  - Mtro. Luis Axel Fuentes Vallejos (luis.fuentes@infotec.mx)
+- **Biblioteca:** 
+  - Mtra. Julieta Alcibar Hermosillo (julieta.alcibar@infotec.mx)
 
 
-Para mayor información consulte el Reglamento de Posgrados 2024 de INFOTEC.
+::: footer
+Para mayor información consulte el [Reglamento de Posgrados 2024 de INFOTEC](https://www.infotec.mx/work/models/Infotec/Resource/22/39/images/Reglamento_Posgrados_2024_.pdf)
+:::
+
 ---
 
 ## ¡Gracias!
