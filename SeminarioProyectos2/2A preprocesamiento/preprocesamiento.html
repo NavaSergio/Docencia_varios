@@ -1,22 +1,22 @@
 <!DOCTYPE html>
 <html lang="en"><head>
-<script src="titulacion_files/libs/clipboard/clipboard.min.js"></script>
-<script src="titulacion_files/libs/quarto-html/tabby.min.js"></script>
-<script src="titulacion_files/libs/quarto-html/popper.min.js"></script>
-<script src="titulacion_files/libs/quarto-html/tippy.umd.min.js"></script>
-<link href="titulacion_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="titulacion_files/libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="titulacion_files/libs/quarto-html/quarto-syntax-highlighting-e26003cea8cd680ca0c55a263523d882.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+<script src="preprocesamiento_files/libs/clipboard/clipboard.min.js"></script>
+<script src="preprocesamiento_files/libs/quarto-html/tabby.min.js"></script>
+<script src="preprocesamiento_files/libs/quarto-html/popper.min.js"></script>
+<script src="preprocesamiento_files/libs/quarto-html/tippy.umd.min.js"></script>
+<link href="preprocesamiento_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="preprocesamiento_files/libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="preprocesamiento_files/libs/quarto-html/quarto-syntax-highlighting-e26003cea8cd680ca0c55a263523d882.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
   <meta name="generator" content="quarto-1.6.39">
 
   <meta name="author" content="Sergio M. Nava Muñoz">
-  <meta name="dcterms.date" content="2025-02-18">
-  <title>Formas de Titulación en la MCDI</title>
+  <meta name="dcterms.date" content="2025-02-19">
+  <title>Big Data: Preprocesamiento y Calidad de Datos</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
-  <link rel="stylesheet" href="titulacion_files/libs/revealjs/dist/reset.css">
-  <link rel="stylesheet" href="titulacion_files/libs/revealjs/dist/reveal.css">
+  <link rel="stylesheet" href="preprocesamiento_files/libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="preprocesamiento_files/libs/revealjs/dist/reveal.css">
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
@@ -30,14 +30,14 @@
       vertical-align: middle;
     }
   </style>
-  <link rel="stylesheet" href="titulacion_files/libs/revealjs/dist/theme/quarto-5ae6e048eb44c7dc998232ce7acd1ad3.css">
+  <link rel="stylesheet" href="preprocesamiento_files/libs/revealjs/dist/theme/quarto-5ae6e048eb44c7dc998232ce7acd1ad3.css">
   <link rel="stylesheet" href="style.css">
-  <link href="titulacion_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
-  <link href="titulacion_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
-  <link href="titulacion_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
-  <link href="titulacion_files/libs/revealjs/plugin/reveal-chalkboard/font-awesome/css/all.css" rel="stylesheet">
-  <link href="titulacion_files/libs/revealjs/plugin/reveal-chalkboard/style.css" rel="stylesheet">
-  <link href="titulacion_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <link href="preprocesamiento_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="preprocesamiento_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="preprocesamiento_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="preprocesamiento_files/libs/revealjs/plugin/reveal-chalkboard/font-awesome/css/all.css" rel="stylesheet">
+  <link href="preprocesamiento_files/libs/revealjs/plugin/reveal-chalkboard/style.css" rel="stylesheet">
+  <link href="preprocesamiento_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
   <style type="text/css">
     .reveal div.sourceCode {
       margin: 0;
@@ -131,7 +131,7 @@
     <div class="slides">
 
 <section id="title-slide" data-background-image="/figs/DCCD.png" data-background-size="100% 100%;" class="quarto-title-block center">
-  <h1 class="title">Formas de Titulación en la MCDI</h1>
+  <h1 class="title">Big Data: Preprocesamiento y Calidad de Datos</h1>
 
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
@@ -147,211 +147,171 @@ Sergio M. Nava Muñoz
     </div>
 </div>
 
-  <p class="date">2025-02-18</p>
+  <p class="date">2025-02-19</p>
 </section>
-<section id="requisitos-generales-de-titulación" class="slide level2">
-<h2>Requisitos Generales de Titulación</h2>
+<section id="introducción" class="slide level2">
+<h2>Introducción</h2>
+<h3 id="qué-es-big-data">¿Qué es Big Data?</h3>
 <ul>
-<li>Haber completado el 100% de los créditos del plan de estudios.</li>
-<li>No contar con adeudos:
+<li>Conjunto de datos masivos con características clave:
 <ul>
-<li>asignaturas</li>
-<li>servicios escolares</li>
-<li>material de biblioteca</li>
+<li><strong>Volumen</strong>: Cantidad de datos enorme.</li>
+<li><strong>Velocidad</strong>: Generación y procesamiento rápido.</li>
+<li><strong>Variedad</strong>: Diversidad de formatos y fuentes.</li>
+<li><strong>Veracidad</strong>: Calidad y confiabilidad de los datos.</li>
+<li><strong>Valor</strong>: Información útil extraída.</li>
 </ul></li>
-<li>Entregar el Producto Académico de la modalidad elegida.</li>
-<li>Obtener el voto aprobatorio del Comité Dictaminador.</li>
-<li>Cumplir con los requisitos administrativos, incluyendo la entrega de documentos y pago de trámites.</li>
+<li><strong>Big Data vs.&nbsp;Smart Data</strong>: Necesidad de filtrar y transformar datos en conocimiento útil.</li>
 </ul>
-<div class="footer">
-<p><a href="https://www.infotec.mx/work/models/Infotec/Resource/22/39/images/Reglamento_Posgrados_2024_.pdf">Reglamento de Posgrados 2024 - INFOTEC</a></p>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Note</strong></p>
+</div>
+<div class="callout-content">
+<p>Big Data <strong>sin preprocesamiento</strong> genera modelos con bajo rendimiento.</p>
+</div>
+</div>
 </div>
 </section>
-<section id="modalidades-de-titulación" class="slide level2">
-<h2>Modalidades de Titulación</h2>
-<p>La MCDI ofrece seis modalidades de titulación:</p>
-<ol type="1">
-<li><strong>Excelencia Académica (EA)</strong></li>
-<li><strong>Desarrollo Tecnológico (DT)</strong></li>
-<li><strong>Publicación Arbitrada (PA)</strong></li>
-<li><strong>Proyecto Técnico (PT)</strong></li>
-<li><strong>Tesis (TE)</strong></li>
-<li><strong>Diplomado (DP)</strong></li>
-</ol>
-</section>
-<section id="modalidad-excelencia-académica-ea" class="slide level2">
-<h2>Modalidad: Excelencia Académica (EA)</h2>
+<section id="importancia-del-preprocesamiento" class="slide level2">
+<h2>Importancia del Preprocesamiento</h2>
+<h3 id="problemas-en-los-datos-masivos">Problemas en los datos masivos</h3>
 <ul>
-<li>Se otorga a estudiantes con promedio mínimo de <strong>9.5</strong> y sin antecedentes de reprobación.</li>
-<li>Requiere la entrega de un <strong>artículo de divulgación</strong> (3,000 a 6,000 palabras).</li>
-<li>El artículo debe incluir como coautores a los investigadores asesores.</li>
-<li>Debe ser aprobado por un comité de expertos.</li>
+<li>Ruido</li>
+<li>Valores perdidos</li>
+<li>Inconsistencias</li>
+<li>Datos redundantes o irrelevantes</li>
+<li>Alta dimensionalidad</li>
 </ul>
-<p><strong>Plantilla:</strong><br>
-<a href="https://www.overleaf.com/read/kmzbvcfqqbbx#7808ca">Overleaf - Excelencia Académica</a></p>
-</section>
-<section id="modalidad-desarrollo-tecnológico-dt" class="slide level2">
-<h2>Modalidad: Desarrollo Tecnológico (DT)</h2>
+<h3 id="objetivo-del-preprocesamiento">Objetivo del Preprocesamiento</h3>
 <ul>
-<li>Consiste en el desarrollo de una <strong>solución tecnológica</strong> (software, librerías, prototipos).</li>
-<li>Se debe entregar el código junto con documentación técnica:
-<ul>
-<li>Manual de instalación</li>
-<li>Manual de usuario</li>
-<li>Descripción de la arquitectura</li>
-<li>Casos de uso</li>
-</ul></li>
-<li>Evaluado por asesores y revisores.</li>
+<li><strong>Mejorar la calidad de los datos</strong></li>
+<li><strong>Reducir costos computacionales</strong></li>
+<li><strong>Optimizar la eficiencia de los modelos de minería de datos</strong></li>
 </ul>
-<p><strong>Plantilla:</strong><br>
-<a href="https://www.overleaf.com/read/djjxyjyzdpjf#0a8471">Overleaf - Desarrollo Tecnológico</a></p>
-</section>
-<section id="modalidad-publicación-arbitrada-pa" class="slide level2">
-<h2>Modalidad: Publicación Arbitrada (PA)</h2>
-<ul>
-<li>Para estudiantes con una publicación en una revista arbitrada, capítulo de libro o libro.</li>
-<li>Requiere evidencias del proceso de arbitraje.</li>
-<li>Se debe ser <strong>primer autor</strong> y mostrar afiliación a INFOTEC.</li>
-<li>Evaluado por un comité exprofeso.</li>
-</ul>
-</section>
-<section id="modalidad-proyecto-técnico-pt" class="slide level2">
-<h2>Modalidad: Proyecto Técnico (PT)</h2>
-<ul>
-<li>Para proyectos con impacto en el sector productivo, de servicios o científico.</li>
-<li>El entregable es un <strong>reporte técnico</strong> (15,000 - 30,000 palabras).</li>
-<li>Requiere aprobación del Comité Dictaminador.</li>
-</ul>
-<p><strong>Plantilla:</strong><br>
-<a href="https://www.overleaf.com/read/kbcxppzhvdqg#019045">Overleaf - Proyecto Técnico</a></p>
-</section>
-<section id="modalidad-tesis-te" class="slide level2">
-<h2>Modalidad: Tesis (TE)</h2>
-<ul>
-<li>Trabajo de investigación original con impacto en el conocimiento científico.</li>
-<li>Supervisado por un investigador de INFOTEC.</li>
-<li>Evaluado por un <strong>Comité de Tesis</strong> de tres investigadores.</li>
-<li>Incluye una <strong>defensa pública</strong>.</li>
-</ul>
-<p><strong>Plantilla:</strong><br>
-<a href="https://www.overleaf.com/read/tvqtfqydbznp#783876">Overleaf - Tesis</a></p>
-</section>
-<section id="modalidad-diplomado-dp" class="slide level2">
-<h2>Modalidad: Diplomado (DP)</h2>
-<ul>
-<li>Disponible solo para estudiantes que adeuden únicamente asignaturas vinculadas con el trabajo terminal.</li>
-<li>Solo los diplomados de INFOTEC autorizados son válidos.</li>
-<li>Requiere la entrega de un producto académico definido por la Coordinación Académica.</li>
-<li>El producto académico deberá tener el voto aprobatorio tanto del Comité Dictaminador como de la Biblioteca</li>
-</ul>
-</section>
-<section id="preguntas-frecuentes" class="slide level2">
-<h2>Preguntas Frecuentes</h2>
-<ul>
-<li><p><strong>¿Cuánto tiempo tengo para titularme?</strong><br>
-6 meses después de concluir el plan de estudios, con opción a prórroga.</p></li>
-<li><p><strong>¿Puedo cambiar mi modalidad de titulación?</strong><br>
-Sí, una vez al año, cumpliendo con los requisitos de la nueva modalidad.</p></li>
-<li><p><strong>¿Cómo solicito una prórroga?</strong><br>
-Mediante un escrito justificado a la Gerencia de Capital Humano.</p></li>
-</ul>
-</section>
-<section id="comparación-de-opciones-de-titulación" class="slide level2 smaller scrollable" data-transition="slide">
-<h2>Comparación de Opciones de Titulación</h2>
-<table class="caption-top">
-<colgroup>
-<col style="width: 14%">
-<col style="width: 27%">
-<col style="width: 15%">
-<col style="width: 15%">
-<col style="width: 15%">
-<col style="width: 11%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Modalidad</th>
-<th>Momento de Elección</th>
-<th>Requisitos</th>
-<th>Entregable</th>
-<th>Aplicación</th>
-<th>Tiempo</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><strong>EA</strong></td>
-<td>Post-egreso (20 días)</td>
-<td>Promedio ≥ 9.5</td>
-<td>Artículo de divulgación</td>
-<td>Académica</td>
-<td>1-3 meses</td>
-</tr>
-<tr class="even">
-<td><strong>DT</strong></td>
-<td>Segundo semestre</td>
-<td>Desarrollo tecnológico</td>
-<td>Código y documentación</td>
-<td>Industria/Tecnología</td>
-<td>3-6 meses</td>
-</tr>
-<tr class="odd">
-<td><strong>PA</strong></td>
-<td>Post-egreso</td>
-<td>Artículo publicado o aceptado</td>
-<td>Publicación arbitrada</td>
-<td>Académica</td>
-<td>Variable</td>
-</tr>
-<tr class="even">
-<td><strong>PT</strong></td>
-<td>Segundo semestre</td>
-<td>Proyecto técnico relevante</td>
-<td>Reporte técnico</td>
-<td>Industria/Servicios</td>
-<td>3-6 meses</td>
-</tr>
-<tr class="odd">
-<td><strong>TE</strong></td>
-<td>Segundo semestre</td>
-<td>Investigación original</td>
-<td>Tesis y defensa pública</td>
-<td>Académica</td>
-<td>6-12 meses</td>
-</tr>
-<tr class="even">
-<td><strong>DP</strong></td>
-<td>Post-egreso</td>
-<td>Diplomado INFOTEC aprobado</td>
-<td>Producto académico</td>
-<td>Educación/Especialización</td>
-<td>Variable</td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="contacto" class="slide level2">
-<h2>Contacto</h2>
-<ul>
-<li><strong>Servicios Escolares:</strong>
-<ul>
-<li>Lic. Graciela Cortés Martínez (unidaddeposgrados@infotec.mx)</li>
-</ul></li>
-<li><strong>Coordinación MCDI:</strong>
-<ul>
-<li>Dr.&nbsp;Eric Sadit Téllez Avila (eric.tellez@infotec.mx)</li>
-<li>Mtro. Luis Axel Fuentes Vallejos (luis.fuentes@infotec.mx)</li>
-</ul></li>
-<li><strong>Biblioteca:</strong>
-<ul>
-<li>Mtra. Julieta Alcibar Hermosillo (julieta.alcibar@infotec.mx)</li>
-</ul></li>
-</ul>
-<div class="footer">
-<p>Para mayor información consulte el <a href="https://www.infotec.mx/work/models/Infotec/Resource/22/39/images/Reglamento_Posgrados_2024_.pdf">Reglamento de Posgrados 2024 de INFOTEC</a></p>
+<div class="column-screen">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="https://upload.wikimedia.org/wikipedia/commons/7/7e/Big_Data_characteristics.png"></p>
+<figcaption>Características de Big Data</figcaption>
+</figure>
+</div>
 </div>
 </section>
-<section id="gracias" class="slide level2">
-<h2>¡Gracias!</h2>
+<section id="técnicas-de-preprocesamiento" class="slide level2">
+<h2>Técnicas de Preprocesamiento</h2>
+<h3 id="preparación-de-datos">1. Preparación de Datos</h3>
+<div class="columns">
+<div class="column" style="width:50%;">
+<ul>
+<li><strong>Limpieza de datos</strong>: Eliminación de ruido y valores atípicos.</li>
+<li><strong>Normalización y transformación</strong>: Ajuste de escalas y formatos.</li>
+<li><strong>Imputación de valores perdidos</strong>: Métodos estadísticos y de machine learning.</li>
+</ul>
+</div><div class="column" style="width:50%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="figs/tecnicas_preparacion.jpg" style="width:80.0%"></p>
+<figcaption>Reduccion de datos</figcaption>
+</figure>
+</div>
+</div></div>
+</section>
+<section class="slide level2">
+
+<h3 id="reducción-de-datos">2. Reducción de Datos</h3>
+<div class="columns">
+<div class="column" style="width:50%;">
+<ul>
+<li><strong>Selección de atributos (Feature Selection)</strong></li>
+<li><strong>Selección de instancias</strong></li>
+<li><strong>Discretización</strong></li>
+</ul>
+</div><div class="column" style="width:50%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="figs/tecnicas_reduccion.jpg" style="width:80.0%"></p>
+<figcaption>Reduccion de datos</figcaption>
+</figure>
+</div>
+</div></div>
+</section>
+<section id="tecnologías-para-big-data" class="slide level2">
+<h2>Tecnologías para Big Data</h2>
+<h3 id="plataformas">Plataformas</h3>
+<ul>
+<li><strong>Hadoop</strong>: Sistema de archivos distribuido con MapReduce.</li>
+<li><strong>Spark</strong>: Procesamiento en memoria, más rápido que Hadoop.</li>
+<li><strong>Flink</strong>: Procesamiento de flujos de datos en tiempo real.</li>
+</ul>
+<h3 id="herramientas-de-analítica">Herramientas de Analítica</h3>
+<ul>
+<li><strong>MLlib</strong>: Librería de Machine Learning en Spark.</li>
+<li><strong>Mahout</strong>: Algoritmos en Hadoop.</li>
+<li><strong>FlinkML</strong>: Aprendizaje automático en Flink.</li>
+<li><strong>H2O</strong>: Modelado avanzado, incluyendo Deep Learning.</li>
+</ul>
+</section>
+<section id="algoritmos-de-preprocesamiento" class="slide level2">
+<h2>Algoritmos de Preprocesamiento</h2>
+<h3 id="métodos-de-selección-de-atributos">Métodos de Selección de Atributos</h3>
+<ul>
+<li><strong>Chi-cuadrado</strong></li>
+<li><strong>PCA (Análisis de Componentes Principales)</strong></li>
+<li><strong>Fast-mRMR (Minimum Redundancy Maximum Relevance)</strong></li>
+</ul>
+<div class="column-screen">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="figs/Feature_selection_Embedded_Method.png"></p>
+<figcaption>Proceso de Selección de Atributos</figcaption>
+</figure>
+</div>
+</div>
+</section>
+<section id="conclusiones-y-retos-futuros" class="slide level2">
+<h2>Conclusiones y Retos Futuros</h2>
+<h3 id="conclusiones">Conclusiones</h3>
+<ul>
+<li>El preprocesamiento es <strong>clave</strong> en Big Data.</li>
+<li>Avances hacia <strong>Smart Data</strong>: datos limpios y optimizados.</li>
+</ul>
+<h3 id="retos-futuros">Retos Futuros</h3>
+<ul>
+<li>Desarrollo de nuevos algoritmos escalables.</li>
+<li>Integración con inteligencia artificial para procesamiento autónomo.</li>
+<li>Mayor eficiencia en la imputación de valores faltantes y reducción de dimensionalidad.</li>
+</ul>
+<div class="callout callout-warning callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Warning</strong></p>
+</div>
+<div class="callout-content">
+<p>“¡Decisiones de calidad requieren datos de calidad!”</p>
+</div>
+</div>
+</div>
+</section>
+<section id="referencias" class="slide level2">
+<h2>Referencias</h2>
+<ul>
+<li>García et al.&nbsp;(2016). “Big Data: Preprocesamiento y Calidad de Datos”.</li>
+<li>Wu et al.&nbsp;(2014). “Data Mining with Big Data”.</li>
+<li>Dean &amp; Ghemawat (2004). “MapReduce: Simplified Data Processing”.</li>
+<li>Meng et al.&nbsp;(2016). “MLlib: Machine Learning in Apache Spark”.</li>
+</ul>
+</section>
+<section class="slide level2">
+
+<p>¡Gracias por su atención! 🎯</p>
 
 </section>
     </div>
@@ -362,20 +322,20 @@ Mediante un escrito justificado a la Gerencia de Capital Humano.</p></li>
 </div></div>
 
   <script>window.backupDefine = window.define; window.define = undefined;</script>
-  <script src="titulacion_files/libs/revealjs/dist/reveal.js"></script>
+  <script src="preprocesamiento_files/libs/revealjs/dist/reveal.js"></script>
   <!-- reveal.js plugins -->
-  <script src="titulacion_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
-  <script src="titulacion_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
-  <script src="titulacion_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
-  <script src="titulacion_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
-  <script src="titulacion_files/libs/revealjs/plugin/reveal-chalkboard/plugin.js"></script>
-  <script src="titulacion_files/libs/revealjs/plugin/quarto-support/support.js"></script>
+  <script src="preprocesamiento_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="preprocesamiento_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="preprocesamiento_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="preprocesamiento_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="preprocesamiento_files/libs/revealjs/plugin/reveal-chalkboard/plugin.js"></script>
+  <script src="preprocesamiento_files/libs/revealjs/plugin/quarto-support/support.js"></script>
   
 
-  <script src="titulacion_files/libs/revealjs/plugin/notes/notes.js"></script>
-  <script src="titulacion_files/libs/revealjs/plugin/search/search.js"></script>
-  <script src="titulacion_files/libs/revealjs/plugin/zoom/zoom.js"></script>
-  <script src="titulacion_files/libs/revealjs/plugin/math/math.js"></script>
+  <script src="preprocesamiento_files/libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="preprocesamiento_files/libs/revealjs/plugin/search/search.js"></script>
+  <script src="preprocesamiento_files/libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="preprocesamiento_files/libs/revealjs/plugin/math/math.js"></script>
   <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
 
   <script>
