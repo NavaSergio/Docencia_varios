@@ -1,5 +1,5 @@
 ---
-title: "Planteamiento del Problema"
+title: "Planteamiento del Problema y Justificación"
 author: 
   - name: Sergio M. Nava Muñoz
     id: sn
@@ -23,7 +23,7 @@ format:
     title-slide-attributes:
       data-background-image: /figs/DCCD.png
       data-background-size: 100% 100%;     
-date: 2025-02-05
+date: 2025-03-04
 ---
 
 
@@ -31,14 +31,47 @@ date: 2025-02-05
 
 - Todo proyecto de investigación comienza con un problema claro y bien definido.
 - La justificación es clave para demostrar la relevancia y viabilidad de la investigación.
-- Exploraremos cómo se estructuran el planteamiento del problema y la justificación en artículos científicos.
+- Exploraremos cómo se estructuran el planteamiento del problema y la justificación.
+
 
 ---
 
-# Planteamiento y Problematización del Problema
+## **Diferencias entre el Planteamiento del Problema y la Justificación**  {.scrollable}
+
+| **Sección**         | **Propósito**         |
+|---------------------|-----------------------|
+| **Planteamiento del Problema** | Define **qué problema** se va a investigar y cuál es su contexto. Describe la situación actual y delimita la pregunta de investigación. |
+| **Justificación** | Explica **por qué es importante** investigar ese problema y cuáles serán los beneficios del estudio. |
+
+
+---
+
+## **📌 ¿Dónde se ubican dentro de un trabajo de investigación?**  {.smaller .scrollable}
+
+💡 **Ejemplo de orden correcto en un proyecto de investigación:**  
+
+
+1. Introducción
+2. **Planteamiento del problema**
+3. **Justificación**
+4. Objetivos de la investigación
+5. Marco teórico
+6. Metodología
+7. Análisis de resultados
+8. Discusión
+9. Conclusión
+10. Referencias
+11. Apéndices
+12. Anexos
+
+
+# Planteamiento del Problema
 
 ## ¿Qué es el Planteamiento del Problema?
 El **planteamiento del problema** es la base de toda investigación. Define el contexto, justifica su importancia y delimita el foco de estudio. Un problema de investigación es una brecha en el conocimiento o una situación que requiere ser analizada y comprendida.
+
+
+
 
 ---
 
@@ -68,6 +101,10 @@ Si no se toman medidas para mitigar el problema, las tasas de enfermedades respi
 ### **4. Formulación del Problema**  
 **¿Cuál es la relación entre los niveles de contaminación del aire y la incidencia de enfermedades respiratorias en la CDMX en los últimos cinco años?**
 
+o
+
+Este estudio analizará la relación entre los niveles de contaminación del aire y la incidencia de enfermedades respiratorias en la Ciudad de México en los últimos cinco años, con el objetivo de identificar patrones, evaluar su impacto en la salud pública y proponer estrategias de mitigación.
+
 ### **5. Objetivos**  
 - Determinar los niveles de contaminación del aire en la CDMX en los últimos cinco años.  
 - Analizar la correlación entre los niveles de contaminantes y el número de hospitalizaciones por enfermedades respiratorias.  
@@ -90,6 +127,10 @@ La desigualdad en la educación perpetúa la pobreza y limita el desarrollo econ
 
 ### **4. Formulación del Problema**  
 **¿Cuáles son los principales factores que limitan el acceso a la educación superior para estudiantes de comunidades rurales en América Latina?**
+
+o
+
+Este estudio investigará los principales factores que limitan el acceso a la educación superior para estudiantes de comunidades rurales en América Latina, identificando barreras económicas, sociales y tecnológicas que afectan su ingreso y permanencia en instituciones educativas.
 
 ### **5. Objetivos**  
 - Identificar las principales barreras económicas, sociales y tecnológicas que afectan el acceso a la educación superior en zonas rurales.  
@@ -114,6 +155,10 @@ Si esta tendencia continúa, se perderán ecosistemas clave que sustentan la pes
 ### **4. Formulación del Problema**  
 **¿Cómo está afectando el aumento de la temperatura del océano a la biodiversidad marina en las zonas tropicales?**
 
+o
+
+Este estudio analizará el impacto del aumento de la temperatura del océano en la biodiversidad marina en las zonas tropicales, identificando los cambios en la distribución de especies, la pérdida de ecosistemas y las posibles estrategias de adaptación para mitigar sus efectos.
+
 ### **5. Objetivos**  
 - Evaluar los cambios en la distribución de especies marinas debido al calentamiento del océano.  
 - Identificar las especies más vulnerables a estos cambios.  
@@ -137,12 +182,16 @@ Si no se abordan estas vulnerabilidades, las herramientas de seguridad basadas e
 ### **4. Formulación del Problema**  
 **¿Cuáles son las principales vulnerabilidades de los sistemas de ciberseguridad basados en inteligencia artificial y cómo pueden mitigarse?**
 
+o
+
+Este estudio investigará las principales vulnerabilidades de los sistemas de ciberseguridad basados en inteligencia artificial, analizando los riesgos asociados y explorando estrategias de mitigación para fortalecer la protección contra amenazas cibernéticas
+
 ### **5. Objetivos**  
 - Identificar las principales amenazas que enfrentan los modelos de IA en ciberseguridad.  
 - Analizar estrategias para fortalecer la seguridad en el uso de IA.  
 - Proponer un marco de estándares para el desarrollo seguro de modelos de IA en ciberseguridad.  
 
----
+
 
 # Conclusión  
 
@@ -169,9 +218,21 @@ La **justificación de una investigación** es un elemento fundamental en la ela
   - **¿Qué beneficios traerá?**  
   - **¿Cómo contribuye a la generación de conocimiento?**  
 
----
 
-# **Tipos de Justificación en la Investigación**  
+
+# **Tipos de Justificación en la Investigación**  {.smaller .scrollable transition="slide"  }
+
+
+
+1. **Falta de conocimiento**: Se argumenta la ausencia de estudios previos.
+2. **Importancia del tema**: Se enfatiza la relevancia del fenómeno investigado.
+3. **Aportes de los hallazgos**: Se destacan las posibles aplicaciones o implicaciones del estudio.
+4. **Vacío metodológico**: Se justifica la investigación por el uso de nuevos enfoques o técnicas.
+5. **Solución de un problema**: Se busca resolver una cuestión práctica o teórica.
+6. **Corroboración de una teoría**: Se valida empíricamente un marco teórico existente.
+7. **Justificación basada en criterios científicos**: Se argumenta con base en criterios como la **conveniencia, relevancia social, implicaciones prácticas y valor teórico**.
+
+---
 
 ## **1. Justificación por Falta de Conocimiento**  
 📌 Se fundamenta en la ausencia de estudios previos o en el conocimiento limitado sobre un tema.  
@@ -245,7 +306,7 @@ La **justificación de una investigación** es un elemento fundamental en la ela
 
 ---
 
-## **7. Justificación por Criterios Científicos**  
+## **7. Justificación por Criterios Científicos**   {.scrollable transition="slide"  }
 📌 Combina diferentes aspectos de la justificación en un marco estructurado:
 
 | **Criterio**       | **Pregunta clave**                                      |
@@ -282,7 +343,7 @@ Antes de finalizar, asegúrate de responder estas preguntas:
 
 ---
 
-# Ejemplo de Justificación
+# Ejemplo de Justificación  por Criterios Científicos
 
 ## **Predicción de la Contaminación del Aire en la CDMX Usando Modelos de Aprendizaje Automático**
 
@@ -323,15 +384,17 @@ Actualmente, la **CDMX enfrenta frecuentes contingencias ambientales**, afectand
 - **Ejemplo**: "El uso de inteligencia artificial en la educación puede transformar los métodos de enseñanza, por lo que es necesario evaluar su impacto en el aprendizaje."
 
 ### Justificación basada en los aportes de los hallazgos
-- **Ejemplo**: "El desarrollo de nuevos materiales biodegradables podría reducir la contaminación por plásticos en un 60%."
+- **Ejemplo**: "La implementación de sistemas de captura de carbono en industrias altamente contaminantes podría reducir en un 50% las emisiones de CO₂ en los próximos diez años, contribuyendo a la mitigación del cambio climático."
 
 ---
 
 ### Justificación basada en un vacío metodológico
-- **Ejemplo**: "Los modelos actuales de predicción de terremotos no consideran la actividad volcánica, por lo que se propone un enfoque combinado."
+- **Ejemplo**: "Las herramientas actuales de diagnóstico de enfermedades neurodegenerativas no permiten detectar etapas tempranas de deterioro cognitivo. Este estudio propone un nuevo enfoque basado en inteligencia artificial para mejorar la precisión en la detección precoz del Alzheimer."
 
 ### Justificación basada en la solución de un problema
 - **Ejemplo**: "La eficiencia en el transporte público sigue siendo un reto en ciudades en crecimiento; este estudio busca diseñar una estrategia de optimización de rutas."
 
 ### Justificación basada en la corroboración de una teoría
 - **Ejemplo**: "Se busca validar la hipótesis de que la nanotecnología puede mejorar la eficiencia de las células solares en un 30%."
+
+# ¿Preguntas o dudas?

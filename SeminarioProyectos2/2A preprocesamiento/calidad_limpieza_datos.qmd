@@ -1,0 +1,122 @@
+---
+title: "Calidad y Limpieza de Datos en Ciencia de Datos"
+author: "Profesor de Ciencia de Datos"
+date: today
+format: revealjs
+theme: solarized
+transition: slide
+highlight-style: github
+---
+
+## Introducción
+
+- La calidad de los datos es fundamental en la investigación y la ciencia de datos.
+- Los datos suelen contener errores, valores atípicos y problemas estructurales.
+- Debemos validar, limpiar y comprender los datos antes de analizarlos.
+
+---
+
+## Objetivos de la Presentación
+
+1. Comprender la importancia de la limpieza de datos.
+2. Identificar los errores más comunes en datasets.
+3. Aprender técnicas prácticas de exploración y validación de datos.
+4. Visualizar la calidad de los datos usando herramientas adecuadas.
+
+---
+
+## **Parte 1: ¿Por qué es importante la limpieza de datos?** 
+
+- **Mito de la Robustez:** No todos los métodos estadísticos son robustos a violaciones de supuestos.
+- **Errores comunes en la literatura científica:**  
+  - Falta de validación de supuestos estadísticos.
+  - Falta de reporte de pruebas de normalidad y homogeneidad de varianza.
+  - Uso erróneo de métricas sin verificar su significado.
+- **Impacto en la replicabilidad de estudios científicos.**
+
+---
+
+## **Parte 2: Evaluación de la Estructura de Datos**
+
+- Tipos de formatos comunes:
+  - **CSV (Comma-Separated Values)**
+  - **JSON (JavaScript Object Notation)**
+  - **XML (Extensible Markup Language)**
+  - **Excel (XLS, XLSX)**
+- Técnicas para interpretar la estructura:
+  - Inspeccionar cabeceras y delimitadores.
+  - Usar herramientas como `awk`, `cut`, `perl`, `pandas` en Python.
+
+---
+
+## **Parte 3: Validación de Campos y Valores**
+
+- **Errores comunes en los datos:**
+  - Valores faltantes (`NULL`, `N/A`, `NaN`).
+  - Datos fuera de rango (ejemplo: valores negativos en precios).
+  - Errores de formato (ejemplo: fechas en formatos inconsistentes).
+  - Desviaciones inesperadas en distribuciones.
+
+- **Ejemplo: Validación con Expresiones Regulares en Perl**
+  ```perl
+  $ cat sample.txt | perl -ape 'warn "Error!" if $F[2] !~ /^\d+$/'
+  ```
+
+---
+
+## **Parte 4: Estadísticas Descriptivas y Validación Numérica**
+
+- **Medidas clave para detectar anomalías:**
+  - **Mínimo y máximo:** Detecta valores fuera de rango.
+  - **Media y mediana:** Evalúa el centro de la distribución.
+  - **Desviación estándar:** Identifica dispersión anormal.
+  - **Histograma:** Muestra patrones inusuales.
+
+- **Ejemplo en UNIX para generar un histograma:**
+  ```bash
+  cat sample.txt | sort | uniq -c
+  ```
+
+---
+
+## **Parte 5: Visualización para la Calidad de Datos**
+
+- **Histogramas:** Para entender distribuciones y valores atípicos.
+- **Gráficos de series temporales:** Para detectar patrones estacionales o datos faltantes.
+- **Ejemplo de outliers en datos financieros:**  
+  - En datos de publicidad digital (PPC), una brecha en valores puede indicar errores en la recopilación.
+
+---
+
+## **Parte 6: Series Temporales y Detección de Errores**
+
+- **Ejemplo: Datos de Wikipedia**
+  - Detectar días con valores inusuales en tráfico web.
+  - Identificar días con datos duplicados o faltantes.
+
+- **Código para contar registros por día en UNIX:**
+  ```bash
+  grep -P '^en\t' pagecounts-*.gz | wc -l
+  ```
+
+---
+
+## **Conclusiones**
+
+- **La limpieza de datos NO es opcional.**
+- Validar datos con inspección manual y análisis estadístico.
+- Usar herramientas adecuadas para detectar errores en datos estructurados y series temporales.
+- Reportar siempre los procesos de limpieza y validación en los estudios científicos.
+
+---
+
+## **Referencias**
+
+- Osborne, J.W. (2008). *Best Practices in Data Cleaning*.
+- Fink, K. (2012). *Bad Data Handbook*.
+- Keselman, H.J. et al. (1998). "Statistical Practices of Educational Researchers".
+- Vardeman & Morris (2003). *Statistics and Ethics*.
+
+---
+
+## **Preguntas y Discusión**
