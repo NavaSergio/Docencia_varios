@@ -1,0 +1,145 @@
+---
+title: "Calidad y Limpieza de Datos en Ciencia de Datos"
+author: "Profesor de Ciencia de Datos"
+date: today
+format: revealjs
+theme: solarized
+transition: slide
+highlight-style: github
+---
+
+## Introducción
+
+- La calidad de los datos es fundamental en la investigación y la ciencia de datos.
+- Los datos pueden contener errores, valores atípicos (outliers), datos faltantes y problemas estructurales.
+- Antes de realizar cualquier análisis, es crucial validar y limpiar los datos para asegurar resultados confiables.
+
+---
+
+## Objetivos de la Presentación
+
+1. Comprender la importancia de la limpieza de datos.
+2. Identificar los errores más comunes en datasets.
+3. Aprender técnicas prácticas de exploración y validación de datos.
+4. Profundizar en:
+   - **Validación de supuestos estadísticos**.
+   - **Manejo de datos faltantes**.
+   - **Identificación y tratamiento de valores atípicos (outliers)**.
+
+---
+
+## **Parte 1: Validación de Supuestos Estadísticos** {.scrollable}
+
+Los métodos estadísticos dependen de ciertos supuestos sobre los datos. Antes de realizar análisis, debemos validar:
+
+1. **Normalidad**  
+   - La mayoría de los modelos estadísticos tradicionales asumen datos normalmente distribuidos.
+   - Métodos de validación:
+     - Histogramas y gráficos Q-Q.
+     - Pruebas estadísticas: Shapiro-Wilk, Kolmogorov-Smirnov.
+
+2. **Homogeneidad de varianza**  
+   - Métodos como ANOVA requieren que las varianzas de los grupos sean similares.
+   - Se puede evaluar con pruebas como Levene o Bartlett.
+
+3. **Independencia de los datos**  
+   - En modelos de regresión y ANOVA, las observaciones deben ser independientes.
+   - Se puede evaluar con la prueba de Durbin-Watson en series temporales.
+
+4. **Ausencia de multicolinealidad**  
+   - En regresión múltiple, la alta correlación entre variables predictoras puede distorsionar los coeficientes.
+   - Se evalúa con el Factor de Inflación de Varianza (VIF).
+
+5. **Linealidad**  
+   - En regresión, la relación entre variables debe ser lineal.
+   - Se puede verificar visualmente con gráficos de dispersión.
+
+---
+
+## **Parte 2: Manejo de Datos Faltantes** {.scrollable}
+
+Los datos faltantes pueden distorsionar análisis y modelos. Existen distintos enfoques para manejarlos:
+
+1. **Tipos de Datos Faltantes**
+   - **MCAR (Missing Completely at Random)**: La falta de datos no está relacionada con ninguna variable del estudio.
+   - **MAR (Missing at Random)**: La falta de datos depende de otras variables observadas.
+   - **MNAR (Missing Not at Random)**: La ausencia de datos está relacionada con el valor en sí mismo.
+
+2. **Estrategias de Manejo de Datos Faltantes**
+   - **Eliminación de Filas o Columnas**  
+     - Útil si la cantidad de datos faltantes es pequeña.
+     - No recomendable si se pierde demasiada información.
+   - **Imputación de Valores**  
+     - **Media/Mediana**: Rellena valores con la media o mediana del conjunto de datos.
+     - **Interpolación**: Usa valores adyacentes para estimar los datos faltantes (útil en series temporales).
+     - **Modelos Predictivos**: Se pueden usar regresiones o algoritmos de machine learning (KNN, árboles de decisión).
+   - **Métodos Basados en Múltiples Imputaciones**  
+     - Genera varias imputaciones para reflejar la incertidumbre sobre los valores reales.
+     - Métodos como MICE (Multivariate Imputation by Chained Equations) son ampliamente usados.
+
+3. **Impacto de los Datos Faltantes en Modelos**  
+   - La eliminación de datos puede sesgar los resultados.
+   - La imputación inadecuada puede reducir la varianza artificialmente.
+   - Siempre se deben reportar las estrategias usadas para manejar datos faltantes.
+
+---
+
+## **Parte 3: Identificación y Manejo de Outliers** {.scrollable}
+
+Los **outliers** son valores que se alejan significativamente de la distribución general de los datos y pueden influir negativamente en los análisis.
+
+### **¿Cómo identificar outliers?**
+1. **Métodos basados en estadística descriptiva**
+   - Rango intercuartil (IQR):
+     - Outliers = valores fuera del rango `[Q1 - 1.5*IQR, Q3 + 1.5*IQR]`.
+   - Desviación estándar:
+     - Un dato puede considerarse un outlier si está a más de `3σ` de la media.
+
+2. **Métodos gráficos**
+   - **Boxplots**: Detectan valores atípicos visualmente.
+   - **Histogramas**: Pueden revelar datos extremos en la distribución.
+   - **Gráficos de dispersión**: Útiles para detectar outliers en relaciones entre variables.
+
+3. **Modelos estadísticos y aprendizaje automático**
+   - **Isolation Forest**: Algoritmo basado en la capacidad de aislar outliers con árboles de decisión.
+   - **Local Outlier Factor (LOF)**: Método basado en densidad para detectar outliers.
+   - **DBSCAN**: Clustering que permite identificar puntos atípicos.
+
+---
+
+## **Parte 4: Estrategias para Manejar Outliers** {.scrollable}
+
+### **1. Eliminación de Outliers**
+- Se recomienda solo si hay evidencia de que los valores son errores de medición.
+- Puede distorsionar la distribución de datos si se eliminan valores legítimos.
+
+### **2. Transformación de Datos**
+- **Escalado Logarítmico**: Reduce la influencia de outliers en distribuciones sesgadas.
+- **Winsorización**: Sustituye outliers por valores límite.
+
+### **3. Modelado Robusto**
+- Métodos de regresión robusta pueden mitigar la influencia de valores extremos.
+- Algoritmos de machine learning como Random Forest tienden a ser menos sensibles a outliers.
+
+---
+
+## **Conclusiones**
+
+- **La validación de supuestos estadísticos es clave** para evitar errores en el análisis de datos.
+- **Los outliers NO deben eliminarse automáticamente**. Se debe analizar su origen y posible impacto.
+- **La imputación de datos faltantes debe realizarse con métodos adecuados** para evitar sesgos.
+- **Usar herramientas estadísticas y de machine learning** para detectar y manejar outliers de forma efectiva.
+
+---
+
+## **Referencias**
+
+- Osborne, J.W. (2008). *Best Practices in Data Cleaning*.
+- Fink, K. (2012). *Bad Data Handbook*.
+- Keselman, H.J. et al. (1998). "Statistical Practices of Educational Researchers".
+- Vardeman & Morris (2003). *Statistics and Ethics*.
+- Aggarwal, C. (2017). *Outlier Analysis*.
+
+---
+
+## **Preguntas y Discusión**
