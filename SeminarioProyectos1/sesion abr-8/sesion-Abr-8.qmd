@@ -83,6 +83,7 @@ date: 2025-04-08
 > _Analizar las trayectorias de vida de adolescentes internados en el Centro X._
 
 **Elementos clave:**
+
 - Verbo en infinitivo.
 - Conceptos centrales.
 - Sujeto o unidad de análisis.
@@ -213,7 +214,7 @@ date: 2025-04-08
 >   - Aborden distintas dimensiones del problema.
 >   - Sean viables y claras.
 >   - No sean actividades operativas.
-> 4. Comparte con tu equipo y den retroalimentación.
+> 4. Comparte con tus compañeros y den retroalimentación.
 
 ---
 
@@ -301,3 +302,56 @@ date: 2025-04-08
 > - Detectar áreas de oportunidad metodológica.
 > - Formular objetivos más precisos y variados.
 
+---
+
+## De la pregunta a la hipótesis
+
+A partir de la **pregunta general de investigación** se construye la **hipótesis general**, que se redacta como una afirmación que responde, de manera anticipada, a dicha pregunta.
+
+También se pueden construir **hipótesis específicas**, cada una derivada de una pregunta específica.
+
+> Es importante que las hipótesis estén **relacionadas con las preguntas y los objetivos** y que estén **en concordancia con los niveles 3 y 4** (Aplicar y Analizar) de la **Taxonomía de Bloom**.
+
+---
+
+## ¿Cómo redactar hipótesis?
+
+- **Redactar en forma afirmativa**.
+- Establecer una **relación entre variables**.
+- Estar **sustentadas teóricamente**.
+- Ser **claras y operables**.
+- Ser **comprobables** empíricamente.
+
+---
+
+## Ejemplo: Redes sociales y participación política {.smaller .scrollable}
+
+**Pregunta general**:
+
+> ¿Qué impacto tienen las redes sociales en la participación política de jóvenes universitarios?
+
+**Hipótesis general**:
+
+> El uso frecuente de redes sociales incrementa la participación política de jóvenes universitarios.
+
+**Preguntas específicas**:
+
+1. ¿Qué tipos de contenidos políticos consumen los estudiantes en redes sociales?
+2. ¿Cómo se relaciona el uso de redes con el nivel de participación presencial?
+3. ¿Qué percepción tienen los jóvenes sobre la efectividad de las redes sociales como medio político?
+
+**Hipótesis específicas**:
+
+1. Los estudiantes que consumen contenido político en redes sociales muestran mayor interés en temas públicos.
+2. A mayor frecuencia de interacción política en redes, mayor participación en actividades presenciales.
+3. Los jóvenes perciben las redes sociales como un medio efectivo para expresar posturas políticas.
+
+---
+
+## Actividad didáctica
+
+> Elige tu pregunta general de investigación y redacta:
+>
+> - Una **hipótesis general** como afirmación que responde a la pregunta.
+> - Tres **hipótesis específicas**, alineadas con las preguntas específicas.
+> - Verifica que tus hipótesis estén en los **niveles "Aplicar" o "Analizar"** de la Taxonomía de Bloom.
