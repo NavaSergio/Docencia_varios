@@ -1,0 +1,133 @@
+---
+title: "Análisis Descriptivo y Exploratorio de Datos"
+author: "Curso de Estadística"
+format: html
+toc: true
+number-sections: true
+---
+
+# Introducción
+
+El análisis descriptivo y exploratorio de datos es el primer paso en cualquier estudio estadístico. Nos permite conocer la naturaleza de los datos, identificar valores atípicos y explorar posibles relaciones entre variables.
+
+---
+
+# 1. Conceptos Fundamentales
+
+## Población y muestra
+
+- **Población**: conjunto definido de objetos (e.g., todos los hogares de la CDMX).
+- **Muestra**: subconjunto de la población seleccionado para el estudio.
+- **Variable**: característica observada (e.g., número de personas en un hogar).
+
+## Niveles de medida
+
+- **Nominal**: categorías sin orden (sexo, estado civil).
+- **Ordinal**: categorías ordenadas (nivel educativo).
+- **Intervalo**: diferencias significativas pero sin cero absoluto (temperatura).
+- **Razón**: igual que el intervalo pero con cero absoluto (edad, ingreso).
+
+---
+
+# 2. Tablas de Frecuencia
+
+- **Frecuencia absoluta ($n_i$)**: número de veces que se presenta una categoría.
+- **Frecuencia relativa ($f_i$)**: proporción respecto al total ($f_i = n_i / n$).
+- **Frecuencias acumuladas**: sumas progresivas de frecuencias.
+
+```{r}
+#| echo: true
+empleo <- c("Tiempo completo", "Tiempo parcial", "Desempleado", "Jubilado", "Hogar", "Estudiante", "Otros")
+frecuencia <- c(167, 42, 14, 38, 27, 2, 4)
+barplot(frecuencia, names.arg = empleo, las = 2, col = "steelblue")
+```
+
+---
+
+# 3. Medidas de Tendencia Central y Dispersión
+
+## Posición
+- **Media**: promedio.
+- **Mediana**: valor central.
+- **Moda**: valor más frecuente.
+
+## Dispersión
+- **Rango**: diferencia entre el mayor y menor.
+- **Varianza y desviación típica**.
+- **Coeficiente de variación (CV)**.
+
+```{r}
+x <- c(10, 12, 15, 18, 19)
+mean(x); median(x); sd(x); (sd(x)/mean(x))*100
+```
+
+---
+
+# 4. Medidas de Forma
+
+- **Asimetría (skewness)**: indica sesgo en la distribución.
+- **Curtosis (kurtosis)**: concentración alrededor de la media.
+
+---
+
+# 5. Representación Gráfica
+
+- **Histogramas**: forma de la distribución.
+- **Boxplots**: resumen visual, detección de atípicos.
+- **Diagramas de dispersión**: relación entre variables.
+
+```{r}
+#| echo: true
+set.seed(1)
+x <- rnorm(100)
+y <- 2*x + rnorm(100)
+plot(x, y, main = "Diagrama de dispersión", xlab = "X", ylab = "Y", pch = 19)
+```
+
+---
+
+# 6. Relaciones entre Variables
+
+## Correlación de Pearson
+
+- Mide la fuerza y dirección de la relación lineal entre dos variables cuantitativas.
+
+## Tablas de doble entrada
+
+- Análisis de asociaciones entre variables categóricas.
+- Uso del estadístico $\chi^2$ para contrastar independencia.
+
+---
+
+# 7. Análisis Exploratorio de Datos (EDA)
+
+Objetivos:
+- Familiarizarse con los datos.
+- Describir la distribución.
+- Identificar valores atípicos.
+- Visualizar posibles asociaciones.
+
+Actividades:
+- Gráficos, resumen estadístico, detección de outliers.
+- Tipificación de variables para comparación.
+
+---
+
+# 8. Contrastes de Hipótesis
+
+- **Normalidad**: test de Shapiro-Wilk o Kolmogorov-Smirnov.
+- **Homocedasticidad**: test de Levene.
+- Importante para aplicar técnicas como ANOVA o regresión lineal.
+
+---
+
+# Conclusión
+
+El análisis exploratorio de datos proporciona las herramientas básicas para comprender, describir y visualizar los datos antes de aplicar modelos más complejos.
+
+---
+
+# Recursos
+
+- Rojo, J. M. (2006). *Análisis Descriptivo y Exploratorio de Datos*.
+- Apuntes del curso de Análisis Exploratorio 2021.
