@@ -294,6 +294,42 @@ date: 2025-04-08
 
 ---
 
+## Contaminación ambiental: Niveles de Bloom {.smaller .scrollable}
+
+**Pregunta general de investigación**:
+
+> ¿Cómo afecta la contaminación del aire a la salud de los habitantes de zonas urbanas?
+
+
+### Niveles de la Taxonomía de Bloom aplicados
+
+- **Recordar**  
+
+> ¿Qué tipos de contaminantes atmosféricos se han registrado históricamente en zonas urbanas?
+
+- **Comprender**  
+
+> ¿Cómo explican los habitantes de zonas urbanas los efectos de la contaminación en su salud?
+
+- **Aplicar**  
+
+> ¿Cómo se podrían aplicar herramientas de monitoreo ambiental para identificar focos de contaminación?
+
+- **Analizar** 
+
+> ¿Qué relación existe entre los niveles de contaminación y la incidencia de enfermedades respiratorias?
+
+- **Evaluar**  
+
+> ¿Qué tan efectivas han sido las políticas públicas para reducir los efectos de la contaminación en la salud?
+
+- **Crear**  
+
+> ¿Cómo diseñarías un programa comunitario para mitigar los efectos de la contaminación del aire en una ciudad?
+
+---
+
+
 ## Actividad didáctica
 
 > Elige una **pregunta general de investigación** y redáctala en seis niveles diferentes, uno por cada categoría de Bloom. Esto te permitirá:
@@ -310,7 +346,7 @@ A partir de la **pregunta general de investigación** se construye la **hipótes
 
 También se pueden construir **hipótesis específicas**, cada una derivada de una pregunta específica.
 
-> Es importante que las hipótesis estén **relacionadas con las preguntas y los objetivos** y que estén **en concordancia con los niveles 3 y 4** (Aplicar y Analizar) de la **Taxonomía de Bloom**.
+> Es importante que las hipótesis estén **relacionadas con las preguntas y los objetivos** y que estén **en concordancia** con la **Taxonomía de Bloom**.
 
 ---
 
@@ -345,6 +381,31 @@ También se pueden construir **hipótesis específicas**, cada una derivada de u
 1. Los estudiantes que consumen contenido político en redes sociales muestran mayor interés en temas públicos.
 2. A mayor frecuencia de interacción política en redes, mayor participación en actividades presenciales.
 3. Los jóvenes perciben las redes sociales como un medio efectivo para expresar posturas políticas.
+
+---
+
+
+## Ejemplo aplicado: Contaminación ambiental y salud {.smaller .scrollable}
+
+**Pregunta general**:
+
+> ¿Cómo afecta la contaminación del aire a la salud de los habitantes de zonas urbanas?
+
+**Hipótesis general**:
+
+> La exposición constante a contaminantes atmosféricos incrementa la incidencia de enfermedades respiratorias en la población urbana.
+
+**Preguntas específicas**:
+
+1. ¿Qué contaminantes atmosféricos predominan en la zona de estudio?
+2. ¿Cuál es la relación entre los niveles de exposición a contaminantes y la frecuencia de afecciones respiratorias?
+3. ¿Qué estrategias de mitigación aplican las autoridades locales y cómo impactan en la salud poblacional?
+
+**Hipótesis específicas**:
+
+1. Las zonas urbanas con mayor densidad vehicular presentan concentraciones elevadas de dióxido de nitrógeno y material particulado.
+2. A mayor concentración de contaminantes, mayor incidencia de enfermedades respiratorias agudas en la población.
+3. Las estrategias de mitigación ambiental implementadas por autoridades locales reducen la frecuencia de problemas respiratorios.
 
 ---
 

@@ -12,6 +12,13 @@ $presentation-heading-text-align: center !default;
 $presentation-heading-text-transform: uppercase !default;
 
 
+code {
+  font-size: 0.2em;
+}
+.small-code {
+  font-size: 0.2em;
+}
+
 
 .custom-small table {
   font-size: .6em

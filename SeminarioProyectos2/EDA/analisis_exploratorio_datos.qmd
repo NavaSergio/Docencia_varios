@@ -1,10 +1,33 @@
 ---
 title: "Análisis Descriptivo y Exploratorio de Datos"
-author: "Curso de Estadística"
-format: html
 toc: true
 number-sections: true
+author: 
+  - name: Sergio M. Nava Muñoz
+    id: sn
+    email: s3rgio.nava@gmail.com
+    affiliation: 
+        - id: cimat
+          name: CIMAT/INFOTEC
+          city: Aguascalientes
+          state: Ags
+format: 
+  revealjs:
+    slide-number: true
+    theme: simple
+    fontsize: 1.8em
+    logo: figs/logo-infotec.jpeg
+    css: style.css
+    chalkboard: true
+    menu: TRUE
+    transition: slide
+    background-transition: fade
+    title-slide-attributes:
+      data-background-image: /figs/DCCD.png
+      data-background-size: 100% 100%;     
+date: 2025-04-09
 ---
+
 
 # Introducción
 
@@ -12,7 +35,7 @@ El análisis descriptivo y exploratorio de datos es el primer paso en cualquier 
 
 ---
 
-# 1. Conceptos Fundamentales
+# Conceptos Fundamentales
 
 ## Población y muestra
 
@@ -29,105 +52,251 @@ El análisis descriptivo y exploratorio de datos es el primer paso en cualquier 
 
 ---
 
-# 2. Tablas de Frecuencia
+#  Tablas de Frecuencia {.smaller .scrollable}
 
-- **Frecuencia absoluta ($n_i$)**: número de veces que se presenta una categoría.
-- **Frecuencia relativa ($f_i$)**: proporción respecto al total ($f_i = n_i / n$).
-- **Frecuencias acumuladas**: sumas progresivas de frecuencias.
-
-```{r}
+```{python}
 #| echo: true
-empleo <- c("Tiempo completo", "Tiempo parcial", "Desempleado", "Jubilado", "Hogar", "Estudiante", "Otros")
-frecuencia <- c(167, 42, 14, 38, 27, 2, 4)
-barplot(frecuencia, names.arg = empleo, las = 2, col = "steelblue")
+#| class: small-code
+import pandas as pd
+import matplotlib.pyplot as plt
+
+empleo = ["Tiempo completo", "Tiempo parcial", "Desempleado", "Jubilado", "Hogar", "Estudiante", "Otros"]
+frecuencia = [167, 42, 14, 38, 27, 2, 4]
+
+plt.bar(empleo, frecuencia, color='steelblue')
+plt.xticks(rotation=45)
+plt.title("Frecuencia por tipo de empleo")
+plt.show()
 ```
 
 ---
 
-# 3. Medidas de Tendencia Central y Dispersión
+# Medidas de Tendencia Central y Dispersión {.smaller .scrollable}
 
-## Posición
-- **Media**: promedio.
-- **Mediana**: valor central.
-- **Moda**: valor más frecuente.
-
-## Dispersión
-- **Rango**: diferencia entre el mayor y menor.
-- **Varianza y desviación típica**.
-- **Coeficiente de variación (CV)**.
-
-```{r}
-x <- c(10, 12, 15, 18, 19)
-mean(x); median(x); sd(x); (sd(x)/mean(x))*100
-```
-
----
-
-# 4. Medidas de Forma
-
-- **Asimetría (skewness)**: indica sesgo en la distribución.
-- **Curtosis (kurtosis)**: concentración alrededor de la media.
-
----
-
-# 5. Representación Gráfica
-
-- **Histogramas**: forma de la distribución.
-- **Boxplots**: resumen visual, detección de atípicos.
-- **Diagramas de dispersión**: relación entre variables.
-
-```{r}
+```{python}
 #| echo: true
-set.seed(1)
-x <- rnorm(100)
-y <- 2*x + rnorm(100)
-plot(x, y, main = "Diagrama de dispersión", xlab = "X", ylab = "Y", pch = 19)
+#| #| class: small-code
+import numpy as np
+
+x = np.array([10, 12, 15, 18, 19])
+print("Media:", x.mean())
+print("Mediana:", np.median(x))
+print("Desviación estándar:", x.std())
+print("Coeficiente de variación (%):", 100 * x.std() / x.mean())
 ```
 
 ---
 
-# 6. Relaciones entre Variables
+# Medidas de Forma {.smaller .scrollable}
 
-## Correlación de Pearson
+- **Asimetría** y **Curtosis** se calculan con `scipy.stats`.
 
-- Mide la fuerza y dirección de la relación lineal entre dos variables cuantitativas.
+```{python}
+#| echo: true
+from scipy.stats import skew, kurtosis
 
-## Tablas de doble entrada
-
-- Análisis de asociaciones entre variables categóricas.
-- Uso del estadístico $\chi^2$ para contrastar independencia.
-
----
-
-# 7. Análisis Exploratorio de Datos (EDA)
-
-Objetivos:
-- Familiarizarse con los datos.
-- Describir la distribución.
-- Identificar valores atípicos.
-- Visualizar posibles asociaciones.
-
-Actividades:
-- Gráficos, resumen estadístico, detección de outliers.
-- Tipificación de variables para comparación.
+print("Asimetría:", skew(x))
+print("Curtosis:", kurtosis(x))
+```
 
 ---
 
-# 8. Contrastes de Hipótesis
+# Representación Gráfica {.smaller .scrollable}
 
-- **Normalidad**: test de Shapiro-Wilk o Kolmogorov-Smirnov.
-- **Homocedasticidad**: test de Levene.
-- Importante para aplicar técnicas como ANOVA o regresión lineal.
+```{python}
+#| echo: true
+np.random.seed(1)
+x = np.random.normal(size=100)
+y = 2*x + np.random.normal(size=100)
+
+plt.scatter(x, y)
+plt.title("Diagrama de dispersión")
+plt.xlabel("X")
+plt.ylabel("Y")
+plt.show()
+```
+
+---
+
+# Relaciones entre Variables {.smaller .scrollable}
+
+- Correlación lineal de Pearson:
+
+```{python}
+#| echo: true
+from scipy.stats import pearsonr
+
+corr, _ = pearsonr(x, y)
+print("Correlación de Pearson:", corr)
+```
+
+---
+
+# Análisis Exploratorio de Datos (EDA)
+
+- Familiarizarse con la estructura, valores nulos, tipos de variables.
+- Estadísticos básicos, histogramas, boxplots, correlaciones.
+- Identificación de valores atípicos.
+
+---
+
+# Contrastes de Hipótesis {.smaller .scrollable}
+
+
+- Normalidad: `shapiro`, `normaltest`
+- Homocedasticidad: `levene`, `bartlett`
+
+```{python}
+#| echo: true
+from scipy.stats import shapiro, levene
+
+print("Prueba de Shapiro:", shapiro(x))
+
+# Simulación de datos
+df = pd.DataFrame({
+    "ingresos": [10, 12, 13, 25, 28, 27, 100, 105, 95],
+    "educacion": ["Básica", "Básica", "Básica", 
+                  "Media", "Media", "Media", 
+                  "Superior", "Superior", "Superior"]
+})
+
+# Agrupar ingresos por nivel educativo
+grupos = [grupo["ingresos"].values for _, grupo in df.groupby("educacion")]
+
+# Aplicar prueba de Levene
+stat, p = levene(*grupos)
+print(f"Estadístico de Levene: {stat:.3f}, p-valor: {p:.3f}")
+```
+
+---
+
+# Series de Tiempo {.smaller .scrollable}
+
+```{python}
+#| echo: true
+import pandas as pd
+import matplotlib.pyplot as plt
+
+dates = pd.date_range(start="2023-01-01", periods=100)
+series = pd.Series(np.random.randn(100).cumsum(), index=dates)
+
+series.plot(title="Serie temporal simulada")
+plt.show()
+```
+
+---
+
+
+## Análisis Exploratorio Avanzado en Series de Tiempo {.smaller .scrollable}
+
+### Descomposición
+
+```{python}
+from statsmodels.tsa.seasonal import seasonal_decompose
+
+decomp = seasonal_decompose(series, model='additive', period=12)
+decomp.plot()
+plt.suptitle("Descomposición de serie de tiempo", y=1.02)
+plt.tight_layout()
+plt.show()
+```
+
+### ACF y PACF
+
+```{python}
+from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
+
+plot_acf(series, lags=20)
+plt.title("Función de Autocorrelación (ACF)")
+plt.show()
+
+plot_pacf(series, lags=20)
+plt.title("Función de Autocorrelación Parcial (PACF)")
+plt.show()
+```
+
+### Diferenciación
+
+```{python}
+diff_series = series.diff().dropna()
+diff_series.plot(title="Serie diferenciada (1ra orden)")
+plt.show()
+```
+
+### Estadísticas móviles
+
+```{python}
+rolling_mean = series.rolling(window=12).mean()
+rolling_std = series.rolling(window=12).std()
+
+plt.plot(series, label="Original")
+plt.plot(rolling_mean, label="Media móvil", linestyle="--")
+plt.plot(rolling_std, label="Desviación móvil", linestyle=":")
+plt.legend()
+plt.title("Estadísticas móviles")
+plt.show()
+```
+
+### Detección de Outliers
+
+```{python}
+z_scores = (series - series.mean()) / series.std()
+outliers = series[abs(z_scores) > 2]
+
+plt.plot(series, label="Serie")
+plt.scatter(outliers.index, outliers.values, color='red', label="Outliers")
+plt.legend()
+plt.title("Outliers detectados por puntuación z")
+plt.show()
+```
+
+---
+
+# Datos Georreferenciados {.smaller .scrollable}
+
+```{python}
+#| echo: true
+import geopandas as gpd
+from shapely.geometry import Point
+
+# Simulación de puntos
+df = pd.DataFrame({'lat': [19.4, 19.5], 'lon': [-99.1, -99.2]})
+gdf = gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df.lon, df.lat), crs="EPSG:4326")
+
+gdf.plot(marker='o', color='red', markersize=5)
+plt.title("Puntos georreferenciados simulados")
+plt.show()
+```
+
+---
+
+# Análisis Exploratorio de Texto (NLP) {.smaller .scrollable}
+
+
+```{python}
+#| echo: true
+import nltk
+from sklearn.feature_extraction.text import CountVectorizer
+from nltk.corpus import stopwords
+import pandas as pd
+
+# Asegúrate de haber descargado los recursos primero
+nltk.download('stopwords')
+
+corpus = ["Este es un texto", "El análisis de texto es útil", "Texto y más texto"]
+spanish_stopwords = stopwords.words('spanish')
+
+vectorizer = CountVectorizer(stop_words=spanish_stopwords)
+X = vectorizer.fit_transform(corpus)
+
+df = pd.DataFrame(X.toarray(), columns=vectorizer.get_feature_names_out())
+print(df)
+
+```
 
 ---
 
 # Conclusión
 
-El análisis exploratorio de datos proporciona las herramientas básicas para comprender, describir y visualizar los datos antes de aplicar modelos más complejos.
+El EDA debe adaptarse al tipo de datos que tenemos. Ya sea una tabla clásica, una serie temporal, coordenadas espaciales o texto libre, siempre es posible explorar los datos de forma adecuada y extraer conclusiones iniciales útiles.
 
----
-
-# Recursos
-
-- Rojo, J. M. (2006). *Análisis Descriptivo y Exploratorio de Datos*.
-- Apuntes del curso de Análisis Exploratorio 2021.
