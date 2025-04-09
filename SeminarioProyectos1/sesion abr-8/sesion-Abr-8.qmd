@@ -80,7 +80,7 @@ date: 2025-04-08
 
 **Ejemplo:**
 
-> _Analizar las trayectorias de vida de adolescentes internados en el Centro X._
+> _Analizar los patrones de consumo de información política en redes sociales por parte de estudiantes universitarios durante un periodo electoral._
 
 **Elementos clave:**
 
@@ -208,7 +208,7 @@ date: 2025-04-08
 
 ## Actividad en clase
 
-> 1. Escribe tu **pregunta general**.
+> 1. Escribe tu **pregunta general**. 
 > 2. Desglósala en **tres preguntas específicas**.
 > 3. Asegúrate de que:
 >   - Aborden distintas dimensiones del problema.
@@ -218,13 +218,16 @@ date: 2025-04-08
 
 ---
 
-## Conclusión
+**Pregunta general:**
 
-- Una buena pregunta general es el **punto de partida**.
-- Su descomposición en preguntas específicas:
-  - Permite organizar la investigación.
-  - Da lugar a los objetivos y metodología.
-- El rigor en esta etapa define la **calidad del proyecto**.
+> ¿Cómo veneficia el hoy no circula a la disminución de contaminación ambiental?
+
+**Preguntas específicas:**
+
+1. ¿Qué propoción de autos deja de circular cuando hay un hoy no circula?
+2. ¿Cómo influye la responsabilidad social en la utilización de automóvil?
+3. ¿cómo es la satisfacción de los usuarios del transporte público como alternativa al uso del auto?
+
 
 
 ---
@@ -408,6 +411,15 @@ También se pueden construir **hipótesis específicas**, cada una derivada de u
 3. Las estrategias de mitigación ambiental implementadas por autoridades locales reducen la frecuencia de problemas respiratorios.
 
 ---
+
+## De la pregunta de investigación a los objetivos específicos
+
+![](./figs/diagrama_pregunta_objetivos.png){width=90%}
+
+Este diagrama muestra cómo la pregunta guía de investigación se desglosa en objetivos generales y específicos, ayudando a estructurar claramente el enfoque del estudio.
+
+---
+
 
 ## Actividad didáctica
 
