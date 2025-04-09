@@ -1,0 +1,1659 @@
+---
+title: "EDA (Exploratory Data Analysis)"
+subtitle: "Estadística Descriptiva"
+toc: false
+number-sections: true
+author: 
+  - name: Sergio M. Nava Muñoz
+    id: sn
+    email: s3rgio.nava@gmail.com
+    affiliation: 
+        - id: cimat
+          name: CIMAT/INFOTEC
+          city: Aguascalientes
+          state: Ags
+format: 
+  revealjs:
+    slide-number: true
+    theme: simple
+    fontsize: 1.8em
+    logo: figs/logo-infotec.jpeg
+    css: style.css
+    chalkboard: true
+    menu: TRUE
+    transition: slide
+    background-transition: fade
+    title-slide-attributes:
+      data-background-image: /figs/DCCD.png
+      data-background-size: 100% 100%;     
+date: 2025-04-09
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+library(dplyr)
+library(ggplot2)
+library(patchwork)
+library(ggExtra)
+library(GGally)
+# install.packages("devtools")
+
+library(ggmosaic)
+```
+
+# Análisis Exploratorio de Información
+
+---
+
+## Introducción
+
+- La estadística proporciona métodos  para adquirir conocimiento acerca de los fenómenos naturales y mantiene una estrecha relación con el Método científico.
+
+- El Método científico permite a los investigadores adquirir conocimientos, de manera objetiva tanto de procesos, como de fenómenos de la naturaleza.
+
+---
+
+### Exploratorios vs Confirmatorios
+
+- **Métodos estadísticos exploratorios: **
+   Son métodos descriptivos y gráficos que permiten estudiar las características generales de los datos obtenidos
+
+- **Métodos estadísticos confirmatorios:** 
+   Son procedimientos muy útiles para obtener decisiones y/o conclusiones finales (inferencias estadísticas). 
+
+
+## Introducción
+
+- La exactitud de las inferencias o conclusiones depende de la corrección y precisión, éstas a su vez dependen de la formulación del problema. 
+
+- Las técnicas estadísticas, por muy refinadas y precisas que sean, no pueden ayudar a alcanzar conclusiones o decisiones correctas si se aplican a datos inapropiados.
+
+### Población y Muestra
+
+- **Población** (*population*) es el conjunto sobre el que estamos interesados en obtener conclusiones (hacer inferencia).
+  - Normalmente es demasiado grande para poder abarcarlo.
+
+- **Muestra** (*sample*) es un subconjunto de la población al que tenemos acceso y sobre el que realmente hacemos las observaciones (mediciones)
+  - Debería ser *representativo*
+  - Esta formado por miembros “seleccionados” de la población (individuos, unidades experimentales).
+
+---
+
+![Ciclo](figuras/ciclo.png){width=90%}
+
+## Introducción
+
+- **Parámetro:** Es una cantidad numérica calculada sobre una población 
+  - La altura media de los individuos de un país
+  - La idea es resumir toda la información que hay en la población en unos pocos números (parámetros).
+ 
+- **Estadístico:** Es una cantidad numérica calculada sobre una muestra de la población 
+  - La altura media de los que estamos en este aula.
+    + ¿Somos una muestra de la población? ¿representativa?
+  - Si un estadístico se usa para aproximar un parámetro también se le suele llamar estimador.[^1]
+
+[^1]: Normalmente nos interesa conocer un parámetro, pero por la dificultad que conlleva estudiar a *TODA* la población, calculamos un estimador sobre una muestra y “confiamos” en que sean próximos. Más adelante veremos como elegir muestras para que el error sea “confiablemente” pequeño
+
+
+##  Variables y escalas de medición
+
+|        |  Valor     |
+|:-------|------:|
+| Variable | ![alt text](figuras/fig2-im1.png){ width=40% } | 
+| Estadístico |  ![alt text](figuras/fig2-im2.png){ width=40% }  | 
+| Parámetro |  ![alt text](figuras/fig2-im3.png){ width=40% }  | 
+
+
+---
+
+- Una **variable** es una característica observable que varía entre los diferentes individuos de una población. La información que disponemos de cada individuo se resume en **variables.**
+
+
+En los individuos de la población  mexicana, de uno a otro **es variable**:
+
+  - El grupo sanguíneo 
+    + {A, B, AB, O}  Var. Cualitativa
+  - Su nivel de felicidad “declarado” 
+    - {Deprimido, Indiferente, Muy Feliz}  Var. Ordinal
+  - El número de hijos
+    - {0,1,2,3,...}  Var. Numérica discreta
+  - La altura
+    - {1.62 ; 1.74; ...}  Var. Numérica continua
+
+## Tipos de Variables
+
+- **Cualitativas o Categóricas:** Si sus valores (*modalidades*) no se pueden asociar naturalmente a un número (no se pueden hacer operaciones algebraicas con ellos)
+
+  - **Nominales**: Si sus valores no se pueden ordenar
+    - Sexo, Grupo Sanguíneo, Religión, Nacionalidad, Fumar (Sí/No)
+
+  - **Ordinales**: Si sus valores se pueden ordenar
+    - Mejoría a un tratamiento, Grado de satisfacción, Intensidad del dolor
+
+- **Cuantitativas o Numéricas:** Si sus valores son numéricos (tiene sentido hacer operaciones algebraicas con ellos)
+
+  - **Discretas**: Si toma valores enteros
+    - Número de hijos, Número de cigarrillos, Num. de “cumpleaños”
+
+  - **Continuas**: Si entre dos valores, son posibles infinitos valores intermedios.
+    - Altura, Presión intraocular, Dosis de medicamento administrado, edad
+
+---
+
+![Escalas de medición](figuras/escalas.png){width=90%}
+
+# Estadística descriptiva
+
+## Estadística descriptiva
+
+Sirve como herramienta para  describir o resumir a la muestra.
+
+
+Comprende la tabulación, representación y
+descripción de una serie de datos que pueden ser cuantitativos o cualitativos.
+
+### Objetivo del Análisis Exploratorio
+
+- Tratar de reconocer cualquier patrón no aleatorio o
+estructura que requiera explicación.
+- Generar posibles hipótesis interesantes.
+- No existen modelos rígidos.
+- Se da importancia  al despliegue visual  y representaciones gráficas.
+
+*Encontrar la pregunta, frecuentemente es más
+interesante que buscar la respuesta*
+
+## Instrumentos de captación
+
++ Existen varios tipos de instrumentos de captación de información, cada uno de ellos tienen sus propios alcances y limitaciones.
+ 
++ Los instrumentos de captación apropiados se seleccionan de acuerdo a los objetivos y el tipo de estudio que se realiza.
+
++ Dependiendo del tipo de estudio o investigación, existen diversas maneras de obtener información.
+ 
+
+## Preguntas del Análisis de datos
+
+Algunos de las preguntas que se plantean en el análisis de los datos son:
+
+
+- ¿Qué caracteriza a los datos? (¿Cuál es la información sobresaliente?).
+- ¿Qué tanto varían los datos?
+- ¿Cómo están distribuidos los datos?
+- ¿Qué relación existe entre las variables?
+- ¿Qué estimaciones y predicciones resultarán de los datos?
+- ¿Qué diferencia existe entre grupos y variables?
+- ¿Qué variables causan variación en otras?
+- Etc. ...
+
+## Codificación de datos
+
+Una vez captada la información por los diversos instrumentos
+como son los cuestionarios, las entrevistas y otros; es
+necesario la traducción de la información para la construcción
+de una base de datos, a este proceso se le llama *codificación.*
+
+---
+
+- Sexo (Cualit: Códigos arbitrarios)
+  - 1 = Hombre
+  - 2 = Mujer
+    
+- Raza (Cualit: Códigos arbitrarios)
+  - 1 = Blanca
+  - 2 = Negra,...
+    
+- Felicidad Ordinal: Respetar un orden al codificar.
+  - 1 = Muy feliz
+  - 2 = Bastante feliz
+  - 3 = No demasiado feliz
+    
+- Se pueden asignar códigos a respuestas especiales como
+  -  0 = No sabe
+  - 99 = No contesta...
+
+---
+
+### Datos no codificados
+
+
+```{r tabla-datos-no-codificados , warning=FALSE, message=FALSE, results='asis', fig.cap="Datos crudos"}
+set.seed(1371)
+sexo<-sample(c(1,2),6,TRUE)
+raza<-rep(c(1,2),each=3)
+feliz<-sample(c(1,2),6,TRUE)
+vida<-sample(c(1,2),6,TRUE)
+hijos<-rpois(6,1.5)
+edad<-rbinom(6,80,.5)
+datos<-data.frame(sexo,raza,feliz,vida,hijos,edad)
+
+knitr::kable(datos,caption="Datos crudos")
+#Hmisc::latex(datos, file='', table.env=FALSE, center='none')
+```
+
+
+### Datos codificados
+
+
+```{r tabla-datos-codificados, warning=FALSE, message=FALSE, results='asis', fig.cap="Datos Codificados"}
+datos$sexo<-factor(datos$sexo,labels = c("Hombre","Mujer"))
+datos$raza<-factor(datos$raza,labels = c("Blanca","Negra"))
+datos$feliz<-factor(datos$feliz,labels = c("Muy Feliz","Bastante Feliz"))
+datos$vida<-factor(datos$vida,labels = c("Excitante","Rutinaria"))
+knitr::kable(datos,caption="Datos codificados")
+#Hmisc::latex(datos, file='', table.env=FALSE, center='none')
+```
+
+
+##
+
+
+```{r llamado-descripcion-mtcars, echo=TRUE, eval=FALSE}
+?mtcars
+```
+
+
+###            Motor Trend Car Road Tests
+
+**Description**
+
+  The data was extracted from the 1974 Motor Trend US 
+magazine, and comprises fuel consumption and 10 aspects 
+of automobile design and performance for 32  automobiles 
+(1973–74 models).
+
+**Format**
+
+  A data frame with 32 observations on 11 (numeric) variables.
+  
+- [, 1] *mpg*   Miles/(US) gallon
+- [, 2] *cyl*   Number of cylinders
+- [, 3] *disp*  Displacement (cu.in.)
+- [, 4] *hp*    Gross horsepower
+- [, 5] *drat*  Rear axle ratio
+- [, 6] *wt*    Weight (1000 lbs)
+- [, 7] *qsec*  1/4 mile time
+- [, 8] *vs*    Engine (0 = V-shaped, 1 = straight)
+- [, 9] *am*    Transmission (0 = automatic, 1 = manual)
+- [,10] *gear*  Number of forward gears
+- [,11] *carb*  Number of carburetors
+
+
+##   Motor Trend Car Road Tests {.smaller .scrollable}
+
+### Datos no codificados
+
+
+
+```{r hmisc-tabla-head-mymtcars, warning=FALSE, message=FALSE, results='asis', fig.cap="Datos crudos"}
+data("mtcars")
+mymtcars<-mtcars
+knitr::kable(head(mymtcars),caption="Datos no codificados")
+#Hmisc::latex(head(mymtcars), file='', table.env=FALSE, center='none')
+```
+
+
+### Datos codificados
+
+
+```{r hmisc-tablea-head-mymtcars-codificado, warning=FALSE, message=FALSE, results='asis', fig.cap="your-caption-name"}
+mymtcars$vs <-factor(mymtcars$vs,labels = c("V-shapped","straight"))
+mymtcars$am <-factor(mymtcars$am,labels = c("automatic","manual"))
+knitr::kable(head(mymtcars),caption="Datos codificados")
+#Hmisc::latex(head(mymtcars), file='', table.env=FALSE, center='none')
+```
+
+
+## Tablas de Frecuencia
+
+Exponen la información recogida en la muestra, de forma que no se pierda nada de
+información (o poca).
+
+- **Frecuencias absolutas:** Contabilizan el número de individuos de cada
+modalidad
+
+- **Frecuencias relativas (porcentajes):** Idem, pero dividido por el total
+
+- **Frecuencias acumuladas:** Sólo tienen sentido para variables ordinales y numéricas
+
+   - Muy útiles para calcular cuantiles (ver más adelante)
+
+
+
+## Ejemplos de tablas de frecuencias
+
+### Tabla de Frecuencias de cylinders
+
+
+```{r hmisc-tabla-frec-cyl, warning=FALSE, message=FALSE, results='asis'}
+summarytools::st_options(lang = "es")
+cylinders<-summarytools::freq(mymtcars$cyl, order = "default")
+knitr::kable(cylinders)
+#Hmisc::latex(cylinders, file='', table.env=FALSE, center='none')
+```
+
+
+
+### Tabla de Frecuencias de weight categorizado {.smaller .scrollable}
+
+
+```{r hmisc-tabla-frec-wt-categorizado, warning=FALSE, message=FALSE, results='asis'}
+weight<-summarytools::freq(cut(mymtcars$wt,5), order = "default")
+knitr::kable(weight)
+#Hmisc::latex(weight, file='', table.env=FALSE, center='none')
+```
+
+
+
+
+
+## Ejemplo
+
+### Transmisión automática-manual
+
+
+```{r hmisc-tablea-frec-trans, warning=FALSE, message=FALSE, results='asis',fig.align='center'}
+transmission<-summarytools::freq(mymtcars$am, order = "default")
+knitr::kable(transmission)
+#Hmisc::latex(transmission, file='', table.env=FALSE, center='none')
+```
+
+
+```{r barras-am, warning=FALSE, message=FALSE, fig.show="hold", out.height="50%", out.width="70%",fig.align='center'}
+#No error here i can run any r code
+
+ ggplot(mymtcars, aes(x=am )) +
+  geom_bar(color="blue", fill=rgb(0.1,0.4,0.5,0.7) )+
+  ggtitle("Diagrama de barras ")+
+  theme_bw()
+
+```
+
+
+## Ejemplo 
+
+### Número de Carburadores
+
+
+
+
+  \scalebox{0.58}{
+```{r hmisc-tabla-carb, warning=FALSE, message=FALSE, results='asis'}
+
+carburetors<-summarytools::freq(mymtcars$carb, order = "default")
+knitr::kable(carburetors)
+#Hmisc::latex(carburetors, file='', table.env=FALSE, center='none')
+```
+
+}
+
+
+¿Cuántos autos en la BD tienen menos de cuatro carburadores?
+
+¿Qué porcentaje de autos en la BD tiene  cuatro carburadores o menos?
+
+¿Qué porcentaje de autos de la BD no sabemos cuantos carburadores tiene?
+
+
+
+# Resumen de estadísticos
+
+## Resumen de estadísticos
+
+
+![Estadísticos](figuras/Estadisticos.png)
+
+## Resumen de estadísticos
+
+- Posición
+  - Dividen un conjunto ordenado de datos en grupos con la misma cantidad de individuos.
+    - Cuantiles, percentiles, cuartiles, deciles,...
+
+- Centralidad
+  - Indican valores con respecto a los que los datos parecen agruparse.
+    - Media, mediana y moda
+
+- Dispersión
+  - Indican la mayor o menor concentración de los datos con respecto a las medidas de Centralidad.
+    - Desviación típica, coeficiente de variación, rango, varianza
+    
+- Forma
+  - Asimetría
+  - Apuntamiento o curtosis
+
+
+
+## Estadísticos de posición {.smaller .scrollable}
+
+Se define el *cuantil* de orden $a$ como un valor de la variable por debajo del cual se encuentra una frecuencia acumulada $a$.
+
+Casos particulares son los percentiles, cuartiles, deciles, quintiles,...
+
+```{r cuantil-grafica, warning=FALSE, message=FALSE, fig.show="hold", out.height="60%", out.width="90%",fig.align='center'}
+
+p1 <- ggplot(data = data.frame(x = c(-4, 4)), aes(x)) +
+  stat_function(fun = dnorm, n = 101, args = list(mean = 0, sd = 1),size=1) + ylab("") +
+  geom_hline(yintercept=0)+
+  theme_classic()
+
+# p1
+
+
+funcShaded <- function(x) {
+  y <- dnorm(x, mean = 0, sd = 1)
+  y[x < qnorm(.7) | x > (qnorm(.7) + 4 )] <- NA
+  return(y)
+}
+
+p9 <- p1 + stat_function(fun=funcShaded, geom="area", fill="#84CA72", alpha=0.2)+
+  annotate("text", x=0, y=.015, label= "70%") +
+  annotate("text", x=1, y=.015, label= "30%")
+
+
+p2 <- ggplot(data = data.frame(x = c(-4, 4)), aes(x)) +
+  stat_function(fun = pnorm, n = 101, args = list(mean = 0, sd = 1),size=1) + ylab("") +
+  geom_hline(yintercept=0)+
+  geom_hline(yintercept=1)+
+  geom_segment(aes(x = -4, y = .7, xend = qnorm(.7), yend = .7))+
+  geom_segment(aes(x = qnorm(.7), y = 0, xend = qnorm(.7), yend = .7))+
+  scale_x_continuous(expand = expansion(0))+
+  scale_y_continuous(expand = expansion(0),limits = c(0, 1), breaks = seq(0, 1, by = .10))+
+  theme_classic()
+
+p9+p2
+
+
+```
+
+--- 
+
+```{r hmisc-table-carburadores, warning=FALSE, message=FALSE, results='asis'}
+
+carburetors<-summarytools::freq(mymtcars$carb, order = "default")
+knitr::kable(carburetors)
+#Hmisc::latex(carburetors, file='', table.env=FALSE, center='none')
+```
+
+```{r posicion-discreto, fig.show="hold", out.height="60%", out.width="100%",fig.align='center', warning=FALSE, message=FALSE}
+p1 <- mymtcars %>%  count(carb)%>%
+ggplot( aes(x=carb, y=n)) +
+  geom_point() + 
+  geom_segment( aes(x=carb, xend=carb, y=0, yend=n),size=2)+
+  theme_bw()
+
+p2 <-  mymtcars %>%  count(carb)%>%
+ggplot( aes(x=carb, y=n)) +
+  ggtitle("Distribución acumulada empírica \n del número de carburadores")+
+  stat_ecdf(geom = "step", position = "identity",show.legend=TRUE,na.rm=TRUE)+ 
+  theme_bw()+
+  scale_y_continuous( breaks = seq(0, 1, by = .10))
+
+q<-seq(0,1,0.01)
+p5<- mymtcars %>% 
+  summarise(carb=quantile(carb,q),q) %>%
+  ggplot( aes(x=carb, y=q)) +
+  ggtitle("Quantiles de variable \n número de carburadores")+
+  geom_line()+
+  theme_bw()+
+  scale_y_continuous(lim=c(0,1), breaks = seq(0, 1, by = .10))
+
+
+
+
+p1+p2+p5
+
+```
+
+---
+
+
+
+```{r hmisc-table-wturadores, warning=FALSE, message=FALSE, results='asis'}
+
+peso<-summarytools::freq(mymtcars$wt, order = "default")
+knitr::kable(peso)
+#Hmisc::latex(peso, file='', table.env=FALSE, center='none')
+```
+
+
+
+---
+
+```{r posicion-peso, fig.show="hold", out.height="100%", out.width="100%",fig.align='center', warning=FALSE, message=FALSE}
+p1 <- mymtcars %>%  count(wt)%>%
+ggplot( aes(x=wt, y=n)) +
+  geom_point() + 
+  geom_segment( aes(x=wt, xend=wt, y=0, yend=n),size=2)+
+  theme_bw()
+
+p2 <-  mymtcars %>%  count(wt)%>%
+ggplot( aes(x=wt, y=n)) +
+  ggtitle("Distribución acumulada empírica \n de peso de auto")+
+  stat_ecdf(geom = "step", position = "identity",show.legend=TRUE,na.rm=TRUE)+ 
+  theme_bw()+
+  scale_y_continuous( breaks = seq(0, 1, by = .10))
+
+p3 <-  mymtcars %>%  count(wt)%>%
+ggplot( aes(x=wt, y=n)) +
+  ggtitle("Ojiva acumulada de peso de auto")+
+  stat_ecdf(geom = "line", position = "identity",show.legend=TRUE,na.rm=TRUE,n=8)+ 
+  theme_bw()+
+  scale_y_continuous( breaks = seq(0, 1, by = .10))
+
+datos<- mymtcars %>% group_by(wt) %>% 
+  summarise(n = n()) %>% mutate(freq=cumsum(n)/sum(n))
+
+datos <- rbind(c(min(mymtcars$wt)-.5,0,0) ,datos,c(max(mymtcars$wt)+.5,1,1))
+p4 <- datos  %>%
+ggplot( aes(x=wt, y=freq)) +
+  ggtitle("Ojiva acumulada de peso de auto")+
+  geom_line()+
+  theme_bw()+
+  scale_y_continuous(lim=c(0,1), breaks = seq(0, 1, by = .10))
+
+
+q<-seq(0,1,0.01)
+p5<- mymtcars %>% 
+  summarise(wt=quantile(wt,q),q) %>%
+  ggplot( aes(x=wt, y=q)) +
+  ggtitle("Quantiles de variable \n peso de autos")+
+  geom_line()+
+  theme_bw()+
+  scale_y_continuous(lim=c(0,1), breaks = seq(0, 1, by = .10))
+
+
+
+p1+p2+p5
+
+```
+
+
+
+## 
+
+- **Percentil** de orden $k =$ cuantil de orden $\frac{k}{100}$, es decir divide la muestra en 100 partes
+  - La mediana es el percentil $50$
+  - El percentil de orden $15$ deja por debajo al $15\%$ de las observaciones. Por encima queda el $85\%$
+
+- **Cuartiles**: Dividen a la muestra en $4$ grupos con frecuencias similares.
+  - Primer cuartil = Percentil $25$ = Cuantil $0.25$
+  - Segundo cuartil = Percentil $50$ = Cuantil $0.5$ = mediana
+  - Tercer cuartil = Percentil $75$ = cuantil $0.75$
+
+##
+
+### Ejemplos de estadísticos de posición
+
+-  El 5% de los recién nacidos tiene un peso demasiado bajo. ¿Qué peso se considera *demasiado bajo*?
+
+    - Percentil 5 o cuantil 0.05 
+- ¿Qué peso es superado sólo por el 25% de los individuos?
+    - Percentil 75
+  
+- El colesterol se distribuye simétricamente en la población. Se considera patológico los valores extremos. El 90% de los individuos son normales ¿Entre qué valores se encuentran los individuos normales?
+  - Entre el percentil 5 y el 95
+- ¿Entre qué valores se encuentran la mitad de los individuos *más normales* de una población?
+  - Entre el cuartil 1º y 3º
+
+
+## 
+
+### Ejemplo de estadísticos de posición
+
+
+\begincols
+  \begincol{.55\textwidth}
+
+¿Qué peso no llega a alcanzar el $25\%$ de los individuos? 
+
+\begin{itemize}
+  \item   Primer cuartil = percentil 25 = 65 Kg.
+  
+\end{itemize}
+
+
+¿Qué peso es superado por el $25\%$ de los individuos?
+
+\begin{itemize}
+  \item   Tercer cuartil= percentil 75= 75 kg.
+  
+\end{itemize}
+
+¿Entre qué valores se encuentra el $50\%$ de los individuos con un peso “más normal”?
+
+\begin{itemize}
+  \item   Entre el primer y tercer cuartil = entre 65 y 75 kg.
+  \item Obsérvar que indica que tan dispersos están los individuos que ocupan la “parte central” de la muestra. 
+  \item Los diagramas de caja (‘boxplot’) sintetizan esta información (y algo más).
+\end{itemize}
+
+
+  \endcol
+  \begincol{.43\textwidth}
+
+```{r figura-ejemplo-edad, fig.show="hold", out.width="100%",fig.align='center'}
+#set.seed(1271)
+set.seed(1271)
+edad <- round(rnorm(1000,70,7))
+ordenado1 <- edad[order(edad)]
+#ordenado2 <- edad[order(-edad)]
+edad <- ordenado1
+edad[501:1000]<-141-edad[1:500]
+
+
+data <- data.frame(value=edad)
+plt1 <- data %>%
+  ggplot(aes(x=edad)) +
+  geom_boxplot(fill="#69b3a2")+
+  theme_void()
+plt2 <- data %>%  
+  ggplot(aes(x=edad)) +
+  geom_histogram( binwidth = 3, fill="#69b3a2", color="#e9ecef", alpha=0.9)+
+  geom_vline(xintercept= 64.5,color ="red",size=1)+
+  geom_vline(xintercept= 76.5,color ="red",size=1)+
+  geom_vline(xintercept= 70.5,color ="red",size=1)+
+  annotate(geom="text", x=67.5, y=150, label="25%",color="red")+
+  annotate(geom="text", x=73.5, y=150, label="25%",color="red")+
+  annotate(geom="text", x=55.5, y=150, label="25%",color="red")+
+  annotate(geom="text", x=85.5, y=150, label="25%",color="red")+
+  theme_classic()
+plt2 + plt1 + plot_layout(nrow = 2, heights = c(5, 1))
+
+```
+
+
+  \endcol
+\endcols
+
+## Centralidad
+
+- **Media** (‘mean’) Es la media aritmética (promedio) de los valores de una variable. Suma de los valores dividido por el tamaño muestral.
+$$ \bar{x} = \frac{\sum_{i=1}^n x_i}{n} $$
+  - Media de $2,2,3,7$ es $\frac{2+2+3+7}{4}=\frac{14}{4}=3.5$
+  - Conveniente cuando los datos se concentran simétricamente con respecto a ese valor. Muy sensible a valores extremos.
+  - Centro de gravedad de los datos
+  - Media de $2,2,3,70$ es $\frac{2+2+3+70}{4} =\frac{77}{4}=19.25$
+
+
+## 
+
+- **Mediana** (‘median’) Es un valor que divide a las observaciones en dos grupos con el mismo número de individuos (percentil 50).  La mediana se obtiene sobre los datos ordenados.
+  - Si $n$ es impar: la mediana es la observación que está en el lugar $\frac{n+1}{2}$, es decir $$\widetilde{x}=x_{(\frac{n+1}{2})}$$ 
+  - Si $n$ es par: la mediana es el promedio de las observaciones  $(\frac{n}{2})$ y  $(\frac{n}{2}+1)$, es decir  $$\widetilde{x}=\frac{x_{(\frac{n}{2})} + x_{(\frac{n}{2}+1)}}{2}$$
+  - Mediana de 1,2,4,**5**,6,6,8 es 5
+  - Mediana de 1,2,4,**5,6**,6,8,9 es $\frac{5+6}{2}=5.5$
+  - Es conveniente cuando los datos son asimétricos. No es sensible a valores extremos.
+    - Mediana de 1,2,4,**5**,6,6,800 es $5$. ¡La media es $117.7$!
+
+- **Moda** (‘mode’) Es el/los valor/es donde la distribución de frecuencia alcanza un máximo. Para el ejemplo de la variable *carb* del conjunto de datos *mtcars* la moda son los valores $2$ y $4$
+
+## Medidas de Variabilidad o Dispersión
+
+
+\begincols
+  \begincol{.50\textwidth}
+Miden el grado de dispersión (variabilidad) de los datos, independientemente de su causa.
+
+
+\begin{itemize}
+  \item  {\bf Rango intercuartílico-RI-RIC} (‘interquartile range-IQR’):
+  
+\begin{itemize}
+  \item  Es la distancia entre el primer y tercer cuartil.
+  \item Rango intercuartílico = P75 - P25 
+  \item Parecida al rango, pero eliminando las observaciones más extremas inferiores y superiores.
+  
+  \item  No es tan sensible a valores extremos.
+
+\end{itemize}
+\end{itemize}
+
+
+\begin{itemize}
+  \item  {\bf Amplitud o Rango} (‘range’): La diferencia entre las observaciones extremas.
+  
+\begin{itemize}
+  \item  2,1,4,3,8,4. El rango es 8-1=7
+  \item Es muy sensible a los valores extremos. 
+  
+\end{itemize}
+\end{itemize}
+
+
+
+
+
+  \endcol
+  \begincol{.50\textwidth}
+
+```{r figura-ejemplo-edad2, fig.show="hold", out.width="100%"}
+#set.seed(1271)
+set.seed(1271)
+edad <- round(rnorm(1000,70,7))
+ordenado1 <- edad[order(edad)]
+#ordenado2 <- edad[order(-edad)]
+edad <- ordenado1
+edad[501:1000]<-141-edad[1:500]
+
+
+data <- data.frame(value=edad)
+plt1 <- data %>%
+  ggplot(aes(x=edad)) +
+  geom_boxplot(fill="#69b3a2")+
+  theme_void()
+plt2 <- data %>%  
+  ggplot(aes(x=edad)) +
+  geom_histogram( binwidth = 3, fill="#69b3a2", color="#e9ecef", alpha=0.9)+
+  geom_vline(xintercept= 64.5,color ="red",size=1)+
+  geom_vline(xintercept= 76.5,color ="red",size=1)+
+  geom_vline(xintercept= 70.5,color ="red",size=1)+
+  annotate(geom="text", x=67.5, y=150, label="25%",color="red")+
+  annotate(geom="text", x=73.5, y=150, label="25%",color="red")+
+  annotate(geom="text", x=55.5, y=150, label="25%",color="red")+
+  annotate(geom="text", x=85.5, y=150, label="25%",color="red")+
+  theme_classic()
+plt2 + plt1 + plot_layout(nrow = 2, heights = c(5, 1))
+
+```
+
+$$RI =Q_3  - Q_1 = 75-65 =10$$ 
+$$Rango = Max -Min = 92-49 = 43 $$
+
+  \endcol
+\endcols
+
+
+
+##
+
+**Varianza** $S^2$ (‘Variance’): 
+
+Mide el promedio de las desviaciones (al cuadrado) de las observaciones con respecto a la media.
+
+$$S^2 = \frac{1}{n}\sum_{i=1}^n (x_i - \overline{x})^2 $$
+
+
+  - Es sensible a valores extremos (alejados de la media).
+  - Sus unidades son el cuadrado de las de la variable.
+  
+## 
+
+\begincols
+  \begincol{.50\textwidth}
+**Desviación típica o estándar** (‘standard deviation’):
+
+Es la raíz cuadrada de la varianza $$S=\sqrt{S^2}$$
+
+
+\begin{itemize}
+  \item  Tiene las misma dimensionalidad (unidades) que la variable.
+  \item Cierta distribución que veremos más adelante (normal o gaussiana) quedará completamente determinada por la media y la desviación típica.
+
+  
+  \begin{itemize}
+    \item A una distancia de una desv. típica de la media tendremos $68\%$ observaciones.
+    \item A una distancia de dos desv. típica de la media tendremos $95\%$ observaciones.
+  \end{itemize}
+\end{itemize}
+
+
+\endcol
+\begincol{.50\textwidth}
+
+```{r figura-ejemplo-edad3, warning=FALSE, message=FALSE, fig.show="hold", out.width="100%"}
+#set.seed(1271)
+set.seed(1271)
+edad <- round(rnorm(1000,70,7))
+ordenado1 <- edad[order(edad)]
+#ordenado2 <- edad[order(-edad)]
+edad <- ordenado1
+edad[501:1000]<-141-edad[1:500]
+
+edadDF <- data.frame(value=edad)
+
+  edadDF %>% ggplot(aes(x=value))+
+  geom_histogram(aes(y=..density..),
+                 breaks=seq(45,95,by = 5),fill=rgb(0.2,0.8,0.5,0.5),colour=rgb(0.2,0.8,0.5,0.5))+
+  stat_function(fun=dnorm, args = list(mean=70,sd=sd(edadDF$value)))+
+  geom_vline(xintercept= 62.5,color ="blue",size=2)+
+  geom_vline(xintercept= 77.5,color ="blue",size=2)+
+  geom_vline(xintercept= 55,color ="red",size=2)+
+  geom_vline(xintercept= 85,color ="red",size=2)+
+  geom_vline(xintercept= 70,color ="black",size=1)+
+  theme_void()
+
+```
+
+  \endcol
+\endcols
+
+## 
+
+**Coeficiente de variación**
+
+- Es la razón entre la desviación típica y la media. $$cv = \frac{S}{\bar x}$$
+
+  - Mide la desviación típica en forma de “qué tamaño tiene con respecto a la media”
+
+  - También se la denomina variabilidad relativa.
+
+  - Es frecuente mostrarla en porcentajes
+    - Si la media es 80 y la desviación típica 20 entonces $CV=20/80=0.25=25\%$ (variabilidad relativa)
+
+- Es una cantidad *adimensional.* Interesante para comparar la variabilidad de diferentes variables.
+  - Si el peso tiene $CV=30\%$ y la altura tiene CV=10%, los individuos presentan más dispersión en peso que en altura.
+
+- No debe usarse cuando la variable presenta valores negativos o donde el valor 0 sea una cantidad fijada arbitrariamente
+  - Por ejemplo $0^{\circ}C \ne 0^{\circ}F$
+
+## Medidas de Forma
+
+**La curtosis** y **el sesgo** son medidas de forma de una serie de datos a los cuales se les ajusta una distribución de probabilidad.
+
+**Sesgo** (‘Skewness’):
+
+Sesgo, también llamado *coeficiente de asimetría*, mide si la cola de la distribución es más larga hacia la derecha o la izquierda, es decir, que tan “ladeada” o asimétrica pudiera estar la curva de la distribución de datos.
+
+![Skewness](figuras/Negative_and_positive_skew_diagrams_(English).png){width=50%}
+
+##
+
+![Relación entre Media, Mediana y Moda para diferentes Sesgos](figuras/Relationship_between_mean_and_median_under_different_skewness.png){width=70%}
+
+Hay muchas formas de medir el sesgo. Una de las formas más simples es la asimetría mediana de Pearson. $$Sesgo = 3 \times \frac{(Media - Mediana)}{desv.std.}$$
+
+Para los datos de peso de autos tenemos que
+
+Media = `r mean(mymtcars$wt)`, Mediana = `r median(mymtcars$wt)`, Desv.std. = `r sd(mymtcars$wt)`
+
+Entonces $Sesgo = 3 \times \frac{(Media - Mediana)}{desv.std.}=$ `r 3*(mean(mymtcars$wt)-median(mymtcars$wt))/sd(mymtcars$wt)`
+
+## 
+
+**Curtosis** (‘Kurtosis’):
+
+*La curtosis* por su parte, es una medida de “apuntamiento” de la distribución, en términos coloquiales refleja la altura de la curva o que tan "picuda" es. Es una “medida de forma” que determina la concentración o el grado de cercanía de los datos en torno a las medidas de tendencia central.
+
+```{r figura-curtosis, fig.show="hold", out.width="50%",fig.align='center', fig.cap = "Clasificación de curtosis"}
+
+p1 <- ggplot(data = data.frame(x = c(-5, 5)), aes(x)) +
+  stat_function(fun = dnorm, n = 101, args = list(mean = 0, sd = 1),size=2,aes(colour="Mesocúrtica (=3)")) +
+  stat_function(fun = dnorm, n = 101, args = list(mean = 0, sd = .5),size=2,aes(colour="Leptocúrtica (>3)")) +
+  stat_function(fun = dnorm, n = 101, args = list(mean = 0, sd = 2),size=2,aes(colour="Platicúrtica (<3)")) + 
+  ylab("") +
+  geom_hline(yintercept=0)+
+  theme_classic()+ theme(legend.position = c(0.8, 0.8),legend.text = element_text(size=15))
+p1
+
+```
+## Ejemplo mtcars
+
+### Summary
+
+\scalebox{0.7}{
+```{r resumen-mtcars-tabla-summary, warning=FALSE, message=FALSE, results='asis'}
+resumen<-t(summary(mymtcars))
+Hmisc::latex(resumen, file='', table.env=FALSE, center='none')
+```
+}
+
+##
+
+### summarytools::descr
+
+
+```{r resumen-mtcars-tabla-descr, warning=FALSE, message=FALSE, results='asis'}
+summarytools::descr(mymtcars,
+                    round.digits=2, 
+                    stats=c("mean", "sd", "min", "q1", "med", "q3", "max", "iqr", "cv", "skewness", "kurtosis", "n.valid", "pct.valid"),
+                    na.rm=TRUE,
+                    plain.ascii = FALSE, 
+                    style = "rmarkdown", 
+                    headings  = FALSE)
+```
+
+
+# Gráficos
+
+## Análisis Exploratorio de Datos (EDA)
+
+### Técnicas gráficas (visualización de datos)
+
+Vistas marginales (Univariado): 
+
+- Cualitativas
+  - Diagrama de pastel o sectores
+  - Gráficos de Barras
+- Numéricas
+  - Discretas
+    - Diagramas de puntos
+    - Diagrama *Lollipop*
+    - Gráficos de Barras
+  - Continuas
+    - Histogramas
+    - Diagrama de Caja
+
+
+## Gráficos para variables Cualitativas
+
+### Diagramas de Barra vs Digrama de sectores
+
+- Diagramas de barras
+  - Alturas proporcionales a las frecuencias (abs. o rel.)
+  - Se pueden aplicar también a variables discretas
+
+- Diagramas de sectores (pie, pastel )
+  - No usarlo con variables ordinales.
+  - El área de cada sector es proporcional a su frecuencia (abs. o rel.)
+
+
+
+```{r pie-barplot, fig.show="hold", out.height="50%",fig.align='center'}
+
+  data <- data.frame(table(mymtcars$am))
+
+# Compute the position of labels
+data <- data %>% 
+  arrange(desc(Var1)) %>%
+  mutate(prop = Freq / sum(data$Freq) *100) %>%
+  mutate(ypos = cumsum(prop)- 0.5*prop )
+
+# Basic piechart
+p1 <- ggplot(data, aes(x="", y=prop, fill=Var1)) +
+  geom_bar(stat="identity", width=1, color="white") +
+  coord_polar("y", start=0) +
+  theme_void() + 
+  theme(legend.position="none") +
+  geom_text(aes(y = ypos, label = Var1), color = "white", size=6) +
+  scale_fill_brewer(palette="Set1")
+
+p2<- ggplot(mymtcars, aes(x=am )) +
+  geom_bar(color="blue", fill=rgb(0.1,0.4,0.5,0.7) )+
+  ggtitle("Diagrama de barras")+
+  theme_bw()
+
+p1 + p2
+     
+
+
+```
+
+
+
+
+
+## Cualitativas
+
+### Diagrama de pastel o sectores
+
+```{r pie-diagrama, fig.show="hold", out.width="50%",fig.align='center', fig.cap = "Diagrama de pastel o sectores"}
+data <- data.frame(
+  group=LETTERS[1:5],
+  value=c(13,7,9,21,2)
+)
+
+# Compute the position of labels
+data <- data %>% 
+  arrange(desc(group)) %>%
+  mutate(prop = value / sum(data$value) *100) %>%
+  mutate(ypos = cumsum(prop)- 0.5*prop )
+
+# Basic piechart
+ggplot(data, aes(x="", y=prop, fill=group)) +
+  geom_bar(stat="identity", width=1, color="white") +
+  coord_polar("y", start=0) +
+  theme_void() + 
+  theme(legend.position="none") +
+  
+  geom_text(aes(y = ypos, label = group), color = "white", size=6) +
+  scale_fill_brewer(palette="Set1")
+```
+
+## Cualitativas
+
+### Gráfico o diagrama de barras
+
+
+
+```{r barplots, fig.show="hold", out.width="75%",fig.align='center',message=FALSE}
+p1 <- ggplot(mtcars, aes(x=as.factor(cyl) )) +
+  geom_bar(color="blue", fill=rgb(0.1,0.4,0.5,0.7) )+ xlab("Cylinders")+coord_flip()+
+  ggtitle("Diagrama de barras horizontal")+
+  theme_bw()
+
+p2 <- ggplot(mymtcars, aes(x=am )) +
+  geom_bar(color="blue", fill=rgb(0.1,0.4,0.5,0.7) )+
+  ggtitle("Diagrama de barras vertical")+
+  theme_bw()
+
+p1+p2
+```
+
+
+## Gráficos diferenciales para variables numéricas (Discretas vs Contínuas)
+
+- Son diferentes en función de que las variables sean *discretas* o *continuas.* Valen con frec. absolutas o relativas.
+  - **Diagramas barras para variables discretas**
+    - Se deja un hueco entre barras para indicar los valores que no son posibles
+
+  - **Histogramas para variables continuas**
+    - El área que hay bajo el histograma entre dos puntos cualesquiera indica la cantidad (porcentaje o frecuencia) de individuos en el intervalo.
+
+
+```{r barplot-histograma, fig.show="hold", out.height="45%", out.width="100%",fig.align='center'}
+
+
+p2 <- mymtcars %>%  
+ggplot(aes(x=wt)) +
+ geom_histogram( bins=15, fill="#69b3a2", color="#e9ecef", alpha=0.9) +
+  ggtitle("Histograma de peso de auto")+
+  theme_bw()
+
+p1 <- mymtcars %>%  count(carb)%>%
+ggplot( aes(x=carb, y=n)) +
+  geom_point() + 
+  geom_segment( aes(x=carb, xend=carb, y=0, yend=n),size=2)+
+  theme_bw()
+
+p1+p2 
+
+```
+
+
+## Numérica Discreta
+
+### Diagrama de puntos
+
+
+```{r dotplot, fig.show="hold", out.width="80%",fig.align='center',message=FALSE}
+p1 <- mymtcars %>%  
+ggplot( aes(x=carb)) +
+  geom_dotplot() + 
+  ggtitle("Diagrama de puntos para valores discretos")+
+  theme_bw()
+
+p2 <- mymtcars %>%  
+ggplot( aes(x=wt)) +
+  geom_dotplot() + 
+  ggtitle("Diagrama de puntos para valores contínuos")+
+  theme_bw()
+p1+p2
+```
+
+## Numérica Discreta
+
+### Diagrama Lollipop y Diagrama de barras
+
+
+
+
+```{r lollipop, fig.show="hold", out.width="80%",fig.align='center'}
+p1 <- mymtcars %>%  count(carb)%>%
+ggplot( aes(x=carb, y=n)) +
+  geom_point() + 
+  geom_segment( aes(x=carb, xend=carb, y=0, yend=n))+
+  geom_point( size=5, color="red", fill=alpha("orange", 0.3), alpha=0.7, shape=21, stroke=2) +
+  ggtitle("Gráfico Lollipop")+
+  theme_bw()
+
+p2 <- mymtcars %>%  
+ggplot( aes(x=carb)) +
+  geom_bar(color="blue", fill=rgb(0.1,0.4,0.5,0.7) ) +
+  ggtitle("Gráfico barras")+
+  theme_bw()
+
+p1+p2
+```
+
+## Numérica Contínua
+
+### Histograma
+
+
+```{r  histograma-1, fig.show="hold", out.width="80%",fig.align='center'}
+p1 <- mymtcars %>%  
+ggplot(aes(x=wt)) +
+ geom_histogram( bins=15, fill="#69b3a2", color="#e9ecef", alpha=0.9) +
+  ggtitle("Histograma de peso de auto")+
+  theme_bw()
+
+set.seed(145621)
+p2<- data.frame(value=rchisq(500,10)) %>%
+  ggplot(aes(x=value)) + 
+  geom_histogram(bins = 30, fill="#69b3a2", color="#e9ecef", alpha=0.9)+
+  ggtitle("Datos con sesgo a la derecha")+
+  theme_bw()
+p1+p2
+```
+
+
+##
+
+###
+
+```{r  histograma-3, fig.show="hold", out.width="80%",fig.align='center'}
+set.seed(145627)
+p1 <- data.frame(value=(30-rchisq(500,10))) %>%
+  ggplot(aes(x=value)) + 
+  geom_histogram(bins = 30, fill="#69b3a2", color="#e9ecef", alpha=0.9) +
+  ggtitle("Datos con sesgo a la izquierda")+
+  theme_bw()
+
+set.seed(1271)
+edad <- round(rnorm(1000,70,7))
+ordenado1 <- edad[order(edad)]
+#ordenado2 <- edad[order(-edad)]
+edad <- ordenado1
+edad[501:1000]<-141-edad[1:500]
+p2<- data.frame(value=edad) %>%
+  ggplot(aes(x=value)) + 
+  geom_histogram(binwidth = 3, fill="#69b3a2", color="#e9ecef", alpha=0.9) +
+  ggtitle("Histograma de datos gaussianos o normales")+
+  theme_bw()
+  
+p1+p2
+```
+
+
+
+##
+
+###
+
+
+```{r  histograma-5, fig.show="hold", out.width="80%",fig.align='center'}
+set.seed(1456217)
+p1<- data.frame(value=c(rnorm(250,10,2),rnorm(250,18,2))) %>%
+  ggplot(aes(x=value)) + 
+  geom_histogram(bins = 30, fill="#69b3a2", color="#e9ecef", alpha=0.9) +
+  ggtitle("Datos Bimodales")+
+  theme_bw()
+
+
+set.seed(145621)
+p2<- data.frame(value=runif(500,10,20)+runif(500,10,20)) %>%
+  ggplot(aes(x=value)) + 
+  geom_histogram(bins = 16, fill="#69b3a2", color="#e9ecef", alpha=0.9) +
+  ggtitle("Datos simétricos")+
+  theme_bw()
+  
+  
+  p1+p2
+```
+
+
+## Numérica Contínua
+
+### Diagrama de Caja
+
+
+![Boxplot](figuras/boxplot1.png){width=60%}
+
+
+
+
+![Boxplots](figuras/boxplot2.png){width=75%}
+
+
+## 
+
+
+![Boxplot Ver. 2.0](figuras/boxplot1-b.png){width=60%}
+
+
+
+
+## 
+
+###
+
+```{r  histogramas-y-boxplots, fig.show="hold", out.width="80%",fig.align='center'}
+
+# Draw the boxplot and the histogram 
+
+plt1a <- mymtcars %>%  
+  ggplot(aes(x=wt)) +
+  geom_boxplot(fill="#69b3a2")+
+  theme_void()
+plt2a <- mymtcars %>%  
+ggplot(aes(x=wt)) +
+ geom_histogram( bins=15, fill="#69b3a2", color="#e9ecef", alpha=0.9)+
+  theme_bw() 
+# g1 <- plt2a + plt1a + plot_layout(nrow = 2, heights = c(5, 1))
+
+set.seed(145621)
+data <- data.frame(value=rchisq(500,10)) 
+plt1b <- data %>%
+  ggplot(aes(x=value)) +
+  geom_boxplot(fill="#69b3a2")+
+  theme_void()
+plt2b <- data %>%  
+ggplot(aes(x=value)) +
+ geom_histogram( bins=30, fill="#69b3a2", color="#e9ecef", alpha=0.9) +
+  theme_bw()
+# g2 <- plt2b + plt1b + plot_layout(nrow = 2, heights = c(5, 1))
+
+set.seed(145627)
+data <- data.frame(value=(30-rchisq(500,10))) 
+plt1c <- data %>%
+  ggplot(aes(x=value)) +
+  geom_boxplot(fill="#69b3a2")+
+  theme_void()
+plt2c <- data %>%  
+ggplot(aes(x=value)) +
+ geom_histogram( bins=30, fill="#69b3a2", color="#e9ecef", alpha=0.9) +
+  theme_bw()
+# g3 <- plt2c + plt1c + plot_layout(nrow = 2, heights = c(5, 1))
+
+data <- data.frame(value=edad)
+plt1d <- data %>%
+  ggplot(aes(x=edad)) +
+  geom_boxplot(fill="#69b3a2")+
+  theme_void()
+plt2d <- data %>%  
+ggplot(aes(x=edad)) +
+ geom_histogram( binwidth = 3, fill="#69b3a2", color="#e9ecef", alpha=0.9)+
+  theme_bw() 
+# g4 <- plt2d + plt1d + plot_layout(nrow = 2, heights = c(5, 1))
+
+set.seed(145627)
+
+data <- data.frame(value=c(rnorm(250,10,2),rnorm(250,18,2))) 
+plt1e <- data %>%
+  ggplot(aes(x=value)) +
+  geom_boxplot(fill="#69b3a2")+
+  theme_void()
+plt2e <- data %>%  
+ggplot(aes(x=value)) +
+ geom_histogram(bins = 30, fill="#69b3a2", color="#e9ecef", alpha=0.9) +
+  theme_bw()
+# g5 <- plt2e + plt1e + plot_layout(nrow = 2, heights = c(5, 1))
+
+
+
+set.seed(145621)
+data <- data.frame(value=runif(500,10,20)+runif(500,10,20)) 
+plt1f <- data %>%
+  ggplot(aes(x=value)) +
+  geom_boxplot(fill="#69b3a2")+
+  theme_void()
+plt2f <- data %>%  
+ggplot(aes(x=value)) +
+ geom_histogram(bins = 16, fill="#69b3a2", color="#e9ecef", alpha=0.9) +
+  theme_bw()
+
+# g6 <-plt2f + plt1f + plot_layout(nrow = 2, heights = c(5, 1))
+
+plt2a + plt2b + plt1a +plt1b +plt2c +plt2d+ plt1c  + plt1d +plt2e +plt2f+ plt1e  + plt1f +plot_layout(ncol = 2, heights = c(5, 1,5,1,5,1))
+
+#g1+g2+g3+g4+g5+g6+plot_layout(nrow = 2)
+```
+
+
+
+## Análisis Exploratorio de Datos (EDA)
+
+### Técnicas gráficas (visualización de datos)
+
+Gráficas conjuntas (Bivariadas)
+
+- Cualitativo vs Cualitativo 
+  - Barras 
+  - Mosaico
+- Numérico vs Numérico
+  - Dispersión
+- Cualitativo vs Numérico
+  - Cajas categorizadas
+  - Diagrama de puntos categorizado
+  - Diagrama de Violín
+  - Histograma por grupos
+  
+  
+
+## Cualitativo vs Cualitativo
+
+### Barras
+
+```{r barplot-apilados, message=FALSE, echo=FALSE, warning=FALSE, fig.show="hold", out.width="80%",fig.align='center'}
+p1 <- ggplot(data=mymtcars, aes(x=am,fill=vs)) +
+  geom_bar()+
+theme_bw()
+  
+p2 <- ggplot(data=mymtcars, aes(x=vs,fill=am)) +
+  geom_bar()+
+theme_bw()
+
+p3 <- ggplot(data=mymtcars, aes(x=am,fill=vs)) +
+  geom_bar(position=position_dodge())+
+theme_bw()
+
+p4 <- ggplot(data=mymtcars, aes(x=vs,fill=am)) +
+  geom_bar(position=position_dodge())+
+theme_bw()
+  
+p1+p2+p3+p4
+
+```
+
+##
+
+### Mosaico
+
+```{r mosaico, message=FALSE, echo=FALSE, warning=FALSE, fig.show="hold", out.width="80%",fig.align='center'}
+#> Loading required package: ggplot2
+ggplot(data=mymtcars) +
+  geom_mosaic(aes(x = product(am), fill=vs)) +
+  theme_mosaic()
+```
+
+## Numérico vs Numérico
+  
+### Diagrama de Dispersión
+
+```{r scatterplot1, fig.show="hold", out.width="80%",fig.align='center'}
+mymtcars %>%
+  ggplot(aes(x=wt, y=disp)) + 
+    geom_point(size=4)+
+  theme_bw()
+```
+
+
+##
+
+###
+
+```{r scatterplots, fig.show="hold", out.width="80%",fig.align='center'}
+
+  p <- ggplot(mymtcars, aes(x=wt, y=mpg)) +
+  geom_point() +
+  theme(legend.position="none")+
+  theme_bw()
+ 
+# with marginal histogram
+p1 <- ggplot(mymtcars, aes(x=wt, y=qsec)) +
+  geom_point() +
+  theme(legend.position="none")+
+  theme_bw()
+ 
+# marginal density
+p2 <- ggplot(mymtcars, aes(x=wt, y=disp)) +
+  geom_point() +
+  theme(legend.position="none")+
+  theme_bw()
+ 
+# marginal boxplot
+p3 <- ggplot(mymtcars, aes(x=drat, y=mpg)) +
+  geom_point() +
+  theme(legend.position="none")+
+  theme_bw()
+p + p1 + p2 + p3
+```
+
+## Cualitativo vs Numérico
+  
+### Cajas categorizadas
+  
+  
+```{r cajas-categorizadas1, fig.show="hold", out.width="80%",fig.align='center'}
+mymtcars %>%
+  ggplot(aes(x=am , y=wt)) + 
+    geom_boxplot(fill="#69b3a2")+
+  theme_bw()
+```
+
+##
+
+###
+
+```{r cajas-categorizadas2, fig.show="hold", out.width="80%",fig.align='center'}
+p1<- mymtcars %>%
+  ggplot(aes(x=as.factor(cyl) , y=wt)) + 
+    geom_boxplot(fill="#69b3a2")+ xlab("Cylinders")+
+  theme_bw()
+
+p2 <- mymtcars %>%
+  ggplot(aes(x=vs , y=wt)) + 
+    geom_boxplot(fill="#69b3a2")+
+  theme_bw()
+p1+p2
+```
+
+## Cualitativo vs Numérico
+
+### Diagrama de puntos categorizado
+
+
+```{r dotplot-categorizado, fig.show="hold", out.width="80%",fig.align='center', message=FALSE}
+p1<- mymtcars %>%
+  ggplot(aes(x=am , y=wt)) + 
+    geom_dotplot(binaxis='y', stackdir='center')+
+  theme_bw()
+
+p2<- mymtcars %>%
+  ggplot(aes(x=vs , y=wt)) + 
+    geom_dotplot(binaxis='y', stackdir='center')+
+  theme_bw()
+
+p1+p2
+```
+
+## Cualitativo vs Numérico
+
+### Diagrama de violín
+
+
+```{r violin-categorizado, fig.show="hold", out.width="80%",fig.align='center', message=FALSE}
+p1<- mymtcars %>%
+  ggplot(aes(x=am , y=wt)) + 
+  geom_violin(trim = FALSE)+
+    geom_dotplot(binaxis='y', stackdir='center')+
+  theme_bw()
+
+p2<- mymtcars %>%
+  ggplot(aes(x=vs , y=wt)) + 
+  geom_violin(trim = FALSE)+
+    geom_dotplot(binaxis='y', stackdir='center')+
+  theme_bw()
+
+p1+p2
+```
+
+
+## Cualitativo vs Numérico
+
+### Histograma por grupos
+
+
+```{r histogramas-categorizados, fig.show="hold", out.width="80%",fig.align='center', message=FALSE}
+p1 <- mymtcars %>%
+  ggplot(aes(x=wt , fill  = am)) + 
+geom_histogram( color="#e9ecef", alpha=0.6, position = 'identity',bins = 10) +
+    scale_fill_manual(values=c("#69b3a2", "#404080")) +
+    labs(fill="")+
+  theme_bw()
+
+p2 <- mymtcars %>%
+  ggplot(aes(x=wt , fill  = am,color=am)) + 
+geom_histogram( color="#e9ecef", alpha=0.6, position = 'identity',bins = 10) +
+    scale_fill_manual(values=c("#69b3a2", "#404080")) +
+    labs(fill="")+
+  facet_grid(rows = vars(am))+
+  theme_bw()
+
+p1+p2
+```
+
+
+
+## Análisis Exploratorio de Datos Multivariados
+
+
+### Técnicas gráficas (visualización de datos)
+
+
+
+Gráficos de dos dimensiones combinados.
+
+- Dispersión- histograma
+- Dispersión- densidad
+- Dispersión- cajas
+- Matriz de dispersiones
+
+Gráficos de tres o más dimensiones
+
+- Dispersión categorizado
+- Matriz de diagramas de dispersión
+- Matriz de diagramas de dispersión categorizados
+  
+  
+## Gráficos de dos dimensiones combinados.
+
+### Dispersión - histograma
+
+```{r scatterplot-his-marginal, fig.show="hold", out.width="80%",fig.align='center'}
+  p <- ggplot(mymtcars, aes(x=wt, y=mpg)) +
+      geom_point() +
+      theme(legend.position="none")+
+  theme_bw()
+ 
+# with marginal histogram
+p1 <- ggMarginal(p, type="histogram")
+ 
+# marginal density
+p2 <- ggMarginal(p, type="density")
+ 
+# marginal boxplot
+p3 <- ggMarginal(p, type="boxplot")
+p1
+```
+
+## Gráficos de dos dimensiones combinados.
+ 
+### Dispersión- Densidad
+
+
+
+```{r scatterplot-densidad-marginal, fig.show="hold", out.width="80%",fig.align='center'}
+
+  p <- ggplot(mymtcars, aes(x=wt, y=mpg)) +
+      geom_point() +
+      theme(legend.position="none")+
+  theme_bw()
+ 
+# with marginal histogram
+p1 <- ggMarginal(p, type="histogram")
+ 
+# marginal density
+p2 <- ggMarginal(p, type="density")
+ 
+# marginal boxplot
+p3 <- ggMarginal(p, type="boxplot")
+p2
+```
+
+## Gráficos de dos dimensiones combinados.
+ 
+### Dispersión - Cajas
+
+```{r scatterplot-boxplot-marginal, fig.show="hold", out.width="80%",fig.align='center'}
+
+  p <- ggplot(mymtcars, aes(x=wt, y=mpg)) +
+      geom_point() +
+      theme(legend.position="none")+
+  theme_bw()
+ 
+# with marginal histogram
+p1 <- ggMarginal(p, type="histogram")
+ 
+# marginal density
+p2 <- ggMarginal(p, type="density")
+ 
+# marginal boxplot
+p3 <- ggMarginal(p, type="boxplot")
+p3
+```
+
+
+
+## Gráficos de tres o más dimensiones
+
+### Diagrama de dispersión categorizado
+
+```{r scatterplot-categorizado, fig.show="hold", out.width="80%",fig.align='center'}
+mymtcars %>%
+  ggplot(aes(x=wt, y=disp, color=as.factor(cyl))) + 
+    geom_point(size=4)+labs(color="Cylinders")+
+  theme_bw()
+```
+
+## Gráficos de tres o más dimensiones
+
+### Matriz de Diagramas de Dispersión
+
+```{r matriz-scatterplots, fig.show="hold", out.width="80%",fig.align='center',message=FALSE}
+
+  ggpairs(mymtcars)+
+  theme_bw()
+```
+
+## Gráficos de tres o más dimensiones
+
+
+
+### Matriz de Diagramas de Dispersión categorizado
+
+```{r matriz-scatterpltos-categorizados, fig.show="hold", out.width="80%",fig.align='center',message=FALSE}
+ggpairs(mymtcars,columns = c(1,3:7),ggplot2::aes(colour=am))+
+  theme_bw()
+
+```
+
+
+
+## Resúmen
+
+
+
+              
+\scalebox{0.65}{
+\begin{tabular}{|l|p{.4\textwidth}|p{.4\textwidth}|p{.4\textwidth}|}
+\hline
+\textbf{Tipo} & \textbf{Características básicas} & \textbf{Relaciones válidas} & \textbf{Ejemplos} \\
+\hline
+Nominal & Los números identifican y clasifican objetos & Relaciones del tipo "igual que" o "distinto que" & Sexo, estado civil, raza, diagnóstico clínico \par \\
+\hline
+Ordinal & Además, los números indican las posiciones relativas de los objetos & Además relaciones del tipo "mayor que" o "menor que" & Dureza, nivel socio económico, posición en el ranking ATP, grado de satisfacción \\
+\hline
+Intervalo & Además, hay una unidad de medición común & Además, igualdad o desigualdad de diferencias & Temperatura, fecha de calendario, inteligencia \par \\
+\hline
+Razón & Además, el punto cero es absoluto &  Además, igualdad o desigualdad de razones & Longitud, peso, altura, tiempo de reacción, costo económico \par \\
+\hline
+\end{tabular}
+}
+
+\scalebox{0.65}{
+
+\begin{tabular}{|l|p{.4\textwidth}|p{.4\textwidth}|}
+\hline
+\textbf{Tipo} & \textbf{Estadísticas descriptivas} & \textbf{Gráficos}  \\
+\hline
+Nominal & Frecuencia,  Moda & Gráfico de Barras, \par Diagrama de Sectores o Pie \par \\
+\hline
+Ordinal & Percentiles, Mediana, \par Moda, Frecuencia & Gráfico de Barras, \par Diagrama de Sectores o Pie \par \\
+\hline
+Intervalo & Frecuencia, Moda, Mediana,  Media, Desviación estándar, Varianza, rango, rango intercuartil & Histograma, Diagrama de Caja, Densidad \\
+\hline
+Razón & Media, Mediana, Varianza, Desviación estándar, Coeficiente de variación, media geométrica, media armónica &  Histograma, Diagrama de Caja, Densidad  \\
+\hline
+\end{tabular}
+}
+
+## Sitios de interés
+
+Existe una gran cantidad de libros, sitios web y recursos para aprender R, aquí se presenta una selección
+
+- [R Cookbook, 2nd Edition](https://rc2e.com/)
+- [Applied Statistics with R](https://book.stat420.org/)
+- [Modern Statistics with R](https://modernstatisticswithr.com/)
+- [The R Graph Gallery – Help and inspiration for R charts ](http://r-graph-gallery.com/)

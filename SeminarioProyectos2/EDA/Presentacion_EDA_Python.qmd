@@ -1,0 +1,1846 @@
+---
+title: "EDA (Exploratory Data Analysis)"
+subtitle: "Estadística Descriptiva"
+author: "Sergio Nava"
+date: "Agosto de 2023"
+fontsize: 10pt
+output: 
+  beamer_presentation:
+    slide_level: 2
+    toc: true
+    theme: "AnnArbor"
+    colortheme: "dolphin"
+    fonttheme: "structurebold"
+    includes:
+      in_header: mystyle.tex
+---
+
+```{python setup, include=FALSE}
+#knitr::opts_chunk$set(echo = FALSE)
+
+# library(dplyr)
+# library(ggplot2)
+# library(patchwork)
+# library(ggExtra)
+# library(GGally)
+# install.packages("devtools")
+
+# library(ggmosaic)
+```
+
+# Análisis Exploratorio de Información
+
+## Introducción
+
+- La estadística proporciona métodos  para adquirir conocimiento acerca de los fenómenos naturales y mantiene una estrecha relación con el Método científico.
+
+- El Método científico permite a los investigadores adquirir conocimientos, de manera objetiva tanto de procesos, como de fenómenos de la naturaleza.
+
+
+### Exploratorios vs Confirmatorios
+
+- **Métodos estadísticos exploratorios:**
+   Son métodos descriptivos y gráficos que permiten estudiar las características generales de los datos obtenidos
+
+- **Métodos estadísticos confirmatorios:** 
+   Son procedimientos muy útiles para obtener decisiones y/o conclusiones finales (inferencias estadísticas). 
+
+
+## Introducción
+
+- La exactitud de las inferencias o conclusiones depende de la corrección y precisión, éstas a su vez dependen de la formulación del problema. 
+
+- Las técnicas estadísticas, por muy refinadas y precisas que sean, no pueden ayudar a alcanzar conclusiones o decisiones correctas si se aplican a datos inapropiados.
+
+### Población y Muestra
+
+- **Población** (*population*) es el conjunto sobre el que estamos interesados en obtener conclusiones (hacer inferencia).
+  - Normalmente es demasiado grande para poder abarcarlo.
+
+- **Muestra** (*sample*) es un subconjunto de la población al que tenemos acceso y sobre el que realmente hacemos las observaciones (mediciones)
+  - Debería ser *representativo*
+  - Esta formado por miembros “seleccionados” de la población (individuos, unidades experimentales).
+
+##
+
+![Ciclo](figuras/ciclo.png){width=90%}
+
+## Introducción
+
+- **Parámetro:** Es una cantidad numérica calculada sobre una población 
+  - La altura media de los individuos de un país
+  - La idea es resumir toda la información que hay en la población en unos pocos números (parámetros).
+ 
+- **Estadístico:** Es una cantidad numérica calculada sobre una muestra de la población 
+  - La altura media de los que estamos en este aula.
+    + ¿Somos una muestra de la población? ¿representativa?
+  - Si un estadístico se usa para aproximar un parámetro también se le suele llamar estimador.[^1]
+
+[^1]: Normalmente nos interesa conocer un parámetro, pero por la dificultad que conlleva estudiar a *TODA* la población, calculamos un estimador sobre una muestra y “confiamos” en que sean próximos. Más adelante veremos como elegir muestras para que el error sea “confiablemente” pequeño
+
+
+##  Variables y escalas de medición
+
+|        |  Valor     |
+|:-------|------:|
+| Variable | ![alt text](figuras/fig2-im1.png){ width=40% } | 
+| Estadístico |  ![alt text](figuras/fig2-im2.png){ width=40% }  | 
+| Parámetro |  ![alt text](figuras/fig2-im3.png){ width=40% }  | 
+
+
+## 
+
+- Una **variable** es una característica observable que varía entre los diferentes individuos de una población. La información que disponemos de cada individuo se resume en **variables.**
+
+
+En los individuos de la población  mexicana, de uno a otro **es variable**:
+
+  - El grupo sanguíneo 
+    + {A, B, AB, O}  Var. Cualitativa
+  - Su nivel de felicidad “declarado” 
+    - {Deprimido, Indiferente, Muy Feliz}  Var. Ordinal
+  - El número de hijos
+    - {0,1,2,3,...}  Var. Numérica discreta
+  - La altura
+    - {1.62 ; 1.74; ...}  Var. Numérica continua
+
+## Tipos de Variables
+
+- **Cualitativas o Categóricas:** Si sus valores (*modalidades*) no se pueden asociar naturalmente a un número (no se pueden hacer operaciones algebraicas con ellos)
+
+  - **Nominales**: Si sus valores no se pueden ordenar
+    - Sexo, Grupo Sanguíneo, Religión, Nacionalidad, Fumar (Sí/No)
+
+  - **Ordinales**: Si sus valores se pueden ordenar
+    - Mejoría a un tratamiento, Grado de satisfacción, Intensidad del dolor
+
+- **Cuantitativas o Numéricas:** Si sus valores son numéricos (tiene sentido hacer operaciones algebraicas con ellos)
+
+  - **Discretas**: Si toma valores enteros
+    - Número de hijos, Número de cigarrillos, Num. de “cumpleaños”
+
+  - **Continuas**: Si entre dos valores, son posibles infinitos valores intermedios.
+    - Altura, Presión intraocular, Dosis de medicamento administrado, edad
+
+##
+
+![Escalas de medición](figuras/escalas.png){width=90%}
+
+# Estadística descriptiva
+
+## Estadística descriptiva
+
+Sirve como herramienta para  describir o resumir a la muestra.
+
+
+Comprende la tabulación, representación y
+descripción de una serie de datos que pueden ser cuantitativos o cualitativos.
+
+### Objetivo del Análisis Exploratorio
+
+- Tratar de reconocer cualquier patrón no aleatorio o
+estructura que requiera explicación.
+- Generar posibles hipótesis interesantes.
+- No existen modelos rígidos.
+- Se da importancia  al despliegue visual  y representaciones gráficas.
+
+*Encontrar la pregunta, frecuentemente es más
+interesante que buscar la respuesta*
+
+## Instrumentos de captación
+
++ Existen varios tipos de instrumentos de captación de información, cada uno de ellos tienen sus propios alcances y limitaciones.
+ 
++ Los instrumentos de captación apropiados se seleccionan de acuerdo a los objetivos y el tipo de estudio que se realiza.
+
++ Dependiendo del tipo de estudio o investigación, existen diversas maneras de obtener información.
+ 
+
+## Preguntas del Análisis de datos
+
+Algunos de las preguntas que se plantean en el análisis de los datos son:
+
+
+- ¿Qué caracteriza a los datos? (¿Cuál es la información sobresaliente?).
+- ¿Qué tanto varían los datos?
+- ¿Cómo están distribuidos los datos?
+- ¿Qué relación existe entre las variables?
+- ¿Qué estimaciones y predicciones resultarán de los datos?
+- ¿Qué diferencia existe entre grupos y variables?
+- ¿Qué variables causan variación en otras?
+- Etc. ...
+
+## Codificación de datos
+
+Una vez captada la información por los diversos instrumentos
+como son los cuestionarios, las entrevistas y otros; es
+necesario la traducción de la información para la construcción
+de una base de datos, a este proceso se le llama *codificación.*
+
+###
+
+- Sexo (Cualit: Códigos arbitrarios)
+  - 1 = Hombre
+  - 2 = Mujer
+    
+- Raza (Cualit: Códigos arbitrarios)
+  - 1 = Blanca
+  - 2 = Negra,...
+    
+- Felicidad Ordinal: Respetar un orden al codificar.
+  - 1 = Muy feliz
+  - 2 = Bastante feliz
+  - 3 = No demasiado feliz
+    
+- Se pueden asignar códigos a respuestas especiales como
+  -  0 = No sabe
+  - 99 = No contesta...
+
+##
+
+### Datos no codificados
+
+
+```{python tabla-datos-no-codificados , warning=FALSE, message=FALSE, results='asis', fig.cap="Datos crudos"}
+import numpy as np
+import pandas as pd
+
+np.random.seed(1371)
+
+sexo = np.random.choice([1, 2], size=6, replace=True)
+raza = np.repeat([1, 2], repeats=3)
+feliz = np.random.choice([1, 2], size=6, replace=True)
+vida = np.random.choice([1, 2], size=6, replace=True)
+hijos = np.random.poisson(lam=1.5, size=6)
+edad = np.random.binomial(n=80, p=0.5, size=6)
+
+datos = pd.DataFrame({
+    'sexo': sexo,
+    'raza': raza,
+    'feliz': feliz,
+    'vida': vida,
+    'hijos': hijos,
+    'edad': edad
+})
+
+print(datos)
+
+```
+
+
+### Datos codificados
+
+
+```{python tabla-datos-codificados, warning=FALSE, message=FALSE, results='asis', fig.cap="Datos Codificados"}
+# Mapear los valores numéricos a etiquetas
+datos['sexo'] = datos['sexo'].map({1: "Hombre", 2: "Mujer"})
+datos['raza'] = datos['raza'].map({1: "Blanca", 2: "Negra"})
+datos['feliz'] = datos['feliz'].map({1: "Muy Feliz", 2: "Bastante Feliz"})
+datos['vida'] = datos['vida'].map({1: "Excitante", 2: "Rutinaria"})
+
+# Convertir a tipo categórico explícitamente (opcional pero recomendable)
+datos['sexo'] = pd.Categorical(datos['sexo'])
+datos['raza'] = pd.Categorical(datos['raza'])
+datos['feliz'] = pd.Categorical(datos['feliz'])
+datos['vida'] = pd.Categorical(datos['vida'])
+
+# Mostrar el resultado
+print("Datos codificados")
+print(datos)
+
+
+```
+
+
+##
+
+
+```{python llamado-descripcion-mtcars, echo=TRUE, eval=FALSE}
+import seaborn as sns
+mymtcars = sns.load_dataset("mpg")
+mymtcars.info()
+
+```
+
+
+###            Motor Trend Car Road Tests
+
+**Description**
+
+  The data was extracted from the 1974 Motor Trend US 
+magazine, and comprises fuel consumption and 10 aspects 
+of automobile design and performance for 32  automobiles 
+(1973–74 models).
+
+**Format**
+
+  A data frame with 32 observations on 11 (numeric) variables.
+  
+- [, 1] *mpg*   Miles/(US) gallon
+- [, 2] *cyl*   Number of cylinders
+- [, 3] *disp*  Displacement (cu.in.)
+- [, 4] *hp*    Gross horsepower
+- [, 5] *drat*  Rear axle ratio
+- [, 6] *wt*    Weight (1000 lbs)
+- [, 7] *qsec*  1/4 mile time
+- [, 8] *vs*    Engine (0 = V-shaped, 1 = straight)
+- [, 9] *am*    Transmission (0 = automatic, 1 = manual)
+- [,10] *gear*  Number of forward gears
+- [,11] *carb*  Number of carburetors
+
+
+##   Motor Trend Car Road Tests
+
+### Datos no codificados
+
+\scalebox{0.7}{
+```{python hmisc-tabla-head-mymtcars, warning=FALSE, message=FALSE, results='asis', fig.cap="Datos crudos"}
+mymtcars.head()
+```
+}
+
+### Datos codificados
+
+\scalebox{0.7}{
+```{python hmisc-tablea-head-mymtcars-codificado, warning=FALSE, message=FALSE, results='asis', fig.cap="your-caption-name"}
+#mymtcars$vs <-factor(mymtcars$vs,labels = c("V-shapped","straight"))
+#mymtcars$am <-factor(mymtcars$am,labels = c("automatic","manual"))
+#Hmisc::latex(head(mymtcars), file='', table.env=FALSE, center='none')
+```
+}
+
+## Tablas de Frecuencia
+
+Exponen la información recogida en la muestra, de forma que no se pierda nada de
+información (o poca).
+
+- **Frecuencias absolutas:** Contabilizan el número de individuos de cada
+modalidad
+
+- **Frecuencias relativas (porcentajes):** Idem, pero dividido por el total
+
+- **Frecuencias acumuladas:** Sólo tienen sentido para variables ordinales y numéricas
+
+   - Muy útiles para calcular cuantiles (ver más adelante)
+
+
+
+## Ejemplos de tablas de frecuencias
+
+### Tabla de Frecuencias de cylinders
+
+\scalebox{0.75}{
+```{python hmisc-tabla-frec-cyl, warning=FALSE, message=FALSE, results='asis'}
+freq_table = mymtcars['cylinders'].value_counts().sort_index()
+percent_table = mymtcars['cylinders'].value_counts(normalize=True).sort_index() * 100
+
+pd.DataFrame({'Frecuencia': freq_table, 'Porcentaje (%)': percent_table.round(2)})
+
+```
+
+}
+
+### Tabla de Frecuencias de weight categorizado
+
+\scalebox{0.75}{
+```{python hmisc-tabla-frec-wt-categorizado, warning=FALSE, message=FALSE, results='asis'}
+#weight<-summarytools::freq(cut(mymtcars$wt,5), order = "default")
+#Hmisc::latex(weight, file='', table.env=FALSE, center='none')
+# Crear clases
+weight_classes = pd.cut(mymtcars['weight'], bins=10)
+
+# Tabla de frecuencias
+freq_table = weight_classes.value_counts().sort_index()
+
+# Tabla con porcentajes también
+percent_table = weight_classes.value_counts(normalize=True).sort_index() * 100
+
+# Combinar en un DataFrame
+tabla_clases = pd.DataFrame({
+    'Clase de peso': freq_table.index.astype(str),
+    'Frecuencia': freq_table.values,
+    'Porcentaje (%)': percent_table.round(2).values
+})
+
+print(tabla_clases)
+
+
+```
+}
+
+
+
+
+## Ejemplo
+
+### Origen
+
+
+```{python hmisc-tablea-frec-trans, warning=FALSE, message=FALSE, results='asis',fig.align='center'}
+freq_table = mymtcars['origin'].value_counts().sort_index()
+percent_table = mymtcars['origin'].value_counts(normalize=True).sort_index() * 100
+
+pd.DataFrame({'Frecuencia': freq_table, 'Porcentaje (%)': percent_table.round(2)})
+```
+
+
+```{python barras-am, warning=FALSE, message=FALSE, fig.show="hold", out.height="50%", out.width="70%",fig.align='center'}
+import matplotlib.pyplot as plt
+
+# Tabla de frecuencias
+freq_table = mymtcars['origin'].value_counts().sort_index()
+
+# Gráfico de barras
+plt.figure(figsize=(6, 4))
+plt.bar(freq_table.index.astype(str), freq_table.values)
+plt.title("Frecuencia de Origen")
+plt.xlabel("Origen del vehículo")
+plt.ylabel("Frecuencia")
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+plt.show()
+
+
+```
+
+
+## Ejemplo 
+
+### Número de Carburadores
+
+
+
+```{python hmisc-tabla-carb, warning=FALSE, message=FALSE, results='asis'}
+freq_table = mymtcars['cylinders'].value_counts().sort_index()
+percent_table = mymtcars['cylinders'].value_counts(normalize=True).sort_index() * 100
+
+pd.DataFrame({'Frecuencia': freq_table, 'Porcentaje (%)': percent_table.round(2)})
+```
+
+
+
+
+
+¿Cuántos autos en la BD tienen menos de cuatro cilindros?
+
+¿Qué porcentaje de autos en la BD tiene  cuatro cilindros o menos?
+
+¿Qué porcentaje de autos de la BD no sabemos cuantos carburadores tiene?
+
+
+
+# Resumen de estadísticos
+
+## Resumen de estadísticos
+
+
+![Estadísticos](figuras/Estadisticos.png)
+
+## Resumen de estadísticos
+
+- Posición
+  - Dividen un conjunto ordenado de datos en grupos con la misma cantidad de individuos.
+    - Cuantiles, percentiles, cuartiles, deciles,...
+
+- Centralidad
+  - Indican valores con respecto a los que los datos parecen agruparse.
+    - Media, mediana y moda
+
+- Dispersión
+  - Indican la mayor o menor concentración de los datos con respecto a las medidas de Centralidad.
+    - Desviación típica, coeficiente de variación, rango, varianza
+    
+- Forma
+  - Asimetría
+  - Apuntamiento o curtosis
+
+
+
+## Estadísticos de posición
+
+Se define el *cuantil* de orden $a$ como un valor de la variable por debajo del cual se encuentra una frecuencia acumulada $a$.
+
+Casos particulares son los percentiles, cuartiles, deciles, quintiles,...
+
+```{python cuantil-grafica, warning=FALSE, message=FALSE, fig.show="hold", out.height="60%", out.width="90%",fig.align='center'}
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.stats import norm
+from matplotlib.patches import Polygon
+
+# Configuración inicial
+plt.style.use('classic')
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
+
+## Primer gráfico (PDF) - equivalente a p1 y p9
+# Crear rango de valores
+x = np.linspace(-4, 4, 1000)
+pdf = norm.pdf(x)
+
+# Graficar curva normal
+ax1.plot(x, pdf, linewidth=1)
+ax1.axhline(0, color='black', linewidth=0.5)
+
+# Función para sombrear área (equivalente a funcShaded)
+q70 = norm.ppf(0.7)  # Equivalente a qnorm(.7)
+mask = (x < q70) | (x > (q70 + 4))
+pdf_shaded = np.where(mask, np.nan, pdf)
+
+# Sombrear área
+ax1.fill_between(x, pdf_shaded, color='#84CA72', alpha=0.2)
+
+# Añadir anotaciones
+ax1.text(0, 0.015, '70%', ha='center')
+ax1.text(1, 0.015, '30%', ha='center')
+
+ax1.set_ylim(bottom=0)
+ax1.set_title('Función de Densidad de Probabilidad (PDF)')
+ax1.set_xlabel('x')
+ax1.set_ylabel('Densidad')
+
+## Segundo gráfico (CDF) - equivalente a p2
+cdf = norm.cdf(x)
+
+# Graficar curva acumulativa
+ax2.plot(x, cdf, linewidth=1)
+ax2.axhline(0, color='black', linewidth=0.5)
+ax2.axhline(1, color='black', linewidth=0.5)
+
+# Añadir líneas segmentadas
+ax2.plot([-4, q70], [0.7, 0.7], color='black', linestyle='-')
+ax2.plot([q70, q70], [0, 0.7], color='black', linestyle='-')
+
+ax2.set_xlim(-4, 4)
+ax2.set_ylim(0, 1)
+ax2.set_yticks(np.arange(0, 1.1, 0.1))
+ax2.set_title('Función de Distribución Acumulativa (CDF)')
+ax2.set_xlabel('x')
+ax2.set_ylabel('Probabilidad acumulada')
+
+plt.tight_layout()
+plt.show()
+
+```
+##
+
+
+```{python hmisc-table-carburadores, warning=FALSE, message=FALSE, results='asis'}
+
+freq_table = mymtcars['cylinders'].value_counts().sort_index()
+percent_table = mymtcars['cylinders'].value_counts(normalize=True).sort_index() * 100
+
+pd.DataFrame({'Frecuencia': freq_table, 'Porcentaje (%)': percent_table.round(2)})
+```
+
+
+```{python posicion-discreto, fig.show="hold", out.height="60%", out.width="100%",fig.align='center', warning=FALSE, message=FALSE}
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from scipy.stats import ecdf
+
+# Configuración inicial
+plt.style.use('seaborn-v0_8-whitegrid')
+fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(18, 5))
+
+# Datos
+df = mymtcars
+
+## Gráfico 1: Diagrama de puntos con segmentos
+carb_counts = df['cylinders'].value_counts().sort_index()
+
+ax1.scatter(carb_counts.index, carb_counts.values, color='steelblue')
+for carb, count in carb_counts.items():
+    ax1.plot([carb, carb], [0, count], color='steelblue', linewidth=2)
+ax1.set_title('Conteo de cilindros')
+ax1.set_xlabel('Número de cilindros')
+ax1.set_ylabel('Frecuencia')
+
+## Gráfico 2: Distribución acumulada empírica (versión con seaborn)
+sns.ecdfplot(data=df, x='cylinders', ax=ax2)
+ax2.set_title('Distribución acumulada empírica\n del número de cilindros')
+ax2.set_yticks(np.arange(0, 1.1, 0.1))
+
+## Gráfico 3: Función cuantil
+q = np.linspace(0, 1, 100)
+quantiles = df['cylinders'].quantile(q)
+ax3.plot(quantiles, q, color='steelblue')
+ax3.set_title('Quantiles de variable\n número de cilindros')
+ax3.set_yticks(np.arange(0, 1.1, 0.1))
+ax3.set_ylim(0, 1)
+
+plt.tight_layout()
+plt.show()
+
+```
+
+##
+
+
+```{python hmisc-table-wturadores, warning=FALSE, message=FALSE, results='asis'}
+freq_table = mymtcars['weight'].value_counts().sort_index()
+percent_table = mymtcars['weight'].value_counts(normalize=True).sort_index() * 100
+
+pd.DataFrame({'Frecuencia': freq_table, 'Porcentaje (%)': percent_table.round(2)})
+```
+
+
+##
+
+```{python posicion-peso, fig.show="hold", out.height="100%", out.width="100%",fig.align='center', warning=FALSE, message=FALSE}
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from scipy.stats import ecdf
+
+# Configuración inicial
+plt.style.use('seaborn-v0_8-whitegrid')
+fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(18, 5))
+
+# Datos
+df = mymtcars
+
+## Gráfico 1: Diagrama de puntos con segmentos
+carb_counts = df['weight'].value_counts().sort_index()
+
+ax1.scatter(carb_counts.index, carb_counts.values, color='steelblue')
+for carb, count in carb_counts.items():
+    ax1.plot([carb, carb], [0, count], color='steelblue', linewidth=2)
+ax1.set_title('Conteo de cilindros')
+ax1.set_xlabel('Número de cilindros')
+ax1.set_ylabel('Frecuencia')
+
+
+## Gráfico 2: Distribución acumulada empírica (versión con seaborn)
+sns.ecdfplot(data=df, x='weight', ax=ax2)
+ax2.set_title('Distribución acumulada empírica\n del número de cilindros')
+ax2.set_yticks(np.arange(0, 1.1, 0.1))
+
+## Gráfico 3: Función cuantil
+q = np.linspace(0, 1, 100)
+quantiles = df['weight'].quantile(q)
+ax3.plot(quantiles, q, color='steelblue')
+ax3.set_title('Quantiles de variable\n número de cilindros')
+ax3.set_yticks(np.arange(0, 1.1, 0.1))
+ax3.set_ylim(0, 1)
+
+plt.tight_layout()
+plt.show()
+
+
+```
+
+
+
+## 
+
+- **Percentil** de orden $k =$ cuantil de orden $\frac{k}{100}$, es decir divide la muestra en 100 partes
+  - La mediana es el percentil $50$
+  - El percentil de orden $15$ deja por debajo al $15\%$ de las observaciones. Por encima queda el $85\%$
+
+- **Cuartiles**: Dividen a la muestra en $4$ grupos con frecuencias similares.
+  - Primer cuartil = Percentil $25$ = Cuantil $0.25$
+  - Segundo cuartil = Percentil $50$ = Cuantil $0.5$ = mediana
+  - Tercer cuartil = Percentil $75$ = cuantil $0.75$
+
+##
+
+### Ejemplos de estadísticos de posición
+
+-  El 5% de los recién nacidos tiene un peso demasiado bajo. ¿Qué peso se considera *demasiado bajo*?
+
+    - Percentil 5 o cuantil 0.05 
+- ¿Qué peso es superado sólo por el 25% de los individuos?
+    - Percentil 75
+  
+- El colesterol se distribuye simétricamente en la población. Se considera patológico los valores extremos. El 90% de los individuos son normales ¿Entre qué valores se encuentran los individuos normales?
+  - Entre el percentil 5 y el 95
+- ¿Entre qué valores se encuentran la mitad de los individuos *más normales* de una población?
+  - Entre el cuartil 1º y 3º
+
+
+## 
+
+### Ejemplo de estadísticos de posición
+
+
+\begincols
+  \begincol{.55\textwidth}
+
+¿Qué peso no llega a alcanzar el $25\%$ de los individuos? 
+
+\begin{itemize}
+  \item   Primer cuartil = percentil 25 = 65 Kg.
+  
+\end{itemize}
+
+
+¿Qué peso es superado por el $25\%$ de los individuos?
+
+\begin{itemize}
+  \item   Tercer cuartil= percentil 75= 75 kg.
+  
+\end{itemize}
+
+¿Entre qué valores se encuentra el $50\%$ de los individuos con un peso “más normal”?
+
+\begin{itemize}
+  \item   Entre el primer y tercer cuartil = entre 65 y 75 kg.
+  \item Obsérvar que indica que tan dispersos están los individuos que ocupan la “parte central” de la muestra. 
+  \item Los diagramas de caja (‘boxplot’) sintetizan esta información (y algo más).
+\end{itemize}
+
+
+  \endcol
+  \begincol{.43\textwidth}
+
+```{python figura-ejemplo-edad, fig.show="hold", out.width="100%",fig.align='center'}
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Configuración inicial
+plt.style.use('classic')
+np.random.seed(1271)  # Equivalente a set.seed(1271)
+
+# Generar datos
+edad = np.round(np.random.normal(70, 7, 1000))
+edad = np.sort(edad)  # Equivalente a order(edad)
+edad[500:1000] = 141 - edad[0:500]  # Python usa indexación 0-based
+
+# Crear DataFrame
+data = pd.DataFrame({'value': edad})
+
+# Crear figura con dos subplots (arriba histograma, abajo boxplot)
+fig, (ax2, ax1) = plt.subplots(2, 1, figsize=(10, 8), 
+                             gridspec_kw={'height_ratios': [5, 1]})
+
+# Gráfico 1: Boxplot (abajo)
+sns.boxplot(data=data, x='value', ax=ax1, color="#69b3a2")
+ax1.axis('off')  # Equivalente a theme_void()
+
+# Gráfico 2: Histograma (arriba)
+sns.histplot(data=data, x='value', binwidth=3, ax=ax2, 
+            color="#69b3a2", edgecolor="#e9ecef", alpha=0.9)
+
+# Líneas verticales
+ax2.axvline(64.5, color='red', linewidth=1)
+ax2.axvline(76.5, color='red', linewidth=1)
+ax2.axvline(70.5, color='red', linewidth=1)
+
+# Anotaciones
+ax2.text(67.5, 150, '25%', color='red', ha='center')
+ax2.text(73.5, 150, '25%', color='red', ha='center')
+ax2.text(55.5, 150, '25%', color='red', ha='center')
+ax2.text(85.5, 150, '25%', color='red', ha='center')
+
+# Ajustar diseño
+plt.tight_layout()
+plt.show()
+```
+
+
+  \endcol
+\endcols
+
+## Centralidad
+
+- **Media** (‘mean’) Es la media aritmética (promedio) de los valores de una variable. Suma de los valores dividido por el tamaño muestral.
+$$ \bar{x} = \frac{\sum_{i=1}^n x_i}{n} $$
+  - Media de $2,2,3,7$ es $\frac{2+2+3+7}{4}=\frac{14}{4}=3.5$
+  - Conveniente cuando los datos se concentran simétricamente con respecto a ese valor. Muy sensible a valores extremos.
+  - Centro de gravedad de los datos
+  - Media de $2,2,3,70$ es $\frac{2+2+3+70}{4} =\frac{77}{4}=19.25$
+
+
+## 
+
+- **Mediana** (‘median’) Es un valor que divide a las observaciones en dos grupos con el mismo número de individuos (percentil 50).  La mediana se obtiene sobre los datos ordenados.
+  - Si $n$ es impar: la mediana es la observación que está en el lugar $\frac{n+1}{2}$, es decir $$\widetilde{x}=x_{(\frac{n+1}{2})}$$ 
+  - Si $n$ es par: la mediana es el promedio de las observaciones  $(\frac{n}{2})$ y  $(\frac{n}{2}+1)$, es decir  $$\widetilde{x}=\frac{x_{(\frac{n}{2})} + x_{(\frac{n}{2}+1)}}{2}$$
+  - Mediana de 1,2,4,**5**,6,6,8 es 5
+  - Mediana de 1,2,4,**5,6**,6,8,9 es $\frac{5+6}{2}=5.5$
+  - Es conveniente cuando los datos son asimétricos. No es sensible a valores extremos.
+    - Mediana de 1,2,4,**5**,6,6,800 es $5$. ¡La media es $117.7$!
+
+- **Moda** (‘mode’) Es el/los valor/es donde la distribución de frecuencia alcanza un máximo. Para el ejemplo de la variable *carb* del conjunto de datos *mtcars* la moda son los valores $2$ y $4$
+
+## Medidas de Variabilidad o Dispersión
+
+
+\begincols
+  \begincol{.50\textwidth}
+Miden el grado de dispersión (variabilidad) de los datos, independientemente de su causa.
+
+
+\begin{itemize}
+  \item  {\bf Rango intercuartílico-RI-RIC} (‘interquartile range-IQR’):
+  
+\begin{itemize}
+  \item  Es la distancia entre el primer y tercer cuartil.
+  \item Rango intercuartílico = P75 - P25 
+  \item Parecida al rango, pero eliminando las observaciones más extremas inferiores y superiores.
+  
+  \item  No es tan sensible a valores extremos.
+
+\end{itemize}
+\end{itemize}
+
+
+\begin{itemize}
+  \item  {\bf Amplitud o Rango} (‘range’): La diferencia entre las observaciones extremas.
+  
+\begin{itemize}
+  \item  2,1,4,3,8,4. El rango es 8-1=7
+  \item Es muy sensible a los valores extremos. 
+  
+\end{itemize}
+\end{itemize}
+
+
+
+
+
+  \endcol
+  \begincol{.50\textwidth}
+
+```{python figura-ejemplo-edad2, fig.show="hold", out.width="100%"}
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Configurar estilo y semilla
+plt.style.use('classic')
+np.random.seed(1271)  # Equivalente a set.seed(1271)
+
+# Generar datos (equivalente a rnorm)
+edad = np.round(np.random.normal(70, 7, 1000))
+edad = np.sort(edad)  # Equivalente a order(edad)
+edad[500:1000] = 141 - edad[0:500]  # Python usa indexación 0-based
+
+# Crear DataFrame
+data = pd.DataFrame({'value': edad})
+
+# Crear figura con dos subplots (arriba histograma, abajo boxplot)
+fig, (ax2, ax1) = plt.subplots(2, 1, figsize=(10, 8), 
+                              gridspec_kw={'height_ratios': [5, 1]})
+
+# Gráfico 1: Boxplot (abajo)
+sns.boxplot(data=data, x='value', ax=ax1, color="#69b3a2")
+ax1.set_xlabel('')
+ax1.set_xticks([])
+ax1.set_yticks([])
+for spine in ax1.spines.values():  # Equivalente a theme_void()
+    spine.set_visible(False)
+
+# Gráfico 2: Histograma (arriba)
+sns.histplot(data=data, x='value', binwidth=3, ax=ax2,
+            color="#69b3a2", edgecolor="#e9ecef", alpha=0.9)
+
+# Líneas verticales
+ax2.axvline(64.5, color='red', linewidth=1)
+ax2.axvline(76.5, color='red', linewidth=1)
+ax2.axvline(70.5, color='red', linewidth=1)
+
+# Anotaciones
+ax2.text(67.5, 150, '25%', color='red', ha='center')
+ax2.text(73.5, 150, '25%', color='red', ha='center')
+ax2.text(55.5, 150, '25%', color='red', ha='center')
+ax2.text(85.5, 150, '25%', color='red', ha='center')
+
+# Ajustar diseño
+plt.tight_layout()
+plt.show()
+```
+
+$$RI =Q_3  - Q_1 = 75-65 =10$$ 
+$$Rango = Max -Min = 92-49 = 43 $$
+
+  \endcol
+\endcols
+
+
+
+##
+
+**Varianza** $S^2$ (‘Variance’): 
+
+Mide el promedio de las desviaciones (al cuadrado) de las observaciones con respecto a la media.
+
+$$S^2 = \frac{1}{n}\sum_{i=1}^n (x_i - \overline{x})^2 $$
+
+
+  - Es sensible a valores extremos (alejados de la media).
+  - Sus unidades son el cuadrado de las de la variable.
+  
+## 
+
+\begincols
+  \begincol{.50\textwidth}
+**Desviación típica o estándar** (‘standard deviation’):
+
+Es la raíz cuadrada de la varianza $$S=\sqrt{S^2}$$
+
+
+\begin{itemize}
+  \item  Tiene las misma dimensionalidad (unidades) que la variable.
+  \item Cierta distribución que veremos más adelante (normal o gaussiana) quedará completamente determinada por la media y la desviación típica.
+
+  
+  \begin{itemize}
+    \item A una distancia de una desv. típica de la media tendremos $68\%$ observaciones.
+    \item A una distancia de dos desv. típica de la media tendremos $95\%$ observaciones.
+  \end{itemize}
+\end{itemize}
+
+
+\endcol
+\begincol{.50\textwidth}
+
+```{python figura-ejemplo-edad3, warning=FALSE, message=FALSE, fig.show="hold", out.width="100%"}
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from scipy.stats import norm
+
+# Configurar semilla
+np.random.seed(1271)
+
+# Generar datos
+edad = np.round(np.random.normal(70, 7, 1000))
+edad = np.sort(edad)  # Ordenar
+edad[500:1000] = 141 - edad[0:500]  # Python usa indexación 0-based
+
+# Crear DataFrame
+edadDF = pd.DataFrame({'value': edad})
+
+# Crear figura
+plt.figure(figsize=(10, 6))
+
+# Histograma con densidad
+bin_edges = np.arange(45, 100, 5)  # breaks=seq(45,95,by=5)
+plt.hist(edadDF['value'], bins=bin_edges, density=True, 
+         color=(0.2, 0.8, 0.5, 0.5), edgecolor=(0.2, 0.8, 0.5, 0.5))
+
+# Añadir curva normal
+x = np.linspace(45, 95, 500)
+plt.plot(x, norm.pdf(x, 70, np.std(edadDF['value'])), 'k-')
+
+# Líneas verticales
+plt.axvline(62.5, color='blue', linewidth=2)
+plt.axvline(77.5, color='blue', linewidth=2)
+plt.axvline(55, color='red', linewidth=2)
+plt.axvline(85, color='red', linewidth=2)
+plt.axvline(70, color='black', linewidth=1)
+
+# Configurar tema similar a theme_void()
+plt.gca().set_xticks([])
+plt.gca().set_yticks([])
+plt.gca().spines['top'].set_visible(False)
+plt.gca().spines['right'].set_visible(False)
+plt.gca().spines['bottom'].set_visible(False)
+plt.gca().spines['left'].set_visible(False)
+
+plt.show()
+
+```
+
+  \endcol
+\endcols
+
+## 
+
+**Coeficiente de variación**
+
+- Es la razón entre la desviación típica y la media. $$cv = \frac{S}{\bar x}$$
+
+  - Mide la desviación típica en forma de “qué tamaño tiene con respecto a la media”
+
+  - También se la denomina variabilidad relativa.
+
+  - Es frecuente mostrarla en porcentajes
+    - Si la media es 80 y la desviación típica 20 entonces $CV=20/80=0.25=25\%$ (variabilidad relativa)
+
+- Es una cantidad *adimensional.* Interesante para comparar la variabilidad de diferentes variables.
+  - Si el peso tiene $CV=30\%$ y la altura tiene CV=10%, los individuos presentan más dispersión en peso que en altura.
+
+- No debe usarse cuando la variable presenta valores negativos o donde el valor 0 sea una cantidad fijada arbitrariamente
+  - Por ejemplo $0^{\circ}C \ne 0^{\circ}F$
+
+## Medidas de Forma
+
+**La curtosis** y **el sesgo** son medidas de forma de una serie de datos a los cuales se les ajusta una distribución de probabilidad.
+
+**Sesgo** (‘Skewness’):
+
+Sesgo, también llamado *coeficiente de asimetría*, mide si la cola de la distribución es más larga hacia la derecha o la izquierda, es decir, que tan “ladeada” o asimétrica pudiera estar la curva de la distribución de datos.
+
+![Skewness](figuras/Negative_and_positive_skew_diagrams_(English).png){width=50%}
+
+##
+
+![Relación entre Media, Mediana y Moda para diferentes Sesgos](figuras/Relationship_between_mean_and_median_under_different_skewness.png){width=70%}
+
+Hay muchas formas de medir el sesgo. Una de las formas más simples es la asimetría mediana de Pearson. $$Sesgo = 3 \times \frac{(Media - Mediana)}{desv.std.}$$
+
+Para los datos de peso de autos tenemos que
+
+Media = `r mean(mymtcars$wt)`, Mediana = `r median(mymtcars$wt)`, Desv.std. = `r sd(mymtcars$wt)`
+
+Entonces $Sesgo = 3 \times \frac{(Media - Mediana)}{desv.std.}=$ `r 3*(mean(mymtcars$wt)-median(mymtcars$wt))/sd(mymtcars$wt)`
+
+## 
+
+**Curtosis** (‘Kurtosis’):
+
+*La curtosis* por su parte, es una medida de “apuntamiento” de la distribución, en términos coloquiales refleja la altura de la curva o que tan "picuda" es. Es una “medida de forma” que determina la concentración o el grado de cercanía de los datos en torno a las medidas de tendencia central.
+
+```{python figura-curtosis, fig.show="hold", out.width="50%",fig.align='center', fig.cap = "Clasificación de curtosis"}
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.stats import norm
+
+# Configurar el estilo
+plt.style.use('classic')
+
+# Crear la figura
+fig, ax = plt.subplots(figsize=(10, 6))
+
+# Generar valores x
+x = np.linspace(-5, 5, 500)
+
+# Graficar las tres distribuciones normales
+ax.plot(x, norm.pdf(x, loc=0, scale=1), 
+        label='Mesocúrtica (=3)', linewidth=2)
+ax.plot(x, norm.pdf(x, loc=0, scale=0.5), 
+        label='Leptocúrtica (>3)', linewidth=2)
+ax.plot(x, norm.pdf(x, loc=0, scale=2), 
+        label='Platicúrtica (<3)', linewidth=2)
+
+# Configuraciones adicionales
+ax.axhline(0, color='black', linewidth=0.5)  # Línea horizontal en y=0
+ax.set_ylabel('')
+ax.set_xlim(-5, 5)
+
+# Configurar la leyenda
+legend = ax.legend(loc='upper right', bbox_to_anchor=(0.8, 0.8), 
+                  prop={'size': 15})
+
+# Ajustar el diseño
+plt.tight_layout()
+plt.show()
+
+```
+## Ejemplo Cars
+
+### Summary
+
+\scalebox{0.7}{
+```{python resumen-mtcars-tabla-summary, warning=FALSE, message=FALSE, results='asis'}
+print(mymtcars.describe())
+```
+}
+
+
+
+# Gráficos
+
+## Análisis Exploratorio de Datos (EDA)
+
+### Técnicas gráficas (visualización de datos)
+
+Vistas marginales (Univariado): 
+
+- Cualitativas
+  - Diagrama de pastel o sectores
+  - Gráficos de Barras
+- Numéricas
+  - Discretas
+    - Diagramas de puntos
+    - Diagrama *Lollipop*
+    - Gráficos de Barras
+  - Continuas
+    - Histogramas
+    - Diagrama de Caja
+
+
+## Gráficos para variables Cualitativas
+
+### Diagramas de Barra vs Digrama de sectores
+
+- Diagramas de barras
+  - Alturas proporcionales a las frecuencias (abs. o rel.)
+  - Se pueden aplicar también a variables discretas
+
+- Diagramas de sectores (pie, pastel )
+  - No usarlo con variables ordinales.
+  - El área de cada sector es proporcional a su frecuencia (abs. o rel.)
+
+
+
+```{python pie-barplot, fig.show="hold", out.height="50%",fig.align='center'}
+import seaborn as sns
+import matplotlib.pyplot as plt
+import pandas as pd
+import numpy as np
+
+
+
+## Gráfico 1: Diagrama de pastel (pie chart)
+# Calcular frecuencias
+data = mymtcars['origin'].value_counts().reset_index()
+data.columns = ['origin', 'count']
+
+# Calcular proporciones y posiciones
+data = data.sort_values('origin', ascending=False)
+data['prop'] = data['count'] / data['count'].sum() * 100
+data['ypos'] = data['prop'].cumsum() - 0.5 * data['prop']
+
+# Crear pie chart
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 6))
+
+# Pie chart
+ax1.pie(data['prop'], labels=data['origin'], autopct='%1.1f%%',
+        colors=sns.color_palette("Set1"), startangle=90,
+        textprops={'color': 'white', 'size': 12})
+ax1.axis('equal')  # Para que sea circular
+ax1.set_title('Procedencia de vehículos')
+
+## Gráfico 2: Diagrama de barras
+sns.countplot(data=mymtcars, x='origin', ax=ax2,
+             color=plt.cm.Blues(0.5),  # Equivalente a rgb(0.1,0.4,0.5,0.7)
+             edgecolor='blue')
+ax2.set_title('Diagrama de barras')
+ax2.grid(False)
+
+plt.tight_layout()
+plt.show()
+     
+
+
+```
+
+
+
+
+
+## Cualitativas
+
+### Diagrama de pastel o sectores
+
+```{python pie-diagrama, fig.show="hold", out.width="50%",fig.align='center', fig.cap = "Diagrama de pastel o sectores"}
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Crear el DataFrame
+data = pd.DataFrame({
+    'group': ['A', 'B', 'C', 'D', 'E'],
+    'value': [13, 7, 9, 21, 2]
+})
+
+# Calcular proporciones y posiciones
+data = data.sort_values('group', ascending=False)
+data['prop'] = data['value'] / data['value'].sum() * 100
+data['ypos'] = data['prop'].cumsum() - 0.5 * data['prop']
+plt.figure(figsize=(8, 8))
+
+# Gráfico de pastel directo
+plt.pie(data['value'], labels=data['group'], 
+        colors=plt.cm.Set1.colors,
+        autopct='%1.1f%%', startangle=90,
+        textprops={'color': 'white', 'size': 12},
+        wedgeprops={'edgecolor': 'white', 'linewidth': 1})
+
+plt.title('Distribución por grupos')
+plt.show()
+```
+
+## Cualitativas
+
+### Gráfico o diagrama de barras
+
+
+
+```{python barplots, fig.show="hold", out.width="75%",fig.align='center',message=FALSE}
+import seaborn as sns
+import matplotlib.pyplot as plt
+from matplotlib.colors import to_rgba
+
+# Configurar estilo
+sns.set_theme(style="whitegrid")
+plt.figure(figsize=(12, 6))
+
+# Definir color (equivalente a rgb(0.1,0.4,0.5,0.7))
+bar_color = to_rgba((0.1, 0.4, 0.5), alpha=0.7)
+edge_color = "blue"
+
+# Gráfico 1: Barras horizontales (cylinders)
+plt.subplot(1, 2, 1)
+sns.countplot(data=mymtcars, y="cylinders", color=bar_color, edgecolor=edge_color)
+plt.title("Diagrama de barras horizontal")
+plt.xlabel("Count")
+plt.ylabel("Cylinders")
+
+# Gráfico 2: Barras verticales (origin)
+plt.subplot(1, 2, 2)
+sns.countplot(data=mymtcars, x="origin", color=bar_color, edgecolor=edge_color)
+plt.title("Diagrama de barras vertical")
+plt.xlabel("Origin")
+plt.ylabel("Count")
+
+# Ajustar layout
+plt.tight_layout()
+plt.show()
+```
+
+
+## Gráficos diferenciales para variables numéricas (Discretas vs Contínuas)
+
+- Son diferentes en función de que las variables sean *discretas* o *continuas.* Valen con frec. absolutas o relativas.
+  - **Diagramas barras para variables discretas**
+    - Se deja un hueco entre barras para indicar los valores que no son posibles
+
+  - **Histogramas para variables continuas**
+    - El área que hay bajo el histograma entre dos puntos cualesquiera indica la cantidad (porcentaje o frecuencia) de individuos en el intervalo.
+
+
+```{python barplot-histograma, fig.show="hold", out.height="45%", out.width="100%",fig.align='center'}
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Configurar estilo
+sns.set_style("whitegrid")
+plt.figure(figsize=(12, 6))
+
+## Gráfico 1: Diagrama de puntos con segmentos (cylinders)
+plt.subplot(1, 2, 1)
+
+# Calcular conteos de cilindros
+cyl_counts = mymtcars['cylinders'].value_counts().sort_index()
+
+# Crear gráfico de puntos
+plt.scatter(cyl_counts.index, cyl_counts.values, color='#69b3a2')
+
+# Añadir segmentos verticales
+for cyl, count in cyl_counts.items():
+    plt.plot([cyl, cyl], [0, count], color='#69b3a2', linewidth=2)
+
+plt.title('Conteo de cilindros')
+plt.xlabel('Número de cilindros')
+plt.ylabel('Frecuencia')
+plt.ylim(0, max(cyl_counts.values) * 1.1)  # Asegura que Y empiece en 0 con un 10% de margen
+
+## Gráfico 2: Histograma (weight)
+plt.subplot(1, 2, 2)
+sns.histplot(data=mymtcars, x='weight', bins=15, 
+             color='#69b3a2', edgecolor='#e9ecef', alpha=0.9)
+plt.title('Histograma de peso de auto')
+plt.xlabel('Peso')
+plt.ylabel('Frecuencia')
+
+# Ajustar layout
+plt.tight_layout()
+plt.show()
+
+```
+
+
+## Numérica Discreta
+
+### Diagrama de puntos
+
+
+```{python dotplot, fig.show="hold", out.width="80%",fig.align='center',message=FALSE}
+p1 <- mymtcars %>%  
+ggplot( aes(x=carb)) +
+  geom_dotplot() + 
+  ggtitle("Diagrama de puntos para valores discretos")+
+  theme_bw()
+
+p2 <- mymtcars %>%  
+ggplot( aes(x=wt)) +
+  geom_dotplot() + 
+  ggtitle("Diagrama de puntos para valores contínuos")+
+  theme_bw()
+p1+p2
+```
+
+## Numérica Discreta
+
+### Diagrama Lollipop y Diagrama de barras
+
+
+
+
+```{python lollipop, fig.show="hold", out.width="80%",fig.align='center'}
+p1 <- mymtcars %>%  count(carb)%>%
+ggplot( aes(x=carb, y=n)) +
+  geom_point() + 
+  geom_segment( aes(x=carb, xend=carb, y=0, yend=n))+
+  geom_point( size=5, color="red", fill=alpha("orange", 0.3), alpha=0.7, shape=21, stroke=2) +
+  ggtitle("Gráfico Lollipop")+
+  theme_bw()
+
+p2 <- mymtcars %>%  
+ggplot( aes(x=carb)) +
+  geom_bar(color="blue", fill=rgb(0.1,0.4,0.5,0.7) ) +
+  ggtitle("Gráfico barras")+
+  theme_bw()
+
+p1+p2
+```
+
+## Numérica Contínua
+
+### Histograma
+
+
+```{python  histograma-1, fig.show="hold", out.width="80%",fig.align='center'}
+p1 <- mymtcars %>%  
+ggplot(aes(x=wt)) +
+ geom_histogram( bins=15, fill="#69b3a2", color="#e9ecef", alpha=0.9) +
+  ggtitle("Histograma de peso de auto")+
+  theme_bw()
+
+set.seed(145621)
+p2<- data.frame(value=rchisq(500,10)) %>%
+  ggplot(aes(x=value)) + 
+  geom_histogram(bins = 30, fill="#69b3a2", color="#e9ecef", alpha=0.9)+
+  ggtitle("Datos con sesgo a la derecha")+
+  theme_bw()
+p1+p2
+```
+
+
+##
+
+###
+
+```{python  histograma-3, fig.show="hold", out.width="80%",fig.align='center'}
+set.seed(145627)
+p1 <- data.frame(value=(30-rchisq(500,10))) %>%
+  ggplot(aes(x=value)) + 
+  geom_histogram(bins = 30, fill="#69b3a2", color="#e9ecef", alpha=0.9) +
+  ggtitle("Datos con sesgo a la izquierda")+
+  theme_bw()
+
+set.seed(1271)
+edad <- round(rnorm(1000,70,7))
+ordenado1 <- edad[order(edad)]
+#ordenado2 <- edad[order(-edad)]
+edad <- ordenado1
+edad[501:1000]<-141-edad[1:500]
+p2<- data.frame(value=edad) %>%
+  ggplot(aes(x=value)) + 
+  geom_histogram(binwidth = 3, fill="#69b3a2", color="#e9ecef", alpha=0.9) +
+  ggtitle("Histograma de datos gaussianos o normales")+
+  theme_bw()
+  
+p1+p2
+```
+
+
+
+##
+
+###
+
+
+```{python  histograma-5, fig.show="hold", out.width="80%",fig.align='center'}
+set.seed(1456217)
+p1<- data.frame(value=c(rnorm(250,10,2),rnorm(250,18,2))) %>%
+  ggplot(aes(x=value)) + 
+  geom_histogram(bins = 30, fill="#69b3a2", color="#e9ecef", alpha=0.9) +
+  ggtitle("Datos Bimodales")+
+  theme_bw()
+
+
+set.seed(145621)
+p2<- data.frame(value=runif(500,10,20)+runif(500,10,20)) %>%
+  ggplot(aes(x=value)) + 
+  geom_histogram(bins = 16, fill="#69b3a2", color="#e9ecef", alpha=0.9) +
+  ggtitle("Datos simétricos")+
+  theme_bw()
+  
+  
+  p1+p2
+```
+
+
+## Numérica Contínua
+
+### Diagrama de Caja
+
+
+![Boxplot](figuras/boxplot1.png){width=60%}
+
+
+
+
+![Boxplots](figuras/boxplot2.png){width=75%}
+
+
+## 
+
+
+![Boxplot Ver. 2.0](figuras/boxplot1-b.png){width=60%}
+
+
+
+
+## 
+
+###
+
+```{python  histogramas-y-boxplots, fig.show="hold", out.width="80%",fig.align='center'}
+
+# Draw the boxplot and the histogram 
+
+plt1a <- mymtcars %>%  
+  ggplot(aes(x=wt)) +
+  geom_boxplot(fill="#69b3a2")+
+  theme_void()
+plt2a <- mymtcars %>%  
+ggplot(aes(x=wt)) +
+ geom_histogram( bins=15, fill="#69b3a2", color="#e9ecef", alpha=0.9)+
+  theme_bw() 
+# g1 <- plt2a + plt1a + plot_layout(nrow = 2, heights = c(5, 1))
+
+set.seed(145621)
+data <- data.frame(value=rchisq(500,10)) 
+plt1b <- data %>%
+  ggplot(aes(x=value)) +
+  geom_boxplot(fill="#69b3a2")+
+  theme_void()
+plt2b <- data %>%  
+ggplot(aes(x=value)) +
+ geom_histogram( bins=30, fill="#69b3a2", color="#e9ecef", alpha=0.9) +
+  theme_bw()
+# g2 <- plt2b + plt1b + plot_layout(nrow = 2, heights = c(5, 1))
+
+set.seed(145627)
+data <- data.frame(value=(30-rchisq(500,10))) 
+plt1c <- data %>%
+  ggplot(aes(x=value)) +
+  geom_boxplot(fill="#69b3a2")+
+  theme_void()
+plt2c <- data %>%  
+ggplot(aes(x=value)) +
+ geom_histogram( bins=30, fill="#69b3a2", color="#e9ecef", alpha=0.9) +
+  theme_bw()
+# g3 <- plt2c + plt1c + plot_layout(nrow = 2, heights = c(5, 1))
+
+data <- data.frame(value=edad)
+plt1d <- data %>%
+  ggplot(aes(x=edad)) +
+  geom_boxplot(fill="#69b3a2")+
+  theme_void()
+plt2d <- data %>%  
+ggplot(aes(x=edad)) +
+ geom_histogram( binwidth = 3, fill="#69b3a2", color="#e9ecef", alpha=0.9)+
+  theme_bw() 
+# g4 <- plt2d + plt1d + plot_layout(nrow = 2, heights = c(5, 1))
+
+set.seed(145627)
+
+data <- data.frame(value=c(rnorm(250,10,2),rnorm(250,18,2))) 
+plt1e <- data %>%
+  ggplot(aes(x=value)) +
+  geom_boxplot(fill="#69b3a2")+
+  theme_void()
+plt2e <- data %>%  
+ggplot(aes(x=value)) +
+ geom_histogram(bins = 30, fill="#69b3a2", color="#e9ecef", alpha=0.9) +
+  theme_bw()
+# g5 <- plt2e + plt1e + plot_layout(nrow = 2, heights = c(5, 1))
+
+
+
+set.seed(145621)
+data <- data.frame(value=runif(500,10,20)+runif(500,10,20)) 
+plt1f <- data %>%
+  ggplot(aes(x=value)) +
+  geom_boxplot(fill="#69b3a2")+
+  theme_void()
+plt2f <- data %>%  
+ggplot(aes(x=value)) +
+ geom_histogram(bins = 16, fill="#69b3a2", color="#e9ecef", alpha=0.9) +
+  theme_bw()
+
+# g6 <-plt2f + plt1f + plot_layout(nrow = 2, heights = c(5, 1))
+
+plt2a + plt2b + plt1a +plt1b +plt2c +plt2d+ plt1c  + plt1d +plt2e +plt2f+ plt1e  + plt1f +plot_layout(ncol = 2, heights = c(5, 1,5,1,5,1))
+
+#g1+g2+g3+g4+g5+g6+plot_layout(nrow = 2)
+```
+
+
+
+## Análisis Exploratorio de Datos (EDA)
+
+### Técnicas gráficas (visualización de datos)
+
+Gráficas conjuntas (Bivariadas)
+
+- Cualitativo vs Cualitativo 
+  - Barras 
+  - Mosaico
+- Numérico vs Numérico
+  - Dispersión
+- Cualitativo vs Numérico
+  - Cajas categorizadas
+  - Diagrama de puntos categorizado
+  - Diagrama de Violín
+  - Histograma por grupos
+  
+  
+
+## Cualitativo vs Cualitativo
+
+### Barras
+
+```{python barplot-apilados, message=FALSE, echo=FALSE, warning=FALSE, fig.show="hold", out.width="80%",fig.align='center'}
+p1 <- ggplot(data=mymtcars, aes(x=am,fill=vs)) +
+  geom_bar()+
+theme_bw()
+  
+p2 <- ggplot(data=mymtcars, aes(x=vs,fill=am)) +
+  geom_bar()+
+theme_bw()
+
+p3 <- ggplot(data=mymtcars, aes(x=am,fill=vs)) +
+  geom_bar(position=position_dodge())+
+theme_bw()
+
+p4 <- ggplot(data=mymtcars, aes(x=vs,fill=am)) +
+  geom_bar(position=position_dodge())+
+theme_bw()
+  
+p1+p2+p3+p4
+
+```
+
+##
+
+### Mosaico
+
+```{python mosaico, message=FALSE, echo=FALSE, warning=FALSE, fig.show="hold", out.width="80%",fig.align='center'}
+#> Loading required package: ggplot2
+ggplot(data=mymtcars) +
+  geom_mosaic(aes(x = product(am), fill=vs)) +
+  theme_mosaic()
+```
+
+## Numérico vs Numérico
+  
+### Diagrama de Dispersión
+
+```{python scatterplot1, fig.show="hold", out.width="80%",fig.align='center'}
+mymtcars %>%
+  ggplot(aes(x=wt, y=disp)) + 
+    geom_point(size=4)+
+  theme_bw()
+```
+
+
+##
+
+###
+
+```{python scatterplots, fig.show="hold", out.width="80%",fig.align='center'}
+
+  p <- ggplot(mymtcars, aes(x=wt, y=mpg)) +
+  geom_point() +
+  theme(legend.position="none")+
+  theme_bw()
+ 
+# with marginal histogram
+p1 <- ggplot(mymtcars, aes(x=wt, y=qsec)) +
+  geom_point() +
+  theme(legend.position="none")+
+  theme_bw()
+ 
+# marginal density
+p2 <- ggplot(mymtcars, aes(x=wt, y=disp)) +
+  geom_point() +
+  theme(legend.position="none")+
+  theme_bw()
+ 
+# marginal boxplot
+p3 <- ggplot(mymtcars, aes(x=drat, y=mpg)) +
+  geom_point() +
+  theme(legend.position="none")+
+  theme_bw()
+p + p1 + p2 + p3
+```
+
+## Cualitativo vs Numérico
+  
+### Cajas categorizadas
+  
+  
+```{python cajas-categorizadas1, fig.show="hold", out.width="80%",fig.align='center'}
+mymtcars %>%
+  ggplot(aes(x=am , y=wt)) + 
+    geom_boxplot(fill="#69b3a2")+
+  theme_bw()
+```
+
+##
+
+###
+
+```{python cajas-categorizadas2, fig.show="hold", out.width="80%",fig.align='center'}
+p1<- mymtcars %>%
+  ggplot(aes(x=as.factor(cyl) , y=wt)) + 
+    geom_boxplot(fill="#69b3a2")+ xlab("Cylinders")+
+  theme_bw()
+
+p2 <- mymtcars %>%
+  ggplot(aes(x=vs , y=wt)) + 
+    geom_boxplot(fill="#69b3a2")+
+  theme_bw()
+p1+p2
+```
+
+## Cualitativo vs Numérico
+
+### Diagrama de puntos categorizado
+
+
+```{python dotplot-categorizado, fig.show="hold", out.width="80%",fig.align='center', message=FALSE}
+p1<- mymtcars %>%
+  ggplot(aes(x=am , y=wt)) + 
+    geom_dotplot(binaxis='y', stackdir='center')+
+  theme_bw()
+
+p2<- mymtcars %>%
+  ggplot(aes(x=vs , y=wt)) + 
+    geom_dotplot(binaxis='y', stackdir='center')+
+  theme_bw()
+
+p1+p2
+```
+
+## Cualitativo vs Numérico
+
+### Diagrama de violín
+
+
+```{python violin-categorizado, fig.show="hold", out.width="80%",fig.align='center', message=FALSE}
+p1<- mymtcars %>%
+  ggplot(aes(x=am , y=wt)) + 
+  geom_violin(trim = FALSE)+
+    geom_dotplot(binaxis='y', stackdir='center')+
+  theme_bw()
+
+p2<- mymtcars %>%
+  ggplot(aes(x=vs , y=wt)) + 
+  geom_violin(trim = FALSE)+
+    geom_dotplot(binaxis='y', stackdir='center')+
+  theme_bw()
+
+p1+p2
+```
+
+
+## Cualitativo vs Numérico
+
+### Histograma por grupos
+
+
+```{python histogramas-categorizados, fig.show="hold", out.width="80%",fig.align='center', message=FALSE}
+p1 <- mymtcars %>%
+  ggplot(aes(x=wt , fill  = am)) + 
+geom_histogram( color="#e9ecef", alpha=0.6, position = 'identity',bins = 10) +
+    scale_fill_manual(values=c("#69b3a2", "#404080")) +
+    labs(fill="")+
+  theme_bw()
+
+p2 <- mymtcars %>%
+  ggplot(aes(x=wt , fill  = am,color=am)) + 
+geom_histogram( color="#e9ecef", alpha=0.6, position = 'identity',bins = 10) +
+    scale_fill_manual(values=c("#69b3a2", "#404080")) +
+    labs(fill="")+
+  facet_grid(rows = vars(am))+
+  theme_bw()
+
+p1+p2
+```
+
+
+
+## Análisis Exploratorio de Datos Multivariados
+
+
+### Técnicas gráficas (visualización de datos)
+
+
+
+Gráficos de dos dimensiones combinados.
+
+- Dispersión- histograma
+- Dispersión- densidad
+- Dispersión- cajas
+- Matriz de dispersiones
+
+Gráficos de tres o más dimensiones
+
+- Dispersión categorizado
+- Matriz de diagramas de dispersión
+- Matriz de diagramas de dispersión categorizados
+  
+  
+## Gráficos de dos dimensiones combinados.
+
+### Dispersión - histograma
+
+```{python scatterplot-his-marginal, fig.show="hold", out.width="80%",fig.align='center'}
+  p <- ggplot(mymtcars, aes(x=wt, y=mpg)) +
+      geom_point() +
+      theme(legend.position="none")+
+  theme_bw()
+ 
+# with marginal histogram
+p1 <- ggMarginal(p, type="histogram")
+ 
+# marginal density
+p2 <- ggMarginal(p, type="density")
+ 
+# marginal boxplot
+p3 <- ggMarginal(p, type="boxplot")
+p1
+```
+
+## Gráficos de dos dimensiones combinados.
+ 
+### Dispersión- Densidad
+
+
+
+```{python scatterplot-densidad-marginal, fig.show="hold", out.width="80%",fig.align='center'}
+
+  p <- ggplot(mymtcars, aes(x=wt, y=mpg)) +
+      geom_point() +
+      theme(legend.position="none")+
+  theme_bw()
+ 
+# with marginal histogram
+p1 <- ggMarginal(p, type="histogram")
+ 
+# marginal density
+p2 <- ggMarginal(p, type="density")
+ 
+# marginal boxplot
+p3 <- ggMarginal(p, type="boxplot")
+p2
+```
+
+## Gráficos de dos dimensiones combinados.
+ 
+### Dispersión - Cajas
+
+```{python scatterplot-boxplot-marginal, fig.show="hold", out.width="80%",fig.align='center'}
+
+  p <- ggplot(mymtcars, aes(x=wt, y=mpg)) +
+      geom_point() +
+      theme(legend.position="none")+
+  theme_bw()
+ 
+# with marginal histogram
+p1 <- ggMarginal(p, type="histogram")
+ 
+# marginal density
+p2 <- ggMarginal(p, type="density")
+ 
+# marginal boxplot
+p3 <- ggMarginal(p, type="boxplot")
+p3
+```
+
+
+
+## Gráficos de tres o más dimensiones
+
+### Diagrama de dispersión categorizado
+
+```{python scatterplot-categorizado, fig.show="hold", out.width="80%",fig.align='center'}
+mymtcars %>%
+  ggplot(aes(x=wt, y=disp, color=as.factor(cyl))) + 
+    geom_point(size=4)+labs(color="Cylinders")+
+  theme_bw()
+```
+
+## Gráficos de tres o más dimensiones
+
+### Matriz de Diagramas de Dispersión
+
+```{python matriz-scatterplots, fig.show="hold", out.width="80%",fig.align='center',message=FALSE}
+
+  ggpairs(mymtcars)+
+  theme_bw()
+```
+
+## Gráficos de tres o más dimensiones
+
+
+
+### Matriz de Diagramas de Dispersión categorizado
+
+```{python matriz-scatterpltos-categorizados, fig.show="hold", out.width="80%",fig.align='center',message=FALSE}
+ggpairs(mymtcars,columns = c(1,3:7),ggplot2::aes(colour=am))+
+  theme_bw()
+
+```
+
+
+
+## Resúmen
+
+
+
+              
+\scalebox{0.65}{
+\begin{tabular}{|l|p{.4\textwidth}|p{.4\textwidth}|p{.4\textwidth}|}
+\hline
+\textbf{Tipo} & \textbf{Características básicas} & \textbf{Relaciones válidas} & \textbf{Ejemplos} \\
+\hline
+Nominal & Los números identifican y clasifican objetos & Relaciones del tipo "igual que" o "distinto que" & Sexo, estado civil, raza, diagnóstico clínico \par \\
+\hline
+Ordinal & Además, los números indican las posiciones relativas de los objetos & Además relaciones del tipo "mayor que" o "menor que" & Dureza, nivel socio económico, posición en el ranking ATP, grado de satisfacción \\
+\hline
+Intervalo & Además, hay una unidad de medición común & Además, igualdad o desigualdad de diferencias & Temperatura, fecha de calendario, inteligencia \par \\
+\hline
+Razón & Además, el punto cero es absoluto &  Además, igualdad o desigualdad de razones & Longitud, peso, altura, tiempo de reacción, costo económico \par \\
+\hline
+\end{tabular}
+}
+
+\scalebox{0.65}{
+
+\begin{tabular}{|l|p{.4\textwidth}|p{.4\textwidth}|}
+\hline
+\textbf{Tipo} & \textbf{Estadísticas descriptivas} & \textbf{Gráficos}  \\
+\hline
+Nominal & Frecuencia,  Moda & Gráfico de Barras, \par Diagrama de Sectores o Pie \par \\
+\hline
+Ordinal & Percentiles, Mediana, \par Moda, Frecuencia & Gráfico de Barras, \par Diagrama de Sectores o Pie \par \\
+\hline
+Intervalo & Frecuencia, Moda, Mediana,  Media, Desviación estándar, Varianza, rango, rango intercuartil & Histograma, Diagrama de Caja, Densidad \\
+\hline
+Razón & Media, Mediana, Varianza, Desviación estándar, Coeficiente de variación, media geométrica, media armónica &  Histograma, Diagrama de Caja, Densidad  \\
+\hline
+\end{tabular}
+}
+
+## Sitios de interés
+
+Existe una gran cantidad de libros, sitios web y recursos para aprender R, aquí se presenta una selección
+
+- [R Cookbook, 2nd Edition](https://rc2e.com/)
+- [Applied Statistics with R](https://book.stat420.org/)
+- [Modern Statistics with R](https://modernstatisticswithr.com/)
+- [The R Graph Gallery – Help and inspiration for R charts ](http://r-graph-gallery.com/)
