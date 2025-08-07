@@ -1,0 +1,129 @@
+---
+title: "Presentación del curso: Seminario de Proyecto I"
+author: 
+  - name: Sergio M. Nava Muñoz
+    id: sn
+    email: s3rgio.nava@gmail.com
+    affiliation: 
+        - id: cimat
+          name: CIMAT/INFOTEC
+          city: Aguascalientes
+          state: Ags
+format: 
+  revealjs:
+    slide-number: true
+    theme: simple
+    fontsize: 2.1em
+    logo: figs/logo-infotec.jpeg
+    css: style.css
+    chalkboard: true
+    menu: TRUE
+    transition: slide
+    background-transition: fade
+    title-slide-attributes:
+      data-background-image: /figs/DCCD.png
+      data-background-size: 100% 100%;     
+date: 2025-08-06
+---
+
+# Bienvenida
+
+
+# Propósito del curso
+
+- Esta asignatura tiene como finalidad proporcionar las herramientas metodológicas necesarias para la elaboración de un protocolo de investigación.
+- Entre los componentes que se desarrollarán se encuentran:
+  - Elección y delimitación del tema
+  - Planteamiento del problema
+  - Revisión de literatura especializada
+  - Construcción del marco metodológico
+  - Diseño y documentación de una base de datos
+- Todo ello desde una perspectiva aplicada a la Ciencia de Datos
+
+
+
+# Relevancia para la formación profesional
+
+- Permite identificar, analizar y formalizar problemas reales relacionados con el manejo de información en distintos sectores.
+- Desarrolla habilidades para estructurar proyectos sólidos y viables en contextos organizacionales donde los datos son un recurso estratégico.
+- Constituye un eje fundamental en la construcción del proyecto de tesis y en la consolidación del perfil como científico o científica de datos.
+
+
+
+# Aplicación en el ámbito laboral
+
+- Facilita la participación en proyectos que requieren justificación y documentación rigurosa basada en evidencia empírica.
+- Permite diseñar soluciones estructuradas a partir de hipótesis comprobables y bases de datos analíticamente robustas.
+- Prepara para intervenir técnica y estratégicamente en organizaciones orientadas por datos.
+
+
+
+# Fin de aprendizaje general
+
+**Elaborar un protocolo de investigación**, así como una base de datos estructurada, aplicando el método científico y los principios de la Ciencia de Datos, con el objetivo de generar insumos para el diseño e implementación de algoritmos analíticos.
+
+
+
+# Ruta formativa
+
+1. Selección del tema y problemática de investigación  
+2. Planteamiento del problema  
+3. Definición del constructo de investigación  
+4. Creación de la base de datos
+
+
+
+# Agenda y actividades académicas
+
+## Sesiones sincrónicas (videoconferencias)
+
+Miércoles, de 10:00 a 11:00 hrs (hora CDMX)
+
+- 6 y 20 de agosto  
+- 3 y 17 de septiembre  
+- 1, 15 y 29 de octubre  
+- 12 y 26 de noviembre
+
+---
+
+## Actividades evaluadas
+
+| Unidad | Actividad | Fecha límite | Valor |
+|--------|-----------|--------------|--------|
+| U1-2   | 1A. Tema, problema y planteamiento | 30 ago | 20 pts |
+| U2     | 2A. Fuentes y formato APA          | 13 sep | 10 pts |
+| U3     | 3A. Constructo de investigación     | 11 oct | 20 pts |
+| U4     | 4A. Diseño de base de datos         | 8 nov  | 20 pts |
+| U4     | 4B. Presentación final del protocolo | 22 nov | 30 pts |
+|        | **Total**                           |         | **100 pts** |
+
+
+
+# Recomendaciones generales
+
+
+- Leer detenidamente el documento de presentación del curso.
+- Verificar los requerimientos técnicos para el trabajo en línea.
+- Organizar el tiempo de forma anticipada para cumplir con las entregas.
+- Asistir puntualmente a las videoconferencias o revisar las grabaciones disponibles.
+- Aplicar correctamente el formato APA (7ª edición) en todas las referencias.
+- **Asegurarse de que los archivos se suban correctamente a la plataforma**, sin errores ni formatos incompatibles.
+
+
+
+
+# Comunicación e interacción
+
+- El espacio de comunicación en la plataforma se utilizará para difundir información relevante del curso.
+- Las grabaciones de las sesiones estarán disponibles para consulta posterior.
+- Se recomienda revisar la plataforma periódicamente para estar al tanto de avisos y fechas clave.
+
+
+# Mensaje final
+
+> Te damos la más cordial bienvenida al curso.  
+>  
+> Este espacio marcará el inicio formal de tu proyecto de investigación de tesis.  
+>  
+> Deseamos que este proceso contribuya significativamente a tu formación académica y profesional.
+
