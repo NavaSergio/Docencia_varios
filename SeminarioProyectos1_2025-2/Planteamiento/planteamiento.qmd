@@ -23,7 +23,8 @@ format:
     title-slide-attributes:
       data-background-image: /figs/DCCD.png
       data-background-size: 100% 100%;     
-date: 2025-03-04
+
+date: 2025-08-20
 ---
 
 
@@ -46,9 +47,9 @@ date: 2025-03-04
 
 ---
 
-## **📌 ¿Dónde se ubican dentro de un trabajo de investigación?**  {.smaller .scrollable}
+## **¿Dónde se ubican dentro de un trabajo de investigación?**  {.smaller .scrollable}
 
-💡 **Ejemplo de orden correcto en un proyecto de investigación:**  
+**Ejemplo de orden correcto en un proyecto de investigación:**  
 
 
 1. Introducción
@@ -235,79 +236,79 @@ La **justificación de una investigación** es un elemento fundamental en la ela
 ---
 
 ## **1. Justificación por Falta de Conocimiento**  
-📌 Se fundamenta en la ausencia de estudios previos o en el conocimiento limitado sobre un tema.  
+Se fundamenta en la ausencia de estudios previos o en el conocimiento limitado sobre un tema.  
 
 **Ejemplo:**  
 *"No existen estudios detallados sobre el impacto del teletrabajo en la salud mental en Latinoamérica, por lo que esta investigación llenará ese vacío."*  
 
-✅ **Importancia:**  
+**Importancia:**  
 - Contribuye a generar **nuevo conocimiento**.  
 - Identifica **vacíos teóricos** en la literatura académica.  
 
 ---
 
 ## **2. Justificación por Importancia del Tema**  
-📌 Argumenta que el estudio es relevante por su impacto en la sociedad, el medio ambiente o la economía.  
+Argumenta que el estudio es relevante por su impacto en la sociedad, el medio ambiente o la economía.  
 
 **Ejemplo:**  
 *"El cambio climático es una de las principales amenazas para la biodiversidad, por lo que este estudio analizará cómo afecta la migración de especies marinas."*  
 
-✅ **Importancia:**  
+**Importancia:**  
 - Relacionado con **problemas actuales** de gran impacto.  
 - Puede influir en **decisiones políticas y sociales**.  
 
 ---
 
 ## **3. Justificación por Aportes de los Hallazgos**  
-📌 Explica cómo los resultados pueden **aplicarse** en el mundo real.  
+Explica cómo los resultados pueden **aplicarse** en el mundo real.  
 
 **Ejemplo:**  
 *"El desarrollo de materiales biodegradables podría reducir la contaminación plástica en un 60%."*  
 
-✅ **Importancia:**  
+**Importancia:**  
 - Favorece la **innovación y el desarrollo tecnológico**.  
 - Impacta sectores como la **salud, la educación y la tecnología**.  
 
 ---
 
 ## **4. Justificación por Vacío Metodológico**  
-📌 Se basa en la necesidad de desarrollar o mejorar métodos de investigación.  
+Se basa en la necesidad de desarrollar o mejorar métodos de investigación.  
 
 **Ejemplo:**  
 *"Los modelos actuales de predicción de terremotos no consideran la actividad volcánica. Este estudio propondrá un nuevo enfoque combinado."*  
 
-✅ **Importancia:**  
+**Importancia:**  
 - Introduce **nuevas técnicas y enfoques** en la investigación.  
 - Mejora la **precisión y fiabilidad** de estudios previos.  
 
 ---
 
 ## **5. Justificación por Solución de un Problema**  
-📌 Se enfoca en la resolución de una **problemática concreta** en la sociedad o en la ciencia.  
+Se enfoca en la resolución de una **problemática concreta** en la sociedad o en la ciencia.  
 
 **Ejemplo:**  
 *"La escasez de agua en zonas áridas es un problema crítico. Este estudio evaluará tecnologías de recolección de agua de lluvia para comunidades vulnerables."*  
 
-✅ **Importancia:**  
+**Importancia:**  
 - Contribuye a resolver **problemas urgentes**.  
 - Mejora la **calidad de vida** de poblaciones afectadas.  
 
 ---
 
 ## **6. Justificación por Corroboración de una Teoría**  
-📌 Se basa en la necesidad de validar o refutar una teoría existente.  
+Se basa en la necesidad de validar o refutar una teoría existente.  
 
 **Ejemplo:**  
 *"Se analizará si los principios de la teoría de redes sociales pueden aplicarse a la difusión de noticias falsas en plataformas digitales."*  
 
-✅ **Importancia:**  
+**Importancia:**  
 - Aporta **evidencia empírica** para teorías existentes.  
 - Puede fortalecer o refutar **modelos científicos** previos.  
 
 ---
 
 ## **7. Justificación por Criterios Científicos**   {.scrollable transition="slide"  }
-📌 Combina diferentes aspectos de la justificación en un marco estructurado:
+Combina diferentes aspectos de la justificación en un marco estructurado:
 
 | **Criterio**       | **Pregunta clave**                                      |
 |--------------------|-------------------------------------------------------|
@@ -316,32 +317,31 @@ La **justificación de una investigación** es un elemento fundamental en la ela
 | **Aplicabilidad** | ¿Resuelve un problema real?                            |
 | **Valor teórico** | ¿Contribuye a la generación de conocimiento?           |
 
-📌 **Ejemplo:**  
+**Ejemplo:**  
 *"El uso de modelos de inteligencia artificial para predecir la contaminación del aire en la CDMX ayudará a implementar alertas tempranas y mejorar políticas ambientales."*  
 
-✅ **Importancia:**  
+**Importancia:**  
 - Evalúa la investigación desde **múltiples dimensiones**.  
 - Justifica tanto **aplicaciones prácticas** como **contribuciones teóricas**.  
 
----
 
 # **Conclusión**  
 
-## **📌 Importancia de una buena Justificación**  
+## **Importancia de una buena Justificación**  
 - Un proyecto sin una **justificación clara** difícilmente obtendrá apoyo académico o financiamiento.  
 - La justificación debe **estar basada en evidencia y conectar con problemas reales**.  
 
-## **📌 Preguntas para validar la justificación**  
+## **Preguntas para validar la justificación**  
 Antes de finalizar, asegúrate de responder estas preguntas:  
-✔️ ¿Este estudio es necesario?  
-✔️ ¿Aporta algo nuevo?  
-✔️ ¿Cómo se beneficiarán las personas o instituciones con los resultados?  
-✔️ ¿Qué impacto tendrá en la disciplina o en la sociedad?  
 
-💡 **Una investigación bien justificada tiene mayores probabilidades de éxito y relevancia.** 🚀  
+- ¿Este estudio es necesario?  
+- ¿Aporta algo nuevo?  
+- ¿Cómo se beneficiarán las personas o instituciones con los resultados?  
+- ¿Qué impacto tendrá en la disciplina o en la sociedad?  
+
+**Una investigación bien justificada tiene mayores probabilidades de éxito y relevancia.**   
 
 
----
 
 # Ejemplo de Justificación  por Criterios Científicos
 
@@ -371,7 +371,7 @@ Actualmente, la **CDMX enfrenta frecuentes contingencias ambientales**, afectand
 - Se compararán modelos como **Redes Neuronales, XGBoost y LSTM** para identificar el más efectivo en la predicción de la contaminación.  
 - Se contribuirá al **desarrollo de modelos predictivos urbanos** que puedan aplicarse a otras ciudades con problemas similares.  
 
----
+
 
 # Más Ejemplos por Categoría
 
