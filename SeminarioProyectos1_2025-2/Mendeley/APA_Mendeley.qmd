@@ -28,7 +28,6 @@ date: 2025-09-03
 ---
 
 
-
 ## Objetivo de la clase
 - Conocer las reglas básicas de citación y referencias según APA 7ª edición.  
 - Diferenciar entre los distintos tipos de citas (narrativas, parentéticas, cortas y en bloque).  
@@ -256,3 +255,68 @@ Con cada fuente realiza los siguientes ejercicios en formato APA 7ª edición:
 - APA 7 simplifica el manejo de fuentes digitales y múltiples autores.  
 - El uso adecuado de citas es parte fundamental del protocolo de investigación.  
 
+
+
+
+---
+## Uso de Mendeley en Overleaf y Quarto
+
+- **Mendeley** permite gestionar tus referencias y exportarlas en formato `.bib` (BibTeX).
+- En **Overleaf** basta con subir `mendeley.bib` a tu proyecto.
+- En **Quarto** puedes citar con `@id` y generar la bibliografía automáticamente.
+
+---
+
+## Paquetes para LaTeX (APA 7ª edición)
+
+```latex
+\usepackage{csquotes}
+\usepackage[style=apa,backend=biber]{biblatex}
+\DeclareLanguageMapping{spanish}{spanish-apa}
+\addbibresource{mendeley.bib}
+```
+
+---
+
+## Ejemplos de citas en LaTeX
+
+- Narrativa:  
+```latex
+\textcite{Batista2003AnLearning}
+```
+👉 *Baesens (2014)*
+
+- Parentética:  
+```latex
+\parencite{Madley-Dowd2019TheImputation}
+```
+👉 *(Maté, 2014)*
+
+---
+
+## Ejemplo de cita textual en bloque
+
+```latex
+\begin{quote}
+“El fenómeno del Big Data no solo es una cuestión técnica...” 
+\parencite[p.~5]{Batista2003AnLearning}.
+\end{quote}
+```
+
+---
+
+## Ejemplo en Quarto
+
+- Narrativa:  
+```markdown
+@Batista2003AnLearning muestra que la analítica es esencial.
+```
+
+- Parentética:  
+```markdown
+El análisis de datos es un nuevo paradigma [@Madley-Dowd2019TheImputation].
+```
+
+---
+
+# Referencias
