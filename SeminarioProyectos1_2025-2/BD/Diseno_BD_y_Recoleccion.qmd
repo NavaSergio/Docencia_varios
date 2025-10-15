@@ -2,16 +2,16 @@
 title: "Diseño de bases de datos y recolección de información"
 subtitle: "Seminario de Proyecto I (MCDI) — Unidad 4"
 author: "Sergio Martín Nava Muñoz"
-date: "`r format(Sys.Date(), '%d de %B de %Y')`"
+date: 2025/10/15
 format:
   revealjs:
     theme: [default]
     slide-number: true
     toc: true
-    toc-depth: 2
+    toc-depth: 1
     code-overflow: wrap
     css: style.css
-    incremental: true
+    incremental: false
     footer: "MCDI | Seminario de Proyecto I | Unidad 4"
 execute:
   echo: false
@@ -133,6 +133,13 @@ erDiagram
 
 ## ¿De dónde obtengo mis datos? {.smaller}
 
+**¿Qué datos necesito?**  
+- Identifica todas las variables en tu diccionario.  
+- Asegúrate que cada variable tenga una fuente definida.  
+- Determina la frecuencia de recolección necesaria.
+
+**Métodos de recolección**  
+
 - **Fuentes directas**: encuestas que yo diseño, experimentos, observaciones.  
 - **Fuentes existentes**: bases de datos públicas, APIs, archivos institucionales.  
 - **Herramientas de captura**: formularios digitales, sensores, programas de descarga automática.
@@ -168,7 +175,58 @@ erDiagram
 - **Controla el acceso**: define quién puede ver qué información.  
 - **Datos sintéticos**: si necesitas compartir datos, considera generar versiones artificiales que mantengan las características importantes pero no revelen información personal.
 
-> Los datos sintéticos pueden ser útiles para proteger la privacidad manteniendo la utilidad para el análisis. Hay herramientas que pueden ayudarte a crearlos.
+---
+
+## ¿Qué son los datos sintéticos? {.smaller}
+
+Los **datos sintéticos** son conjuntos de datos artificiales que imitan las características estadísticas de datos reales sin contener información real de personas específicas.
+
+::: columns
+::: column
+**¿Cuándo usarlos?**
+
+- Para compartir datos con colaboradores
+- Para publicar datasets de investigación
+- Para entrenar modelos sin exponer datos sensibles
+- Para crear ejemplos educativos
+:::
+::: column
+**Ventajas**
+
+- Protegen la privacidad individual
+- Mantienen patrones estadísticos útiles
+- Permiten reproducibilidad
+- Eliminan restricciones legales de uso
+:::
+:::
+
+## Ejemplo práctico: Dataset de estudiantes {.smaller .scrollable}
+
+**Datos originales** (sensibles):
+
+
+| ID | Nombre | Edad | Promedio | Ciudad |
+|----|--------|------|----------|--------|
+| 1  | María García | 22 | 8.5 | Guadalajara |
+| 2  | Juan López | 24 | 7.2 | Monterrey |
+
+
+**Datos sintéticos** (seguros para compartir):
+
+
+| ID | Edad | Promedio | Ciudad |
+|----|------|----------|--------|
+| 1  | 23 | 8.3 | Ciudad_A |
+| 2  | 25 | 7.0 | Ciudad_B |
+
+
+> Los datos sintéticos mantienen las relaciones entre edad y promedio, pero eliminan nombres reales y codifican ubicaciones.
+
+**Herramientas básicas**:
+
+- **Python**: librerías como `faker` o `synthpop`
+- **R**: paquetes como `synthpop` o `simPop`  
+- **Excel**: funciones aleatorias con distribuciones controladas
 
 ---
 
@@ -197,13 +255,13 @@ README.md          # explicación del proyecto
 
 ---
 
-## Lista de verificación para la Evidencia 4A
+## Lista de verificación para la Evidencia 4A {.smaller}
 
 - [ ] **Archivo de base de datos** creado (.xlsx, .csv o base de datos simple).  
 - [ ] **Herramienta utilizada** especificada (Excel, SQLite, etc.).  
-- [ ] **Variables incluidas** listadas con número de observaciones.  
+- [ ] **Variables incluidas** listadas (ejemplo: "20 variables, incluyendo 5 numéricas y 15 categóricas, con N=100 observaciones").
 - [ ] **Diccionario de datos** completo y actualizado.  
-- [ ] **Video corto** (máximo 3 minutos) mostrando tu base de datos.  
+- [ ] **Video corto** (máximo 3 minutos) mostrando tu base de datos.
 - [ ] **Documento PDF** con enlace al video y capturas de pantalla.
 
 ---
@@ -251,7 +309,7 @@ CREATE TABLE tiendas (
 
 ---
 
-## Puntos clave para recordar
+## Puntos clave para recordar 
 
 - **Planifica antes de recolectar**: diseña tu estructura de datos antes de empezar a capturar información.  
 - **Documenta todo**: mantén un diccionario actualizado de qué significa cada variable.  
@@ -259,3 +317,42 @@ CREATE TABLE tiendas (
 - **Considera la ética**: protege la privacidad y recolecta solo lo necesario.
 
 > La calidad de tu análisis depende directamente de la calidad de tus datos.
+
+---
+
+## Recursos adicionales (1/2) {.smaller .scrollable}
+
+### **Aprendizaje de SQL y bases de datos**
+
+- **SQL Bolt** - Tutorial interactivo de SQL: <https://sqlbolt.com/>
+- **W3Schools SQL** - Tutorial básico de SQL: <https://www.w3schools.com/sql/>
+- **DB Browser for SQLite** - Herramienta visual para SQLite: <https://sqlitebrowser.org/>
+- **Kaggle Learn** - Cursos gratuitos de bases de datos: <https://www.kaggle.com/learn>
+
+### **Herramientas para recolección de datos**
+
+- **Google Forms** - Para crear formularios de captura: <https://forms.google.com/>
+- **Microsoft Forms** - Alternativa a Google Forms: <https://forms.microsoft.com/>
+- **SurveyMonkey** - Para encuestas más complejas: <https://www.surveymonkey.com/>
+
+::: callout-tip
+**Para empezar**: Comienza con SQL Bolt para aprender consultas básicas y usa Google Forms para crear tus primeros formularios de recolección.
+:::
+
+---
+
+## Recursos adicionales (2/2) {.smaller .scrollable}
+
+### **Datos sintéticos y privacidad**
+- **Faker (Python)** - Librería para generar datos sintéticos: <https://faker.readthedocs.io/>
+- **Synthpop (R)** - Paquete para datos sintéticos: <https://cran.r-project.org/package=synthpop>
+- **SDV** - Synthetic Data Vault: <https://sdv.dev/>
+- **Mostly AI** - Plataforma de datos sintéticos: <https://mostly.ai/>
+
+### **Ética y buenas prácticas**
+- **FAIR Data Principles** - Principios para datos FAIR: <https://www.go-fair.org/fair-principles/>
+- **Guía de ética en datos del MIT**: <https://ethics.fast.ai/>
+
+::: callout-note
+**Recursos avanzados**: Estos recursos son útiles cuando ya tengas experiencia básica y necesites proteger datos sensibles o seguir estándares internacionales.
+:::
