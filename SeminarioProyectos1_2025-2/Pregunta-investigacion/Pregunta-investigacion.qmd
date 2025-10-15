@@ -321,7 +321,7 @@ Ejemplo:
 
 ---
 
-## Niveles Cognitivos según Bloom
+## Niveles Cognitivos según Bloom {.smaller .scrollable}
 
 | Nivel        | Descripción | Verbos clave |
 |--------------|-------------|--------------|
@@ -334,7 +334,7 @@ Ejemplo:
 
 ---
 
-## Ejemplos de preguntas de investigación según Bloom
+## Ejemplos de preguntas de investigación según Bloom {.smaller .scrollable}
 
 - **Recordar**: ¿Cuáles son los antecedentes históricos del fenómeno que investigas?
 - **Comprender**: ¿Cómo se ha definido y comprendido el concepto principal en la literatura previa?
@@ -386,7 +386,7 @@ Ejemplo:
 > ¿Cómo afecta la contaminación del aire a la salud de los habitantes de zonas urbanas?
 
 
-### Niveles de la Taxonomía de Bloom aplicados
+### Niveles de la Taxonomía de Bloom aplicados {.smaller .scrollable}
 
 - **Recordar**  
 
