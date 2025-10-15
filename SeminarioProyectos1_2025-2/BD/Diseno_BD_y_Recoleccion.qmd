@@ -266,14 +266,13 @@ README.md          # explicación del proyecto
 
 ---
 
-## Actividad en clase (20 minutos)
+## Actividad 
 
 1) **Dibuja** la organización de tus datos (2-3 grupos principales).  
 2) **Define** los campos principales de cada grupo (8-10 variables clave).  
 3) **Escribe** 5 reglas de calidad para tus datos.  
 4) **Describe** tu plan de recolección (de dónde obtendrás los datos).
 
-> **Entregable**: sube a la plataforma tu diagrama, descripción de variables y plan de recolección.
 
 ---
 
