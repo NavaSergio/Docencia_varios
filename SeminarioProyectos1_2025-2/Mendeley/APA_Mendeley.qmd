@@ -1,0 +1,322 @@
+---
+title: "Norma APA 7ª edición"
+subtitle: "Citas y Referencias en Investigación"
+author: 
+  - name: Sergio M. Nava Muñoz
+    id: sn
+    email: s3rgio.nava@gmail.com
+    affiliation: 
+        - id: cimat
+          name: CIMAT/INFOTEC
+          city: Aguascalientes
+          state: Ags
+format: 
+  revealjs:
+    slide-number: true
+    theme: simple
+    fontsize: 2.1em
+    logo: figs/logo-infotec.jpeg
+    css: style.css
+    chalkboard: true
+    menu: TRUE
+    transition: slide
+    background-transition: fade
+    title-slide-attributes:
+      data-background-image: figs/DCCD.png
+      data-background-size: 50% 50%;     
+date: 2025-09-03
+---
+
+
+## Objetivo de la clase
+- Conocer las reglas básicas de citación y referencias según APA 7ª edición.  
+- Diferenciar entre los distintos tipos de citas (narrativas, parentéticas, cortas y en bloque).  
+- Identificar cuándo y cómo usar cada tipo de cita.  
+- Elaborar referencias completas en formato APA 7ª edición.  
+
+---
+
+## Importancia de APA
+- Estándar internacional para la comunicación científica.  
+- Promueve la uniformidad, claridad y ética en la investigación.  
+- Reconoce las aportaciones de otros autores.  
+- Requisito en la elaboración de protocolos y tesis.  
+
+---
+
+## Cita parafraseada narrativa {.smaller}
+**¿En qué consiste?**  
+Se usa cuando quieres destacar al **autor** como parte de la redacción.  
+
+- El apellido aparece dentro del texto, seguido del año entre paréntesis.  
+- Da visibilidad al autor como sujeto activo de la idea.  
+
+::: {.smaller}
+**Ejemplo 1** Gómez Bastar (2012) explica que la investigación inicia con la delimitación clara del problema y la revisión de información previa.  
+
+**Ejemplo 2** Lerma González (2009) señala que el planteamiento del problema constituye la base para formular hipótesis viables.  
+
+**Ejemplo 3** Nava-Muñoz et al. (2023) destacan que las competencias en procesamiento de lenguaje natural requieren herramientas estadísticas para diferenciar con claridad el desempeño de los sistemas.  
+:::
+
+
+---
+
+## Cita parafraseada parentética {.smaller}
+**¿En qué consiste?**  
+Se emplea cuando lo importante es la **idea**, no el autor.  
+
+- Autor y año aparecen entre paréntesis al final de la frase.  
+- Mantiene el foco en el contenido, minimizando la presencia del autor.  
+
+::: {.smaller}
+**Ejemplo 1** La investigación científica es un proceso sistemático que busca generar nuevo conocimiento (Gómez Bastar, 2012).  
+
+**Ejemplo 2** El planteamiento del problema representa el punto de partida metodológico en todo estudio (Lerma González, 2009).  
+
+**Ejemplo 3** Las competencias colaborativas en NLP se han convertido en un referente para establecer nuevos benchmarks (Nava-Muñoz, Graff, & Escalante, 2023).  
+:::
+
+---
+
+## Cita textual corta narrativa {.smaller}
+**¿En qué consiste?**  
+Se utiliza para reproducir textualmente **menos de 40 palabras**, dando protagonismo al autor.  
+
+- Se integran entre comillas dentro del texto.  
+- El autor aparece en la narrativa, seguido del año.  
+- Resalta una frase exacta manteniendo continuidad en tu redacción.  
+
+::: {.smaller}
+**Ejemplo 1** Gómez Bastar (2012) afirma que “la investigación es un proceso sustentado en el método científico” (p. 8).  
+
+**Ejemplo 2** Según Lerma González (2009), “el planteamiento inicial orienta todo el desarrollo posterior del proyecto” (p. 30).  
+
+**Ejemplo 3** Nava-Muñoz et al. (2023) mencionan que “collaborative competitions have gained popularity in the scientific and technological fields” (p. 1).  
+:::
+
+---
+
+## Cita textual corta entre paréntesis {.smaller}
+**¿En qué consiste?**  
+Es similar a la anterior, pero se coloca todo (autor, año y página) entre paréntesis al final.  
+
+- Menos de 40 palabras, entre comillas.  
+- Datos de la fuente dentro del paréntesis.  
+- Se usa como apoyo, sin resaltar directamente al autor.  
+
+::: {.smaller}
+**Ejemplo 1** Se reconoce que la investigación es “un proceso racional y sistemático para alcanzar conocimiento” (Gómez Bastar, 2012, p. 9).  
+
+**Ejemplo 2** El planteamiento es “la etapa inicial de la investigación, donde se precisa el objeto de estudio” (Lerma González, 2009, p. 31).  
+
+**Ejemplo 3** En las competencias, “statistical tools are often used for this purpose” (Nava-Muñoz et al., 2023, p. 1).  
+:::
+
+---
+
+## Cita textual en bloque narrativa {.smaller}
+**¿En qué consiste?**  
+Se usa cuando la cita tiene **40 palabras o más** y quieres presentar al autor al inicio.  
+
+- Texto citado en un párrafo independiente, con sangría y sin comillas.  
+- Autor y año en la narrativa; página al final.  
+- Da protagonismo al autor, presentando fielmente un fragmento largo.  
+
+::: {.smaller}
+**Ejemplo 1** Gómez Bastar (2012) explica:  
+
+> La investigación científica se fundamenta en el método científico; por lo tanto, la investigación es una actividad que tiene como objetivo alcanzar y crear conocimientos, y se caracteriza por ser racional, metódica, reflexiva, constante, ordenada, controlada y crítica. (p. 9)  
+:::
+
+---
+
+
+## Cita textual en bloque narrativa (continuación) {.smaller}
+::: {.smaller}
+**Ejemplo 2** Según Lerma González (2009):  
+
+> El planteamiento del problema constituye la guía principal de la investigación, pues define qué se estudiará, cuáles son sus límites y de qué manera se abordará. Sin un planteamiento claro, el proceso corre el riesgo de perder coherencia metodológica. (p. 31)  
+
+**Ejemplo 3** Nava-Muñoz et al. (2023) señalan:  
+
+> An essential challenge for organizers arises when comparing algorithms’ performance, assessing multiple participants, and ranking them. Statistical tools are often used for this purpose; however, traditional statistical methods often fail to capture decisive differences between systems’ performance. (p. 1)  
+:::
+
+---
+
+
+## Cita textual en bloque entre paréntesis {.smaller}
+**¿En qué consiste?**  
+También para **40 palabras o más**, pero sin introducir al autor en la narrativa.  
+
+- Texto en bloque con sangría, sin comillas.  
+- Autor, año y página se colocan al final entre paréntesis.  
+- Cita un pasaje extenso, manteniendo el foco en la idea más que en el autor. 
+
+::: {.smaller}
+**Ejemplo 1**  
+
+> La investigación es la actividad sistemática que busca dar solución a problemas educativos, sociales y científicos, utilizando herramientas que garanticen objetividad y rigor. (Gómez Bastar, 2012, p. 10)  
+:::
+
+---
+
+## Cita textual en bloque entre paréntesis (continuación) {.smaller}
+::: {.smaller}
+**Ejemplo 2**  
+
+> El planteamiento de un problema implica establecer sus antecedentes, describir sus elementos y formularlo en una pregunta precisa. (Lerma González, 2009, p. 32)  
+
+**Ejemplo 3**  
+
+> Collaborative competitions involve defining tasks, selecting evaluation scores, and devising result verification methods. In the standard scenario, participants receive a training set and they are expected to provide a solution for a held-out dataset kept by organizers. (Nava-Muñoz et al., 2023, p. 1)  
+:::
+
+---
+
+## Cómo referenciar distintas fuentes (APA 7ª ed.) {.smaller}
+
+- **Libro**:  
+  Apellido, N. (Año). *Título en cursivas*. Editorial.  
+
+- **Artículo científico**:  
+  Apellido, N., & Apellido, M. (Año). Título del artículo. *Nombre de la revista en cursivas, volumen*(número), pp–pp. https://doi.org/...  
+
+- **Tesis**:  
+  Apellido, N. (Año). *Título de la tesis* [Tesis de maestría o doctoral, Institución]. URL  
+
+- **Página web / documento digital**:  
+  Organización. (Año). *Título del documento*. URL  
+
+- **Informe o reporte**:  
+  Organización. (Año). *Título del reporte* (No. de informe si aplica). Editorial o institución.  
+
+- **Fuente audiovisual (ej. YouTube, Podcast, Película)**:  
+  Autor/Usuario. (Año, día de mes). *Título del video/podcast/película* [Formato]. Plataforma. URL  
+
+---
+
+## Cómo referenciar distintas fuentes (APA 7ª ed.) Ejemplos  {.smaller}
+
+- **Libro**  
+  Ejemplo:  
+  Gómez Bastar, S. (2012). *Metodología de la investigación*. Red Tercer Milenio.  
+
+- **Artículo científico**  
+  Ejemplo:  
+  Nava-Muñoz, S., Graff, M., & Escalante, H. J. (2023). Analysis of systems’ performance in natural language processing competitions. *Pattern Recognition Letters, 173*, 33–45. https://doi.org/10.1016/j.patrec.2023.05.018  
+
+- **Tesis**  
+  Ejemplo:  
+  Sánchez Velázquez, S. (2022). *Imputación de valores faltantes en imágenes* [Tesis de maestría, Centro de Investigación en Matemáticas]. Repositorio CIMAT. https://repositorio.cimat.mx/handle/1234/567  
+
+--- 
+
+##  Cómo referenciar distintas fuentes (APA 7ª ed.) Ejemplos (continuación) {.smaller}
+
+- **Página web / documento digital**  
+  Ejemplo:  
+  American Psychological Association. (2020). *APA style introduction*. https://apastyle.apa.org/style-grammar-guidelines  
+
+- **Informe o reporte**  
+  Ejemplo:  
+  Instituto Nacional de Estadística y Geografía. (2023). *Encuesta nacional sobre disponibilidad y uso de tecnologías de la información en los hogares (ENDUTIH) 2022*. INEGI.  
+
+- **Fuente audiovisual (ej. YouTube, Podcast, Película)**  
+  Ejemplo:  
+  Universidad Nacional Autónoma de México. (2021, 15 de marzo). *Cómo citar con normas APA 7ª edición* [Video]. YouTube. https://www.youtube.com/watch?v=abcd1234  
+
+---
+
+## Referencias completas (APA 7ª edición)
+- Gómez Bastar, S. (2012). *Metodología de la investigación*. Red Tercer Milenio. ISBN 978-607-733-149-0.  
+- Lerma González, H. D. (2009). *Metodología de la investigación* (4ª ed.). Ecoe Ediciones.  
+- Nava-Muñoz, S., Graff, M., & Escalante, H. J. (2023). Analysis of systems’ performance in natural language processing competitions. *Pattern Recognition Letters*. Elsevier.  
+
+---
+
+## Actividad práctica
+Selecciona **3 fuentes académicas** relevantes para tu proyecto de investigación.  
+Con cada fuente realiza los siguientes ejercicios en formato APA 7ª edición:  
+
+1. Cita parafraseada narrativa  
+2. Cita parafraseada parentética  
+3. Cita textual corta narrativa  
+4. Cita textual corta entre paréntesis  
+5. Cita textual en bloque narrativa  
+6. Cita textual en bloque entre paréntesis  
+7. Referencia completa en formato APA 7  
+
+---
+
+## Conclusiones
+- La citación correcta evita el plagio y respalda la argumentación.  
+- APA 7 simplifica el manejo de fuentes digitales y múltiples autores.  
+- El uso adecuado de citas es parte fundamental del protocolo de investigación.  
+
+
+
+
+---
+## Uso de Mendeley en Overleaf y Quarto
+
+- **Mendeley** permite gestionar tus referencias y exportarlas en formato `.bib` (BibTeX).
+- En **Overleaf** basta con subir `mendeley.bib` a tu proyecto.
+- En **Quarto** puedes citar con `@id` y generar la bibliografía automáticamente.
+
+---
+
+## Paquetes para LaTeX (APA 7ª edición)
+
+```latex
+\usepackage{csquotes}
+\usepackage[style=apa,backend=biber]{biblatex}
+\DeclareLanguageMapping{spanish}{spanish-apa}
+\addbibresource{mendeley.bib}
+```
+
+---
+
+## Ejemplos de citas en LaTeX
+
+- Narrativa:  
+```latex
+\textcite{Batista2003AnLearning}
+```
+👉 *Baesens (2014)*
+
+- Parentética:  
+```latex
+\parencite{Madley-Dowd2019TheImputation}
+```
+👉 *(Maté, 2014)*
+
+---
+
+## Ejemplo de cita textual en bloque
+
+```latex
+\begin{quote}
+“El fenómeno del Big Data no solo es una cuestión técnica...” 
+\parencite[p.~5]{Batista2003AnLearning}.
+\end{quote}
+```
+
+---
+
+## Ejemplo en Quarto
+
+- Narrativa:  
+```markdown
+@Batista2003AnLearning muestra que la analítica es esencial.
+```
+
+- Parentética:  
+```markdown
+El análisis de datos es un nuevo paradigma [@Madley-Dowd2019TheImputation].
+```
+
+---
+
+# Referencias
