@@ -1,0 +1,167 @@
+---
+title: "Introducción al curso: Procesamiento digital de imágenes"
+author: 
+  - name: Sergio M. Nava Muñoz
+    id: sn
+    email: s3rgio.nava@gmail.com
+    affiliation: 
+        - id: cimat
+          name: CIMAT/INFOTEC
+          city: Aguascalientes
+          state: Ags
+format: 
+  revealjs:
+    slide-number: true
+    theme: simple
+    fontsize: 2.1em
+    logo: figs/logo-infotec.jpeg
+    css: style.css
+    chalkboard: true
+    menu: TRUE
+    transition: slide
+    background-transition: fade
+    title-slide-attributes:
+      data-background-image: /figs/DCCD.png
+      data-background-size: 100% 100%;     
+date: 2025-08-06
+---
+
+
+# Bienvenida
+
+## Curso: Tratamiento Digital de Imágenes (TDI)
+
+- Modalidad a distancia
+- Uso de herramientas computacionales (Python, OpenCV, Jupyter)
+
+> Este curso busca desarrollar habilidades para el análisis, transformación y compresión de imágenes digitales mediante programación estructurada y métodos computacionales.
+
+
+
+# Objetivo general del curso
+
+**Desarrollar competencias para implementar técnicas de procesamiento digital de imágenes**, desde la manipulación básica hasta la compresión y evaluación de calidad, integrando análisis visuales y métricos mediante programación en Python.
+
+
+
+# Estructura general
+
+- Unidad 1: Introducción y manipulación básica con OpenCV
+- Unidad 2: Realce y restauración de imágenes
+- Unidad 3: Segmentación y análisis de contornos y texturas
+- Unidad 4: Compresión y análisis de pérdida
+- Actividad integradora: Flujo completo de procesamiento
+
+
+# Forma de trabajo
+
+- Actividades individuales y colaborativas
+- Uso de libretas Jupyter (.ipynb)
+- Entregas en formato PDF y presentación de resultados
+- Revisión por rúbrica
+- Participación en foros y retroalimentación continua
+
+> Es responsabilidad de cada estudiante verificar que sus entregas estén completas y correctamente subidas a la plataforma.
+
+
+
+# Unidad 1: Manipulación de imágenes
+
+- Lectura, recorte, rotación, redimensionamiento
+- Trabajo con OpenCV
+- Imagen de entrada: TIFF, PNG o JPG
+- Actividad 1: Transformaciones básicas con OpenCV
+
+
+
+# Unidad 2: Realce y restauración
+
+- Histograma y ecualización
+- Filtros espaciales (media, gaussiano, mediana)
+- Evaluación del contraste
+- Actividad 2: Comparación visual y análisis técnico de filtros
+
+
+
+# Unidad 3: Segmentación y texturas
+
+- Detección de contornos (Sobel, Canny)
+- Análisis por canales RGB
+- Métricas estadísticas por bloques (media, varianza, rango)
+- Segmentación de objetos (caso tomates)
+- Actividad 3: Detección y análisis colaborativo
+
+
+
+# Unidad 4: Compresión de imágenes
+
+- Compresión con pérdida: JPEG
+- Transformada Discreta del Coseno (DCT)
+- Cuantización y reconstrucción
+- Métricas de calidad: PSNR, MSE
+- Actividad 4: Implementación y análisis de compresión JPEG
+
+
+
+# Actividad 5: Proyecto integrador
+
+- Actividad colaborativa (hasta 3 personas)
+- Selección de caso real (imagen médica, satelital, industrial, etc.)
+- Aplicación del flujo completo: U1 a U4
+- Producto esperado:
+  - Libreta Jupyter (.ipynb)
+  - PDF
+  - Presentación final (video o archivo)
+
+
+
+# Evaluación
+
+| Actividad | Ponderación |
+|----------|--------------|
+| 1. Operaciones básicas | 15 pts |
+| 2. Realce y filtros | 15 pts |
+| 3. Segmentación y texturas | 20 pts |
+| 4. Compresión JPEG | 20 pts |
+| 5. Proyecto integrador | 30 pts |
+| **Total** | **100 pts** |
+
+
+
+# Recursos
+
+- Lenguaje: Python 3
+- Entorno recomendado: Jupyter Notebook
+- Biblioteca principal: OpenCV
+- Recursos adicionales:
+  - [Documentación de OpenCV](https://docs.opencv.org/4.x/)
+  - [Repositorio de imágenes](https://tinyurl.com/36sxbnz5)
+
+
+
+# Recomendaciones
+
+- Utiliza celdas Markdown para estructurar tu libreta
+- Asegúrate de explicar tus resultados y decisiones técnicas
+- Revisa la ortografía y redacción
+- Evita entregar únicamente código sin análisis
+
+
+# Consideraciones finales
+
+- Consulta las rúbricas en cada actividad
+- Participa activamente en foros
+- Entrega a tiempo, con archivos completos y bien documentados
+- Respalda tu trabajo regularmente
+- Pregunta cualquier duda en el foro correspondiente
+
+
+
+# ¡Comencemos!
+
+- Descarga el repositorio de imágenes
+- Asegúrate de tener instalado Python y Jupyter
+- Comienza con la Actividad 1A: Operaciones básicas en imágenes
+
+> Ante cualquier duda, utiliza el foro de avisos o comentarios generales.
+

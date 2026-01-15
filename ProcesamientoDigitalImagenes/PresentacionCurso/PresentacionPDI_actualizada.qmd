@@ -1,0 +1,244 @@
+---
+title: "Introducción al curso: Procesamiento digital de imágenes"
+author: 
+  - name: Sergio M. Nava Muñoz
+    id: sn
+    email: s3rgio.nava@gmail.com
+    affiliation: 
+        - id: cimat
+          name: CIMAT/INFOTEC
+          city: Aguascalientes
+          state: Ags
+format: 
+  revealjs:
+    slide-number: true
+    theme: simple
+    fontsize: 2.1em
+    logo: figs/logo-infotec.jpeg
+    css: style.css
+    chalkboard: true
+    menu: TRUE
+    transition: slide
+    background-transition: fade
+    title-slide-attributes:
+      data-background-image: /figs/DCCD.png
+      data-background-size: 100% 100%;     
+---
+
+# Bienvenida
+
+**Curso:** Procesamiento digital de imágenes  
+
+**Clave:** MCDI00010 · 
+
+**Modalidad:** No escolarizada (en línea) · 
+
+**Ciclo:** 3 (semestral)
+
+- Este curso es práctico y orientado a ciencia de datos.
+- Trabajarás con imágenes reales usando **Python + OpenCV** (y herramientas complementarias).
+- La evidencia principal serán **notebooks** bien documentadas.
+
+
+
+# ¿De qué trata la asignatura?
+
+La asignatura aborda técnicas básicas para **procesar, analizar y transformar** imágenes digitales.
+
+- Mejoramiento de calidad (ruido, contraste, etc.)
+- Segmentación de objetos / regiones
+- Extracción de características (textura, forma, color)
+- Uso de características en algoritmos de **aprendizaje automático**
+
+
+
+# ¿Por qué es importante en tu formación?
+
+Porque muchas aplicaciones de ciencia de datos incluyen imágenes: fotos, video, imágenes médicas o satelitales.
+
+- Aprenderás a **convertir imágenes en datos** útiles para el análisis.
+- Fortalecerás habilidades de **programación, estadística y modelado** en problemas de visión artificial.
+
+
+
+# ¿Cómo aplica en el campo laboral?
+
+Podrás participar en proyectos donde se requiera:
+
+- Clasificar imágenes, detectar objetos, segmentar regiones
+- Evaluar calidad de imágenes (salud, industria, agro, seguridad)
+- Colaborar con equipos multidisciplinarios en **visión por computadora** e **IA**
+
+
+
+# Fin de aprendizaje del curso
+
+Aplicar conceptos básicos del procesamiento digital de imágenes (teóricos y prácticos) para **extraer, estructurar y analizar** información contenida en imágenes, y utilizarla en algoritmos de aprendizaje automático y tareas de visión artificial, bajo un enfoque analítico.
+
+
+
+# Ruta de aprendizaje {.smaller}
+
+1. Introducción al procesamiento digital de imágenes  
+2. Preprocesamiento  
+3. Segmentación  
+4. Descripción y representación de imágenes digitales  
+5. Reconocimiento de imágenes  
+
+
+**Actividades por unidad (Refuerza y Comparte):**  
+En cada unidad se incluye un apartado llamado **Refuerza**, cuyo propósito es **repasar y consolidar** los conocimientos y técnicas trabajadas en la unidad.  
+
+
+En cada unidad se incluye la actividad **Comparte**, que consiste en participar en un **foro de discusión** con una reflexión **individual** sobre preguntas guía relacionadas con la unidad.  
+
+
+> **Importante:** estas actividades **no tienen puntaje directo** en la calificación; sin embargo, su realización y participación es **altamente recomendable**, ya que apoyan la comprensión de los temas y mejoran la calidad de las entregas evaluadas.
+
+
+## Agenda (Sesiones sincrónicas - videoconferencias)
+
+Miércoles, de 12:00 a 13:00 hrs (hora CDMX)
+
+- 14 y 28 de enero  
+- 11 y 25 de febrero  
+- 11 y 25 de marzo  
+- 8 y 22 de abril
+- 6 de mayo 
+
+
+## Entregas (actividades evaluadas)
+
+| Entrega | Fecha límite (CDMX) | Puntaje |
+|---|---:|---:|
+| **1A. Introducción y manipulación básica (OpenCV)** | **07-feb-2026** |  **10** |
+| **2A. Preprocesamiento (OpenCV)** | **21-feb-2026** |  **15** |
+| **3A. Segmentación (OpenCV)** | **21-mar-2026** |  **20** |
+| **4A. Descriptores y representación** | **18-abr-2026** |  **25** |
+| **5A. Flujo completo de procesamiento y reconocimiento** | **16-may-2026** |  **30** |
+
+
+# Forma de trabajo
+
+- Evidencia principal: **notebook** (Jupyter o Colab) bien documentada.
+- Integra: **código + visualizaciones + comentarios en Markdown**.
+- Recomendado: documentar con un enfoque reproducible (p. ej., **Jupyter/Colab + Quarto**).
+
+> **Nota sobre archivos a entregar (reproducibilidad):**  
+> En **cada entrega** se deben subir **dos archivos**: (1) el **Jupyter Notebook (.ipynb)** para poder **reproducir** el análisis, y (2) un **PDF** para **visualizar los resultados** obtenidos.  
+> Para que el Notebook sea **manejable** y realmente **reproducible**, el archivo **.ipynb debe subirse sin salidas** (sin resultados/outputs en celdas): únicamente con **código en Python** y **texto en Markdown**. El PDF es el que debe contener las **figuras, tablas y resultados** finales.
+
+## Recomendación de entorno de trabajo
+
+Se recomienda trabajar con **Python y Jupyter Notebook en su equipo (local)**, usando un **ambiente virtual** para aislar dependencias (por ejemplo, con **Anaconda/Miniconda** o con **venv**). Esto facilita la instalación de librerías y la reproducibilidad del trabajo.
+
+Si su equipo no permite trabajar de forma local, pueden usar **Google Colab** como alternativa. Consideren que Colab requiere **subir los archivos necesarios en cada sesión** o **vincularlos mediante Google Drive**, ya que el entorno es temporal.
+
+
+# Unidad 1: Introducción al PDI
+
+**Fin de aprendizaje:** comprender el papel del PDI en ciencia de datos e implementar lectura, visualización, manipulación geométrica y guardado de imágenes con OpenCV.
+
+**Actividad 1A (10 pts):** operaciones básicas  
+
+- Cargar / visualizar (color y grises), inspección (shape, dtype, rangos)  
+- Transformaciones geométricas (resize y rotación)  
+- Guardado y verificación de lectura
+
+
+
+# Unidad 2: Preprocesamiento
+
+**Fin de aprendizaje:** aplicar técnicas de preprocesamiento (intensidad, filtrado espacial/frecuencial, morfología y geometría) y evaluar su impacto con criterios visuales y métricas sencillas.
+
+**Actividad 2A (15 pts):** preprocesamiento con OpenCV  
+
+- Brillo/contraste + una transformación no lineal (p. ej., gamma)  
+- Histogramas + ecualización (si aplica)  
+- Ruido sintético y comparación de filtros (promedio/gauss/mediana)  
+- Morfología tras binarización (Otsu) + geometría básica
+
+
+
+# Unidad 3: Segmentación
+
+**Fin de aprendizaje:** implementar y comparar métodos de segmentación (bordes, umbralización y agrupamiento) y discutir ventajas/limitaciones según el problema.
+
+**Actividad 3A (20 pts):** segmentación con OpenCV  
+
+- Bordes (Sobel y Canny)  
+- Umbralización (global y Otsu/adaptativa)  
+- Segmentación por intensidades (p. ej., k-means)  
+- Comparación y análisis crítico en Markdown
+
+
+
+# Unidad 4: Descripción y representación
+
+**Fin de aprendizaje:** construir descriptores de **textura, forma y color**, y aplicar reducción de dimensión (p. ej., PCA) para explorar separaciones entre clases/tipos.
+
+**Actividad 4A (25 pts):** descriptores + PCA  
+
+- Textura (GLCM), forma (momentos de Hu), color (histogramas o momentos)  
+- Vector de características por imagen  
+- PCA y visualización 2D (PC1–PC2) con discusión
+
+
+
+# Unidad 5: Reconocimiento de imágenes
+
+**Fin de aprendizaje:** diseñar e implementar un flujo completo (preprocesamiento, segmentación opcional, descriptores, modelo) y evaluar su desempeño y limitaciones.
+
+**Actividad 5A (30 pts):** flujo completo de procesamiento y reconocimiento  
+
+- Definición del problema y del conjunto de datos  
+- Descriptores + matriz de diseño  
+- Modelo supervisado o no supervisado + evaluación  
+- Discusión final (errores, mejoras, siguientes pasos)
+
+
+
+# Evaluación
+
+| Actividad | Puntaje |
+|---|---:|
+| 1A. Introducción y manipulación básica | 10 |
+| 2A. Preprocesamiento | 15 |
+| 3A. Segmentación | 20 |
+| 4A. Descriptores y representación | 25 |
+| 5A. Flujo completo de procesamiento y reconocimiento | 30 |
+| **Total** | **100** |
+
+# Recursos
+
+- Lenguaje: **Python 3**
+- Librerías: **OpenCV**, NumPy, matplotlib (y scikit-image / scikit-learn cuando aplique)
+- Entorno recomendado: **Jupyter Notebook** o **Google Colab**
+- Herramientas auxiliares (opcional): **GIMP**, **RawTherapee**
+- Dataset para actividades: repositorio de imágenes del curso (liga actualizada en plataforma)
+
+
+
+# Comunicación y seguimiento
+
+- Revisa el apartado de **avisos** ocasionalmente: ahí se publicarán indicaciones importantes.
+- Las **grabaciones** de videoconferencias estarán disponibles en la plataforma.
+- Usa los **foros** para dudas técnicas y discusión de decisiones metodológicas.
+
+
+
+# Recomendaciones para la evaluación
+
+- Es tu responsabilidad **subir los archivos correctamente** a la plataforma: completos, sin errores y en formatos compatibles.
+- Verifica antes de entregar: que el notebook corre de inicio a fin y que el PDF corresponde a la versión final.
+- Documenta hallazgos: qué hiciste, con qué parámetros y qué observaste.
+
+
+
+# ¡Comencemos!
+
+- Descarga el repositorio de imágenes (liga en plataforma)
+- Asegúrate de tener un entorno funcional (Python + notebook)
+- Comienza con **Actividad 1A** siguiendo las instrucciones de la unidad
+
+> Ante cualquier duda, utiliza el foro de avisos o comentarios generales.
