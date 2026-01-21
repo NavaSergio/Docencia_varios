@@ -1,0 +1,167 @@
+---
+title: "Revisión Sistemática de la Literatura"
+subtitle: "Ciencia de Datos para el Tratamiento Térmico"
+author: "Nombre del autor"
+date: "`r Sys.Date()`"
+lang: es
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    number-sections: true
+  pdf:
+    toc: true
+    number-sections: true
+    geometry: margin=1in
+execute:
+  echo: true
+  warning: false
+  message: false
+bibliography: referencias.bib
+csl: apa.csl
+---
+
+# Introducción
+
+El **tratamiento térmico** es un proceso industrial clave en sectores como la metalurgia, manufactura avanzada y materiales, donde variables como temperatura, tiempo, velocidad de enfriamiento y atmósfera controlada determinan propiedades finales del material (dureza, resistencia, microestructura). En años recientes, la **ciencia de datos** ha sido utilizada para modelar, optimizar y monitorear estos procesos mediante técnicas estadísticas y de aprendizaje automático.
+
+Una revisión sistemática de la literatura en este ámbito permite sintetizar la evidencia empírica existente sobre el uso de modelos de datos para el análisis, control y optimización de tratamientos térmicos, así como identificar brechas entre investigación académica y aplicaciones industriales.
+
+# Objetivo de la revisión
+
+El objetivo general de esta revisión sistemática es:
+
+> Sintetizar la evidencia empírica existente sobre el uso de técnicas de ciencia de datos para el análisis, modelado u optimización de procesos de tratamiento térmico en contextos industriales o experimentales.
+
+## Objetivos específicos
+
+- Identificar las principales variables de proceso y de calidad modeladas.
+- Clasificar las técnicas de ciencia de datos utilizadas.
+- Comparar métricas de desempeño y esquemas de validación.
+- Analizar el grado de transferencia a entornos industriales reales.
+- Identificar limitaciones y oportunidades de investigación futura.
+
+# Preguntas de investigación
+
+Las preguntas de investigación (Research Questions, RQ) que guían esta revisión son:
+
+- **RQ1**: ¿Qué problemas del tratamiento térmico se abordan mediante ciencia de datos (predicción de propiedades, optimización de parámetros, detección de defectos, control del proceso)?
+- **RQ2**: ¿Qué variables de entrada y salida se utilizan con mayor frecuencia (temperaturas, tiempos, composición, microestructura)?
+- **RQ3**: ¿Qué técnicas de ciencia de datos se emplean (modelos estadísticos, árboles, redes neuronales, métodos híbridos)?
+- **RQ4**: ¿Qué métricas de evaluación se reportan y con qué esquemas de validación?
+- **RQ5**: ¿En qué medida los estudios consideran restricciones industriales (ruido, datos escasos, costos de experimentación)?
+
+# Metodología
+
+## Protocolo de la revisión
+
+La revisión se realizó siguiendo un protocolo definido *a priori* para garantizar transparencia, reproducibilidad y reducción de sesgos.
+
+## Estrategia de búsqueda
+
+### Fuentes de información
+
+Se consultaron las siguientes fuentes:
+
+- Scopus
+- Web of Science
+- IEEE Xplore
+- ScienceDirect
+- Google Scholar (búsqueda complementaria)
+
+### Cadenas de búsqueda
+
+Las cadenas de búsqueda combinaron términos asociados a procesos térmicos y técnicas de ciencia de datos.
+
+**Ejemplo de cadena**:
+
+```
+("heat treatment" OR "thermal processing" OR "quenching" OR "annealing")
+AND ("machine learning" OR "data-driven" OR "statistical model")
+AND (steel OR alloy OR material)
+```
+
+## Criterios de inclusión y exclusión
+
+### Criterios de inclusión
+
+- Estudios empíricos con datos experimentales o industriales.
+- Aplicaciones de modelos estadísticos o de aprendizaje automático.
+- Reporte de métricas cuantitativas.
+- Artículos arbitrados o reportes técnicos con metodología clara.
+
+### Criterios de exclusión
+
+- Estudios puramente teóricos sin datos.
+- Simulaciones físicas sin componente de análisis de datos.
+- Trabajos sin descripción clara del proceso térmico.
+
+## Proceso de selección de estudios
+
+El proceso de selección incluyó:
+
+1. Revisión de título y resumen.
+2. Revisión de texto completo.
+3. Evaluación de calidad metodológica.
+
+## Evaluación de calidad
+
+La calidad de los estudios se evaluó considerando:
+
+- Descripción del proceso térmico.
+- Calidad y tamaño del conjunto de datos.
+- Justificación del modelo utilizado.
+- Adecuación de métricas y validación.
+- Relevancia industrial del estudio.
+
+# Extracción de datos
+
+Para cada estudio incluido se extrajo la siguiente información:
+
+- Autor y año
+- Tipo de material y proceso térmico
+- Variables de entrada (temperatura, tiempo, etc.)
+- Variables de salida (propiedades mecánicas, microestructura)
+- Técnica de modelado utilizada
+- Tamaño del conjunto de datos
+- Métricas de evaluación
+- Principales resultados
+- Limitaciones reportadas
+
+# Síntesis de resultados
+
+## Tipos de procesos y materiales
+
+Se clasifican los estudios por tipo de tratamiento térmico y material analizado.
+
+## Técnicas de ciencia de datos empleadas
+
+Se sintetiza el uso de modelos estadísticos, aprendizaje automático y redes neuronales profundas.
+
+## Desempeño y validación
+
+Se comparan métricas de desempeño y esquemas de validación, destacando buenas prácticas y limitaciones comunes.
+
+## Aplicabilidad industrial
+
+Se discute el grado de implementación real y los desafíos de escalamiento industrial.
+
+# Discusión
+
+Los resultados se interpretan considerando la complejidad física del tratamiento térmico, la calidad de los datos disponibles y las necesidades de control y optimización en la industria.
+
+# Limitaciones de la revisión
+
+Esta revisión presenta las siguientes limitaciones:
+
+- Heterogeneidad en materiales y procesos.
+- Tamaños de muestra reducidos en estudios experimentales.
+- Diferencias en métricas y diseños de validación.
+
+# Conclusiones y trabajo futuro
+
+La revisión sistemática permite identificar el estado del arte del uso de ciencia de datos en tratamientos térmicos y resalta oportunidades para integrar enfoques híbridos físico–estadísticos y estrategias de diseño experimental más eficientes.
+
+# Referencias
+
+Las referencias se presentan siguiendo el formato APA.

@@ -1,0 +1,161 @@
+---
+title: "Revisión Sistemática de la Literatura"
+subtitle: "Pronóstico de Series de Tiempo (Ciencia de Datos)"
+author: "Nombre del autor"
+date: "`r Sys.Date()`"
+lang: es
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    number-sections: true
+  pdf:
+    toc: true
+    number-sections: true
+    geometry: margin=1in
+execute:
+  echo: true
+  warning: false
+  message: false
+bibliography: referencias.bib
+csl: apa.csl
+---
+
+
+# Introducción
+
+El pronóstico de series de tiempo es un componente central en múltiples dominios industriales (demanda, energía, finanzas, logística, mantenimiento predictivo). En ciencia de datos, coexisten enfoques estadísticos (p. ej., ARIMA/ETS), aprendizaje automático (p. ej., árboles y ensambles) y aprendizaje profundo (p. ej., RNN/TCN/Transformers). Una RSL en este tema permite comparar evidencia empírica bajo condiciones de evaluación adecuadas (p. ej., *backtesting* con ventanas rodantes), y clarificar qué métodos funcionan mejor según horizonte, estacionalidad, granularidad y restricciones operativas.
+
+# Objetivo de la revisión
+
+El objetivo general de esta revisión sistemática es:
+
+> Sintetizar la evidencia empírica sobre métodos de pronóstico para ______________________, comparando familias de modelos y protocolos de evaluación, en el contexto de ______________________.
+
+**Unidad de análisis sugerida**: serie (o panel de series) y horizonte(s) de predicción.
+
+
+## Objetivos específicos
+
+- Identificar los principales enfoques metodológicos utilizados.
+- Comparar el desempeño de distintas técnicas y familias de modelos.
+- Analizar los contextos de aplicación y condiciones de despliegue.
+- Identificar limitaciones, sesgos y líneas de investigación futura.
+
+# Preguntas de investigación
+
+Las preguntas de investigación (Research Questions, RQ) guían todo el proceso de la revisión.
+
+- **RQ1**: ¿Qué familias de modelos (estadísticos, ML, DL) se han utilizado para el pronóstico de ______________________?
+- **RQ2**: ¿Qué esquemas de evaluación se emplean (p. ej., *rolling origin*, *walk-forward*, CV temporal) y con qué justificación?
+- **RQ3**: ¿Qué métricas se reportan (MAE, RMSE, MAPE/sMAPE, pinball loss, CRPS) y cómo se tratan outliers, ceros y cambios de régimen?
+- **RQ4**: ¿Cómo varía el desempeño por horizonte, estacionalidad, granularidad y número de series?
+- **RQ5**: ¿Qué evidencia existe sobre calibración de incertidumbre y pronóstico probabilístico (intervalos, cuantiles)?
+- **RQ6**: ¿Qué consideraciones operativas se reportan (latencia, actualización, *drift*, interpretabilidad, costo de error)?
+
+# Metodología
+
+## Protocolo de la revisión
+
+La revisión se llevó a cabo siguiendo un protocolo definido *a priori*, con el fin de garantizar transparencia, reproducibilidad y minimizar sesgos.
+
+## Estrategia de búsqueda
+
+### Fuentes de información
+
+Se consultaron bases de datos científicas (p. ej., Scopus, Web of Science, IEEE Xplore, ACM DL, ScienceDirect) y búsqueda complementaria en Google Scholar. Cuando el tema lo requiera, se consideran repositorios de *preprints* y literatura gris (p. ej., informes técnicos, documentos institucionales), documentando su tratamiento metodológico.
+
+### Cadenas de búsqueda
+
+Las cadenas de búsqueda se construyeron a partir de las preguntas de investigación, combinando términos relacionados con el problema, la familia de métodos y el contexto de aplicación.
+
+**Ejemplo de cadena**:
+
+```
+("time series forecasting" OR "demand forecasting" OR "forecasting")
+AND (ARIMA OR ETS OR Prophet OR "gradient boosting" OR XGBoost OR LSTM OR GRU OR TCN OR Transformer)
+AND ("rolling origin" OR "walk-forward" OR backtesting OR "temporal cross validation")
+```
+
+## Criterios de inclusión y exclusión
+
+### Criterios de inclusión
+
+- Estudios empíricos con datos reales (o datos sintéticos claramente justificados).
+- Descripción clara del conjunto de datos y del protocolo de validación.
+- Reporte de métricas cuantitativas (y, cuando aplique, evaluación operativa).
+- Publicaciones arbitradas; opcionalmente literatura gris con criterios explícitos de calidad.
+
+### Criterios de exclusión
+
+- Estudios puramente conceptuales sin evaluación empírica.
+- Reportes sin definición operativa del objetivo o sin metodología reproducible.
+- Estudios sin métricas, sin validación o con información insuficiente para extracción.
+
+## Proceso de selección de estudios
+
+El proceso de selección se realizó en etapas: (1) título/resumen, (2) texto completo y (3) evaluación de calidad. Se reporta el número de estudios en cada etapa y las razones de exclusión.
+
+## Evaluación de calidad
+
+La calidad metodológica se evaluó considerando, al menos:
+
+- Claridad del objetivo y del diseño experimental.
+- Descripción del conjunto de datos (origen, cobertura, sesgos, preprocesamiento).
+- Adecuación del esquema de validación (p. ej., *train/test*, CV, *backtesting*).
+- Elección de métricas y análisis de incertidumbre.
+- Reproducibilidad (código, hiperparámetros, semillas, disponibilidad de datos).
+- Riesgo de sesgo y validez externa (generalización a otros contextos).
+
+# Extracción de datos
+
+Para cada estudio incluido se extrajo la siguiente información (ajustable al tema):
+
+- Autor y año
+- Dominio/industria y variable objetivo (p. ej., demanda, carga, precio)
+- Tipo de serie: univariada/multivariada; panel; frecuencia (hora/día/mes)
+- Horizonte(s) y estrategia multi-horizonte (directa, recursiva, MIMO, seq2seq)
+- Familia de modelo y *features* (lags, calendarios, exógenas)
+- Protocolo de evaluación (*split* temporal, ventanas rodantes, *backtesting*)
+- Métricas y tratamiento de ceros/outliers
+- Resultados (promedios, dispersión, pruebas estadísticas si existen)
+- Incertidumbre: intervalos/cuántiles, calibración
+- Consideraciones de despliegue (tiempo de entrenamiento, actualización, monitoreo)
+
+# Síntesis de resultados
+
+## Caracterización general de los estudios
+Se describe la distribución por año, dominio, frecuencia temporal, tamaño del panel y horizontes evaluados.
+
+## Familias de modelos y *baselines*
+Se sintetiza qué métodos se comparan y si se incluyen *baselines* apropiados (p. ej., naive, seasonal naive, ETS/ARIMA).
+
+## Protocolos de evaluación y validez
+Se comparan esquemas de *backtesting*, particiones temporales y estrategias multi-horizonte, discutiendo riesgos de fuga de información (*leakage*).
+
+## Métricas y análisis de incertidumbre
+Se agrupan estudios por métricas y se identifica evidencia sobre pronóstico probabilístico (cuantiles/intervalos) y calibración.
+
+## Resultados por condiciones
+Se sintetiza desempeño por horizonte, estacionalidad, granularidad y disponibilidad de variables exógenas.
+
+# Discusión
+
+Los resultados se discuten a la luz de las preguntas de investigación, resaltando implicaciones prácticas (despliegue, mantenimiento, monitoreo, equidad, privacidad, gobernanza) y recomendaciones metodológicas para estudios futuros.
+
+# Limitaciones de la revisión
+
+Esta revisión presenta las siguientes limitaciones:
+
+- Posible sesgo de publicación y sesgo por idioma.
+- Restricción a bases de datos seleccionadas y a la cobertura temporal definida.
+- Heterogeneidad en datos, métricas y diseños experimentales.
+- Comparabilidad limitada por diferencias en horizontes, frecuencias y *baselines* reportados.
+
+# Conclusiones y trabajo futuro
+
+La revisión sistemática permite identificar tendencias consolidadas, áreas maduras y vacíos de investigación. A partir de la síntesis, se proponen líneas de trabajo futuro y recomendaciones prácticas para investigación y despliegue en entornos reales.
+
+# Referencias
+
+Las referencias se presentan siguiendo el formato APA.
