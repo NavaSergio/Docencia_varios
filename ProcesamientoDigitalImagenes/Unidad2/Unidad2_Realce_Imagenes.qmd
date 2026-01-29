@@ -1,0 +1,682 @@
+---
+title: "Unidad 2 – Realce y Restauración de Imágenes"
+subtitle: "Tratamiento Digital de Imágenes"
+author: 
+  - name: Sergio M. Nava Muñoz
+    id: sn
+    email: s3rgio.nava@gmail.com
+    affiliation: 
+      - id: cimat
+        name: CIMAT/INFOTEC
+        city: Aguascalientes
+        state: Ags
+format: 
+  revealjs:
+    slide-number: true
+    theme: simple
+    #logo: figs/logo-infotec.jpeg
+    footer: "CIMAT – INFOTEC"
+    css: style.css
+    chalkboard: true
+    menu: true
+    navigation-mode: linear
+    progress: true
+    transition: slide
+    background-transition: fade 
+    title-slide-attributes:
+      data-background-image: figs/DCCD.png
+      data-background-size: cover
+      data-background-opacity: "0.3"
+    toc: true
+    toc-depth: 2
+    toc-title: "Contenido"
+    code-fold: true
+    code-line-numbers: true
+    code-copy: true
+date: 2025-02-19
+---
+
+## Fin de aprendizaje
+
+- Aplicar técnicas de mejora y restauración de imágenes digitales.  
+- Utilizar operaciones matriciales y filtros en OpenCV.  
+- Comprender fundamentos matemáticos de histogramas y filtrado.  
+- Preparar imágenes para tareas avanzadas de análisis visual.  
+
+---
+
+## Introducción
+
+- El realce mejora la apariencia **visual** de las imágenes.  
+- Facilita tareas como:  
+  - Detección de objetos  
+  - Reconocimiento de texturas (ej. imágenes médicas)  
+  - Segmentación y clasificación  
+
+---
+
+
+
+## Descomposición en canales RGB {.smaller}
+
+::: {.columns}
+::: {.column width="40%"}
+- Una imagen en color puede verse como **tres matrices en escala de grises**:  
+  - **Canal R (Rojo)**  
+  - **Canal G (Verde)**  
+  - **Canal B (Azul)**  
+
+- Cada canal almacena intensidades entre 0 y 255.  
+- La combinación de los tres forma la imagen en color.  
+:::
+
+::: {.column width="60%"}
+::: {layout="[[1,1,1]]"}
+![Canal R](canal_R.png){width=180}
+
+![Canal G](canal_G.png){width=180}
+
+![Canal B](canal_B.png){width=180}
+:::
+
+::: {.center}
+![Imagen combinada](imagen_RGB.png){width=220}
+:::
+:::
+:::
+
+
+---
+
+## Representación de imágenes {.smaller}
+
+- Una imagen digital en escala de grises puede representarse como una **matriz** $I$ de tamaño $M \times N$:  
+
+$$
+I = \begin{bmatrix}
+i_{11} & i_{12} & \cdots & i_{1N} \\
+i_{21} & i_{22} & \cdots & i_{2N} \\
+\vdots & \vdots & \ddots & \vdots \\
+i_{M1} & i_{M2} & \cdots & i_{MN}
+\end{bmatrix}
+$$
+
+- Cada elemento $i_{mn}$ es un valor de **intensidad** (0–255 en imágenes de 8 bits).
+
+
+---
+
+## Visualización de un patch en RGB y sus canales
+
+```{python}
+#| echo: true
+import cv2
+import matplotlib.pyplot as plt
+import numpy as np
+from IPython.display import display, Markdown
+
+# Cargar imagen en color (OpenCV usa BGR)
+img_bgr = cv2.imread("imagenes/frutas.jpg", cv2.IMREAD_COLOR)
+img_rgb = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2RGB)
+
+# Seleccionar un patch pequeño (5x5 píxeles)
+patch = img_rgb[0:5, 0:5, :]
+
+# Separar los canales
+R = patch[:,:,0]
+G = patch[:,:,1]
+B = patch[:,:,2]
+
+# Mostrar el patch en color y guardarlo
+plt.figure(figsize=(2.5,2.5))
+plt.imshow(patch)
+plt.axis('off')
+plt.title("Patch 5x5 RGB")
+plt.savefig("patch_rgb.png", bbox_inches="tight")
+plt.close()
+
+# Convertir las matrices a strings
+R_str = np.array2string(R, max_line_width=40)
+G_str = np.array2string(G, max_line_width=40)
+B_str = np.array2string(B, max_line_width=40)
+# Mostrar en formato columnas
+display(Markdown(f"""
+<div style="display:flex; gap:25px;">
+<div style="font-size:15px; white-space:pre;">
+<b>Canal R</b><br>{R_str}<br><br>
+<b>Canal G</b><br>{G_str}<br><br>
+<b>Canal B</b><br>{B_str}<br><br>
+<b>Juntos</b><br>{patch}
+</div>
+<div style="flex:1; text-align:center;">
+<img src='patch_rgb.png' style="width:100%; height:auto;">
+</div>
+
+</div>
+"""))
+
+```
+
+---
+
+
+## Mezcla aditiva de colores – Modelo RGB {.smaller}
+
+::: {.columns}
+::: {.column width="50%"}
+![RGB color model venn diagram](https://tse4.mm.bing.net/th/id/OIP.LGzz_j3Bt826nHdzSRywlQHaHa?r=0&pid=Api){width=350}
+:::
+
+::: {.column width="50%" }
+**Explicación:**
+
+- El modelo **RGB** (Red, Green, Blue) es **aditivo**.  
+- Combinaciones:  
+  - Rojo + Verde = Amarillo  
+  - Verde + Azul = Cian  
+  - Azul + Rojo = Magenta  
+  - Rojo + Verde + Azul (máxima intensidad) = Blanco  
+- Cada canal varía de **0 a 255**, permitiendo representar millones de colores.  
+- Es el modelo usado en **pantallas, cámaras y procesamiento digital de imágenes**.
+:::
+:::
+
+
+---
+
+## Visualización de valores en escala de grises
+
+```{python}
+#| echo: true
+import cv2
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Cargar imagen en escala de grises
+img = cv2.imread("imagenes/frutas.jpg", cv2.IMREAD_GRAYSCALE)
+
+# Seleccionar una sección pequeña (ej. 10x10 píxeles desde la esquina superior izquierda)
+patch = img[0:10, 0:10]
+
+# Mostrar la sección ampliada como imagen
+plt.figure(figsize=(3,3))
+plt.imshow(patch, cmap='gray', vmin=0, vmax=255)
+plt.title("Sección 10x10 en escala de grises")
+plt.axis('off')
+plt.show()
+
+# Convertir la matriz a string
+matriz_str = np.array2string(patch, max_line_width=80)
+
+# Mostrar en formato markdown con letra pequeña
+from IPython.display import display, Markdown
+display(Markdown(f"<pre style='font-size:15px'>{matriz_str}</pre>"))
+
+```
+
+---
+
+## Histograma de una imagen
+
+- El histograma es la **frecuencia de aparición de intensidades**.  
+- Formalmente:  
+
+$$
+h(r_k) = n_k
+$$
+
+donde $r_k$ es un nivel de gris y $n_k$ el número de píxeles con ese valor.  
+
+---
+
+### Código: Construcción del histograma
+
+```{python}
+#| echo: true
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Cargar imagen en escala de grises
+img = cv2.imread( "imagenes/DPP0357.TIF", cv2.IMREAD_GRAYSCALE)
+crop = img[:256, :256]
+
+# Calcular histograma con OpenCV
+hist = cv2.calcHist([crop], [0], None, [256], [0,256])
+
+# Crear una figura con dos subplots lado a lado
+plt.figure(figsize=(12,4))
+plt.subplot(1,2,1)
+plt.imshow(crop, cmap='gray')
+plt.title("Imagen 256x256")
+plt.axis('off')
+
+plt.subplot(1,2,2) 
+plt.bar(np.arange(256), hist.flatten(), color='gray')
+plt.title("Histograma")
+plt.xlabel("Intensidad")
+plt.ylabel("Frecuencia")
+plt.show()
+
+```
+
+---
+
+## Ecualización de histograma {.smaller}
+
+- Busca redistribuir los niveles de gris para mejorar el contraste.  
+- Función de transformación acumulativa:  
+
+$$
+s_k = (L-1)\sum_{j=0}^k \frac{n_j}{MN}
+$$
+
+donde:  
+- $L$ = número de niveles (256 en 8 bits).  
+- $M \times N$ = número total de píxeles.  
+
+---
+
+## Ejemplo de ecualización de histograma {.smaller}
+
+::: {.columns}
+::: {.column width="50%"}
+Consideremos una imagen de $M \times N = 8$ píxeles, con intensidades de 3 bits  
+($L = 8$ niveles, de 0 a 7):
+
+$$
+I = [3, 3, 4, 5, 6, 6, 6, 7]
+$$
+:::
+::: {.column width="50%" }
+### 1. Histograma de frecuencias
+| Intensidad ($r_k$) | Frecuencia ($n_k$) |
+|--------------------|--------------------|
+| 0 | 0 |
+| 1 | 0 |
+| 2 | 0 |
+| 3 | 2 |
+| 4 | 1 |
+| 5 | 1 |
+| 6 | 3 |
+| 7 | 1 |
+:::
+:::
+
+---
+
+### 2. Probabilidades y acumuladas
+
+Probabilidad: $p(r_k) = n_k / 8$  
+
+<small>
+
+| $r_k$ | $p(r_k)$ | CDF $\sum_{j=0}^k p(r_j)$ |
+|-------|----------|---------------------------|
+| 3 | 0.25 | 0.25 |
+| 4 | 0.125 | 0.375 |
+| 5 | 0.125 | 0.500 |
+| 6 | 0.375 | 0.875 |
+| 7 | 0.125 | 1.000 |
+
+</small>
+
+---
+
+### 3. Nueva asignación de intensidades
+
+::: {.columns}
+::: {.column width="50%"}
+$$
+s_k = (L-1)\sum_{j=0}^k p(r_j)
+$$
+:::
+
+<small>
+
+::: {.column width="50%"}
+Con $L-1 = 7$:
+
+| $r_k$ | CDF | $s_k$ |
+|-------|-----|-------|
+| 3 | 0.25  | $7 \cdot 0.25 = 1.75 \approx 2$ |
+| 4 | 0.375 | $7 \cdot 0.375 = 2.63 \approx 3$ |
+| 5 | 0.50  | $7 \cdot 0.50 = 3.50 \approx 4$ |
+| 6 | 0.875 | $7 \cdot 0.875 = 6.13 \approx 6$ |
+| 7 | 1.00  | $7 \cdot 1.00 = 7.00$ |
+:::
+:::
+
+</small>
+
+---
+
+### 4. Imagen ecualizada
+
+Imagen original:  
+$$
+[3, 3, 4, 5, 6, 6, 6, 7]
+$$  
+
+Imagen ecualizada:  
+$$
+[2, 2, 3, 4, 6, 6, 6, 7]
+$$  
+
+**Conclusión:** La ecualización redistribuyó los valores, extendiendo mejor el contraste entre 2 y 7.
+
+---
+
+### Código: Ecualización con OpenCV
+
+```{python}
+#| echo: true
+# Ecualización de histograma
+eq = cv2.equalizeHist(crop)
+
+# Calcular histogramas
+hist_orig = cv2.calcHist([crop], [0], None, [256], [0,256])
+hist_eq = cv2.calcHist([eq], [0], None, [256], [0,256])
+
+# Mostrar comparación
+plt.figure(figsize=(9,6))
+
+# Imagen original y su histograma
+plt.subplot(2,2,1)
+plt.imshow(crop, cmap='gray')
+plt.title("Imagen original")
+plt.axis('off')
+
+plt.subplot(2,2,3)
+plt.bar(np.arange(256), hist_orig.flatten(), color='gray')
+plt.title("Histograma original")
+plt.xlabel("Intensidad")
+plt.ylabel("Frecuencia")
+
+# Imagen ecualizada y su histograma
+plt.subplot(2,2,2)
+plt.imshow(eq, cmap='gray')
+plt.title("Imagen ecualizada")
+plt.axis('off')
+
+plt.subplot(2,2,4)
+plt.bar(np.arange(256), hist_eq.flatten(), color='gray')
+plt.title("Histograma ecualizado")
+plt.xlabel("Intensidad")
+plt.ylabel("Frecuencia")
+
+plt.tight_layout()
+plt.show()
+
+```
+
+---
+
+## Convolución en imágenes {.smaller}
+
+- La **convolución** es la operación matemática que permite aplicar un **kernel** o **máscara** sobre una imagen.
+- Cada píxel resultante se obtiene como combinación ponderada de sus vecinos:
+
+
+$$
+g(x,y) = \sum_{s=-a}^{a} \sum_{t=-b}^{b} H(s,t) \cdot f(x+s, y+t)
+$$
+
+- Donde:
+  - $f(x,y)$ = imagen original
+  - $g(x,y)$ = imagen filtrada
+  - $H$ = kernel o máscara (ej. 3x3, 5x5)
+
+- Es la **base de los filtros espaciales**:
+  - Suavizado  
+  - Realce de bordes  
+  - Detección de patrones
+
+---
+
+## Filtrado espacial {.smaller}
+
+- Consiste en aplicar una **máscara o kernel** $H$ a la imagen:  
+
+$$
+g(x,y) = \sum_{s=-a}^{a} \sum_{t=-b}^{b} H(s,t) \cdot f(x+s, y+t)
+$$
+
+- Donde:  
+  - $f(x,y)$ = imagen original  
+  - $g(x,y)$ = imagen filtrada  
+  - $H$ = kernel de tamaño $(2a+1) \times (2b+1)$  
+
+---
+
+### Ejemplo de kernel promedio 3x3 {.smaller}
+
+$$
+H = \frac{1}{9}
+\begin{bmatrix}
+1 & 1 & 1 \\
+1 & 1 & 1 \\
+1 & 1 & 1
+\end{bmatrix}
+$$
+
+
+---
+
+## Filtro Promedio (Blur) {.smaller}
+
+- El valor del píxel se reemplaza por el **promedio aritmético** de los píxeles en una ventana $k \times k$.  
+
+$$ 
+g(x,y) = \frac{1}{k^2} \sum_{s=-a}^{a} \sum_{t=-b}^{b} f(x+s, y+t)
+$$
+
+- Kernel:
+
+$$
+H = \frac{1}{k^2}
+\begin{bmatrix}
+1 & 1 & \cdots & 1 \\
+1 & 1 & \cdots & 1 \\
+\vdots & \vdots & \ddots & \vdots \\
+1 & 1 & \cdots & 1
+\end{bmatrix}
+$$
+
+---
+
+## Ejemplo paso a paso {.smaller}
+
+
+Imagen local (parche 3x3):
+
+$$
+\begin{bmatrix}
+10 & 20 & 30 \\
+40 & 50 & 60 \\
+70 & 80 & 90
+\end{bmatrix}
+$$
+
+Kernel de suavizado:
+
+$$
+\frac{1}{9}
+\begin{bmatrix}
+1 & 1 & 1 \\
+1 & 1 & 1 \\
+1 & 1 & 1
+\end{bmatrix}
+$$
+
+Resultado para el píxel central = $\tfrac{1}{9}(10+20+\cdots+90)=50$.
+
+
+---
+
+## ¿Qué pasa en los bordes? {.smaller}
+
+- Al aplicar un kernel, algunos vecinos quedan **fuera de la imagen**.
+- Estrategias comunes de relleno (*padding*):
+  - **Zero padding**: rellena con ceros.
+  - **Replicate padding**: repite el valor de la orilla.
+  - **Reflect padding**: refleja los valores como en un espejo.
+  - **Valid convolution**: solo se calculan píxeles donde el kernel cabe completo.
+
+---
+
+### Ejemplo en OpenCV
+
+```{python}
+#| echo: true
+import cv2
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Cargar imagen en escala de grises
+#img = cv2.imread("imagenes/frutas.jpg", cv2.IMREAD_GRAYSCALE)
+crop = img[:256,:256]
+
+# Kernel promedio 3x3
+kernel = np.ones((3,3), np.float32) / 9
+
+# Distintos modos de borde
+res_zero = cv2.filter2D(crop, -1, kernel, borderType=cv2.BORDER_CONSTANT)   # cero
+res_replicate = cv2.filter2D(crop, -1, kernel, borderType=cv2.BORDER_REPLICATE)
+res_reflect = cv2.filter2D(crop, -1, kernel, borderType=cv2.BORDER_REFLECT)
+
+# Mostrar resultados
+titles = ["Original", "Zero Padding", "Replicate", "Reflect"]
+images = [crop, res_zero, res_replicate, res_reflect]
+
+plt.figure(figsize=(12,6))
+for i, (im, title) in enumerate(zip(images, titles)):
+    plt.subplot(2,2,i+1)
+    plt.imshow(im, cmap='gray')
+    plt.title(title)
+    plt.axis('off')
+plt.tight_layout()
+plt.show()
+```
+
+---
+
+## Filtro Gaussiano {.smaller}
+
+::: {.columns}
+::: {.column width="60%"}
+- Utiliza una función **Gaussiana bidimensional** como kernel.  
+
+$$
+G(s,t) = \frac{1}{2\pi\sigma^2} \exp\left(-\frac{s^2+t^2}{2\sigma^2}\right)
+$$
+
+- Operación de filtrado:
+
+$$
+g(x,y) = \sum_{s=-a}^{a} \sum_{t=-b}^{b} G(s,t)\, f(x+s, y+t)
+$$
+
+- Normalizado:  
+
+$$
+\sum_{s,t} G(s,t) = 1
+$$
+:::
+
+::: {.column width="40%"}
+
+$$
+\frac{1}{9}
+\begin{bmatrix}
+1 & 2 & 1 \\
+2 & 4 & 2 \\
+1 & 2 & 1
+\end{bmatrix}
+$$
+
+:::
+:::
+
+
+---
+
+## Filtro de Mediana {.smaller}
+
+- Es un método **no lineal**.  
+- En una ventana $k \times k$, reemplaza el valor del píxel por la **mediana** de los valores en esa ventana.  
+
+$$
+g(x,y) = \operatorname{mediana}\{ f(x+s, y+t) \mid -a \leq s,t \leq a \}
+$$
+
+- Preserva bordes mejor que los filtros lineales.  
+- Muy eficaz contra ruido impulsivo ("sal y pimienta").  
+
+---
+
+## Resumen Comparativo {.smaller}
+
+| Filtro     | Fórmula | Naturaleza | Ventajas | Desventajas |
+|------------|---------|------------|----------|-------------|
+| **Promedio (Blur)** | Promedio aritmético | Lineal | Simple, rápido | Borra bordes y detalles |
+| **Gaussiano** | Ponderación con distribución normal | Lineal | Suavizado natural, controlado por $\sigma$ | Más costoso computacionalmente |
+| **Mediana** | Mediana de intensidades | No lineal | Preserva bordes, elimina ruido impulsivo | Menos eficiente en ventanas grandes |
+
+
+---
+
+### Código: Filtros en OpenCV
+
+```{python}
+#| echo: true
+# Filtros espaciales
+blur3 = cv2.blur(crop, (3,3))
+gauss11 = cv2.GaussianBlur(crop, (11,11), 0)
+median5 = cv2.medianBlur(crop, 5)
+
+# Mostrar resultados
+titles = ["Original", "Blur 3x3", "Gaussian 11x11", "Median 5"]
+images = [crop, blur3, gauss11, median5]
+
+plt.figure(figsize=(12,4))
+for i, (img, title) in enumerate(zip(images, titles)):
+    plt.subplot(1,4,i+1)
+    plt.imshow(img, cmap='gray')
+    plt.title(title)
+    plt.axis('off')
+plt.show()
+```
+
+---
+
+## Comparación visual y análisis
+
+- El filtro **blur** suaviza pero genera pérdida de detalle.  
+- El filtro **gaussiano** suaviza de forma más natural.  
+- El filtro **mediana** elimina ruido tipo “sal y pimienta” y preserva bordes.  
+
+---
+
+## Aprende
+
+Consulta y toma notas de los siguientes materiales:
+
+- Peguero Núñez, P. D. [Realce y restauración de imágenes](https://www.lpi.tel.uva.es/muitic/pim/docus/Realce_y_restauracion.pdf)  
+- Giménez-Palomares, F. et al. (2016). [Convolución y filtrado de imágenes](https://polipapers.upv.es/index.php/MSEL/article/download/4524/4724)  
+- León-Batallas, A. et al. (2020). [Revisión de métricas](https://recimundo.com/index.php/es/article/view/874/1372)  
+- Mazet, V. (2021). [Histogram transformations](https://vincmazet.github.io/bip/digital-images/transformations.html)  
+- Mazet, V. (2021). [Filtering](https://vincmazet.github.io/bip/digital-images/filtering.html)  
+- OpenCV. (s.f.). [Operaciones aritméticas](https://docs.opencv.org/3.4/d0/d86/tutorial_py_image_arithmetics.html)  
+
+---
+
+## Conclusión
+
+- El **histograma** describe la distribución de intensidades.  
+- La **ecualización** mejora el contraste redistribuyendo los niveles.  
+- Los **filtros espaciales** suavizan o reducen ruido:  
+  - Media → suaviza más, pero pierde bordes.  
+  - Gaussiano → transición suave, natural.  
+  - Mediana → preserva bordes, elimina ruido impulsivo.  
+- Comprender la **matemática de matrices y convolución** es clave para usar y diseñar filtros.  

@@ -1,0 +1,289 @@
+---
+title: "Transformaciones básicas con OpenCV"
+format:
+  html:
+    code-fold: true
+    self-contained: true    
+jupyter: python3
+---
+
+## Introducción
+
+En este documento aprenderemos a realizar **transformaciones geométricas básicas** sobre imágenes utilizando **OpenCV** en Python.  
+Estas operaciones son esenciales en el preprocesamiento de imágenes antes de aplicar técnicas más avanzadas.
+
+Transformaciones que cubriremos:
+
+- **Redimensionamiento (resize)**
+- **Recorte (crop)**
+- **Rotación**
+- **Traslación (desplazamiento)**
+
+---
+
+## Configuración inicial
+
+```{python}
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+from pathlib import Path
+
+# Función auxiliar para mostrar imágenes en color o grises
+def mostrar_img(img, titulo="Imagen", cmap=None):
+    plt.figure(figsize=(5,5))
+    if len(img.shape) == 2:  # Escala de grises
+        plt.imshow(img, cmap='gray')
+    else:  # Color (BGR → RGB)
+        plt.imshow(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
+    plt.title(titulo)
+    plt.axis('off')
+    plt.show()
+
+# Ruta a la carpeta de imágenes (ajustar según tu equipo)
+carpeta = Path("imagenes")
+
+# Cargar imagen de ejemplo
+img = cv2.imread(str(carpeta / "frutas.jpg"))
+mostrar_img(img, "Imagen original")
+
+
+```
+
+---
+
+## Redimensionamiento (Resize)
+
+
+El **redimensionamiento** cambia el tamaño de una imagen mediante un **escalamiento** en coordenadas.  
+Si una imagen $I$ tiene ancho $w$ y alto $h$, y queremos una imagen nueva $I'$ de tamaño $w' \times h'$, definimos factores:
+
+$$
+s_x = \frac{w'}{w},\qquad s_y = \frac{h'}{h}
+$$
+
+Geométricamente, el escalamiento se expresa como:
+
+$$
+\begin{bmatrix}
+x' \\
+y'
+\end{bmatrix}
+=
+\underbrace{
+\begin{bmatrix}
+s_x & 0 \\
+0 & s_y
+\end{bmatrix}
+}_{S}
+\begin{bmatrix}
+x \\
+y
+\end{bmatrix}
+$$
+
+Sin embargo, al construir la imagen de salida, OpenCV (y la mayoría de librerías) usan un **mapeo inverso**:  
+para cada pixel $(x',y')$ en la imagen resultante, se calcula de dónde proviene en la imagen original:
+
+$$
+\begin{bmatrix}
+x \\
+y
+\end{bmatrix}
+=
+S^{-1}
+\begin{bmatrix}
+x' \\
+y'
+\end{bmatrix}
+=
+\begin{bmatrix}
+\frac{1}{s_x} & 0 \\
+0 & \frac{1}{s_y}
+\end{bmatrix}
+\begin{bmatrix}
+x' \\
+y'
+\end{bmatrix}
+$$
+
+Como $x$ y $y$ suelen no ser enteros, se necesita **interpolación** para estimar el valor del pixel:
+
+- `INTER_NEAREST`: vecino más cercano (rápido, puede pixelar y dar aliasing).
+- `INTER_LINEAR`: bilineal (común para ampliar).
+- `INTER_AREA`: promediado por área (recomendado para reducir; actúa como antialiasing).
+
+
+```{python}
+# Imagen al doble de tamaño
+img_doble = cv2.resize(img, None, fx=2, fy=2, interpolation=cv2.INTER_LINEAR)
+mostrar_img(img_doble, "Doble tamaño")
+
+# Imagen a la mitad
+img_mitad = cv2.resize(img, None, fx=0.5, fy=0.5, interpolation=cv2.INTER_AREA)
+mostrar_img(img_mitad, "Mitad de tamaño")
+
+
+plt.imshow(cv2.cvtColor(img_doble, cv2.COLOR_BGR2RGB))
+plt.axis('off')
+plt.show()
+
+plt.imshow(cv2.cvtColor(img_mitad, cv2.COLOR_BGR2RGB))
+plt.axis('off')
+plt.show()
+
+print(img.shape)  # Dimensiones originales
+print(img_doble.shape)  # Dimensiones de la imagen al doble
+print(img_mitad.shape)  # Dimensiones de la imagen a la mitad
+```
+
+---
+
+## Recorte (Crop)
+
+
+Un **crop** (corte) consiste en extraer una **Región de Interés (ROI)** de la imagen.  
+Si la imagen original $I$ tiene dimensiones $h \times w$ (alto por ancho), entonces un crop rectangular definido por:
+
+- filas: desde $y_0$ hasta $y_1$
+- columnas: desde $x_0$ hasta $x_1$
+
+se expresa como una submatriz:
+
+$$
+I_{\text{crop}} = I[y_0:y_1,\; x_0:x_1]
+$$
+
+En Python/NumPy, los intervalos son semiabiertos: incluye $y_0$ y excluye $y_1$ (igual para $x$).  
+Esto produce una imagen con dimensiones:
+
+$$
+h' = y_1 - y_0,\qquad w' = x_1 - x_0
+$$
+
+### Implementación (NumPy/OpenCV)
+
+
+```{python}
+# Recorte de una región específica (y1:y2, x1:x2)
+crop = img[100:500, 200:600]
+mostrar_img(crop, "Recorte 400x400")
+```
+
+---
+
+## Rotación
+
+
+
+Una **rotación** en 2D transforma un punto $(x,y)$ a $(x',y')$.  
+Si rotamos un ángulo $\theta$ alrededor del **origen**, la transformación se expresa como:
+
+$$
+\begin{bmatrix}
+x' \\
+y'
+\end{bmatrix}
+=
+\underbrace{
+\begin{bmatrix}
+\cos\theta & -\sin\theta \\
+\sin\theta & \cos\theta
+\end{bmatrix}
+}_{R(\theta)}
+\begin{bmatrix}
+x \\
+y
+\end{bmatrix}
+$$
+
+En imágenes, normalmente no queremos rotar respecto al origen $(0,0)$, sino respecto al **centro** $(c_x, c_y)$.  
+Para rotar alrededor del centro, se realiza esta idea:
+
+1) **Trasladar** el centro al origen: $(x,y)\to(x-c_x, y-c_y)$  
+2) **Rotar** con $R(\theta)$  
+3) **Regresar** el origen al centro: $(x,y)\to(x+c_x, y+c_y)$
+
+Esa combinación se puede escribir como una transformación afín:
+
+$$
+\begin{bmatrix}
+x' \\
+y'
+\end{bmatrix}
+=
+\begin{bmatrix}
+a & b & t_x \\
+c & d & t_y
+\end{bmatrix}
+\begin{bmatrix}
+x \\
+y \\
+1
+\end{bmatrix}
+$$
+
+En el caso de rotación con escala $s$, OpenCV usa:
+
+$$
+a = s\cos\theta,\quad b = s\sin\theta,\quad
+c = -s\sin\theta,\quad d = s\cos\theta
+$$
+
+y el vector de traslación $(t_x,t_y)$ se elige para que el centro $(c_x,c_y)$ permanezca fijo:
+
+$$
+t_x = (1-a)c_x - b c_y,\qquad
+t_y = b c_x + (1-d)c_y
+$$
+
+```{python}
+# Obtener dimensiones
+(h, w) = img.shape[:2]
+centro = (w // 2, h // 2)
+
+# Matriz de rotación (10 grados)
+M_rot = cv2.getRotationMatrix2D(centro, 10, 1.0)
+rotada = cv2.warpAffine(img, M_rot, (w, h))
+mostrar_img(rotada, "Rotada 10°")
+```
+
+---
+
+## Traslación (Desplazamiento)
+
+
+Una **traslación** desplaza todos los pixeles de la imagen una cantidad fija. Si movemos **50 px a la derecha** y **30 px hacia abajo**, entonces:
+
+- \(x' = x + 50\)
+- \(y' = y + 30\)
+
+En OpenCV, esto se implementa con una matriz afín $2\times 3$:
+
+$$
+M =
+\begin{bmatrix}
+1 & 0 & 50 \\
+0 & 1 & 30
+\end{bmatrix}
+$$
+
+
+```{python}
+# Matriz de traslación: mover 50 px a la derecha y 30 px abajo
+M_tras = np.float32([[1, 0, 50], [0, 1, 30]])
+trasladada = cv2.warpAffine(img, M_tras, (w, h))
+mostrar_img(trasladada, "Trasladada (50px derecha, 30px abajo)")
+```
+
+---
+
+## Conclusión
+
+En este ejemplo hemos cubierto transformaciones geométricas básicas que son fundamentales para el preprocesamiento de imágenes:
+
+- **Resize** para ajustar el tamaño.
+- **Crop** para enfocar regiones de interés.
+- **Rotación y traslación** para reposicionar la imagen.
+
+Estas operaciones forman la base para tareas más complejas como la alineación y el registro de imágenes.

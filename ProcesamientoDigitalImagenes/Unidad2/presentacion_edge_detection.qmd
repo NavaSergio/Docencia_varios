@@ -1,0 +1,126 @@
+---
+title: "Detección de Bordes (Edge Detection)"
+subtitle: "Una herramienta fundamental en Visión por Computadora"
+author: "Tu Nombre"
+format:
+  revealjs:
+    theme: simple
+    logo: "https://quarto.org/images/quarto-logo.svg"
+    css: styles.css
+    menu: false
+editor: source
+---
+
+## ¿Qué es un Borde?
+
+Un borde es una **transición abrupta en la intensidad de los píxeles** (o color, en imágenes RGB). En la visión por computadora, es donde percibimos el fin de un objeto y el inicio de otro.
+
+![Imagen original de un gato](imagenes/gato.jpeg)
+
+---
+
+## ¿Por qué Detectar Bordes?
+
+Los bordes son la base para muchas tareas de visión por computadora.
+
+* **Simplificación de la imagen:** Reduce la cantidad de datos.
+* **Reconocimiento de objetos:** La base para identificar la forma.
+* **Segmentación de imágenes:** Dividir la imagen en objetos.
+* **Vehículos autónomos y robótica:** Detección de obstáculos.
+* **Medicina:** Análisis de imágenes médicas (ej. detección de tumores).
+
+---
+
+![Aplicaciones de la visión por computadora](imagenes/Computervision_banner.jpg)
+
+---
+
+## El Corazón de la Detección de Bordes: El Gradiente
+
+Un borde se detecta midiendo el **gradiente**, que es la magnitud de la tasa de cambio de intensidad.
+
+::: {.fragment}
+* Un gradiente grande significa un borde fuerte.
+* Un gradiente pequeño significa una región uniforme.
+:::
+
+![Gráfico de intensidad de píxeles mostrando el gradiente en los bordes](https://i.imgur.com/8x2cR7I.png)
+
+---
+
+## Operadores de Detección de Bordes
+
+Usamos **filtros** o **máscaras de convolución** para encontrar estos cambios.
+
+![Animación de una convolución](https://i.imgur.com/vH9Xq35.gif)
+
+---
+
+## Operador Sobel: Un Clásico y Eficaz
+
+El operador Sobel es uno de los más populares. Usa dos máscaras para detectar cambios horizontales y verticales.
+
+<div class="columns">
+  <div class="column">
+    ### Detección Horizontal (Gx)
+    $$ G_x = \begin{pmatrix} -1 & 0 & 1 \\ -2 & 0 & 2 \\ -1 & 0 & 1 \end{pmatrix} $$
+  </div>
+  <div class="column">
+    ### Detección Vertical (Gy)
+    $$ G_y = \begin{pmatrix} -1 & -2 & -1 \\ 0 & 0 & 0 \\ 1 & 2 & 1 \end{pmatrix} $$
+  </div>
+</div>
+
+---
+
+## Sobel en Acción
+
+El resultado de aplicar el filtro Sobel, que resalta los bordes.
+
+![Detección de bordes del gato con Sobel](https://i.imgur.com/eBwWqLp.png)
+
+---
+
+## Otros Operadores Comunes
+
+* **Prewitt:** Similar a Sobel, pero con kernels más simples.
+* **Laplaciano:** Opera con una sola máscara, pero es sensible al ruido.
+
+![Ejemplo del kernel Laplaciano](https://i.imgur.com/8s7d87m.png)
+
+---
+
+## Canny: El Estándar de Oro
+
+El detector de Canny es considerado el "óptimo" por su precisión y sus bordes de 1 píxel de ancho.
+
+::: {.fragment}
+1.  **Suavizado Gaussiano:** Reducir el ruido.
+2.  **Cálculo del Gradiente:** Encontrar los cambios.
+3.  **Supresión no máxima:** Adelgazar los bordes.
+4.  **Umbralización por histéresis:** Conectar los bordes.
+:::
+
+---
+
+## Canny en Acción: Resultados Superiores
+
+El resultado de Canny es más limpio y los bordes están mejor definidos.
+
+![Detección de bordes con el algoritmo Canny](https://i.imgur.com/eBwWqLp.png)
+
+---
+
+## Conclusión y Preguntas
+
+La detección de bordes es una herramienta poderosa y el primer paso para muchas tareas avanzadas de visión por computadora.
+
+* **¿Qué es un borde?** Un cambio de intensidad.
+* **¿Cómo se detecta?** Usando gradientes.
+* **¿Qué algoritmo es el mejor?** Depende de la aplicación, pero Canny es el estándar.
+
+---
+
+### ¡Gracias!
+
+¿Preguntas?

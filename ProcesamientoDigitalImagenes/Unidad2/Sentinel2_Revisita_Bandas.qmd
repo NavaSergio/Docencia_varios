@@ -1,0 +1,67 @@
+---
+title: "Sentinel-2: Revisita y características"
+format: revealjs
+---
+
+## Sentinel-2: Revisitas y características
+
+### Frecuencia de revisita
+- **Sentinel-2A**: cada **10 días**.  
+- **Sentinel-2B**: cada **10 días**, desfasado 5 días.  
+- **Combinados**: una nueva observación cada **5 días** en el ecuador (más frecuente en latitudes altas).
+
+```{python}
+import matplotlib.pyplot as plt
+import numpy as np
+
+dias = np.arange(0, 20, 1)
+s2a = [d for d in dias if d % 10 == 0]
+s2b = [d for d in dias if (d-5) % 10 == 0]
+
+plt.figure(figsize=(8, 2))
+plt.eventplot([s2a, s2b], 
+              lineoffsets=[1, 0], 
+              linelengths=0.4, 
+              colors=['blue', 'green'])
+
+plt.yticks([1, 0], ['Sentinel-2A', 'Sentinel-2B'])
+plt.xticks(np.arange(0, 21, 2))
+plt.xlabel("Días")
+plt.title("Revisita de Sentinel-2A y 2B (ciclo de 20 días)")
+plt.grid(axis='x', linestyle='--', alpha=0.6)
+plt.tight_layout()
+plt.show()
+```
+
+---
+
+## Bandas espectrales de Sentinel-2
+
+- **Total:** 13 bandas (VIS, NIR, SWIR).  
+- **Resoluciones espaciales:**  
+  - **10 m:** Bandas 2 (Blue), 3 (Green), 4 (Red), 8 (NIR).  
+  - **20 m:** Bandas 5, 6, 7, 8A (red-edge), 11, 12 (SWIR).  
+  - **60 m:** Bandas 1 (coastal aerosol), 9 (water vapor), 10 (cirrus).  
+
+| Resolución | Bandas principales |
+|------------|--------------------|
+| **10 m**  | 2, 3, 4, 8 |
+| **20 m**  | 5, 6, 7, 8A, 11, 12 |
+| **60 m**  | 1, 9, 10 |
+
+- **Cobertura global**: 290 km de ancho por pasada.  
+- **Aplicaciones**: monitoreo de vegetación, agua, suelo, cambios de uso de suelo, emergencias.  
+
+---
+
+## Glosario de términos
+
+- **VIS (Visible):** rango espectral que cubre la luz visible (azul, verde, rojo).  
+- **NIR (Near Infrared):** infrarrojo cercano, útil para vegetación y biomasa.  
+- **SWIR (Short-Wave Infrared):** infrarrojo de onda corta, usado en humedad de suelos, vegetación y nieve/hielo.  
+- **Red-edge:** zona de transición entre rojo y NIR, muy sensible a la salud de la vegetación.  
+- **Coastal aerosol (Banda 1):** usada para estudios atmosféricos y zonas costeras.  
+- **Water vapor (Banda 9):** detecta contenido de vapor de agua en la atmósfera.  
+- **Cirrus (Banda 10):** identifica nubes delgadas de cirros.  
+
+---

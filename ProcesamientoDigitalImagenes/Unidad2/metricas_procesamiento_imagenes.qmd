@@ -1,0 +1,530 @@
+---
+title: "Una revisión de las métricas aplicadas en el procesamiento de imágenes"
+subtitle: "Con ejemplos en Python"
+author: "Curso Tratamiento Digital de Imágenes"
+date: today
+format: 
+  revealjs:
+    theme: simple
+    slide-number: true
+    toc: true
+    incremental: true
+    footer: "Métricas en Procesamiento de Imágenes"
+    logo: "figs/logo-infotec.jpeg"  # si tienes un logo
+jupyter: python3
+---
+
+```{python}
+#| echo: false
+#| include: false
+
+# Setup - Importaciones generales
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+from skimage import data, img_as_float
+from skimage.metrics import mean_squared_error, peak_signal_noise_ratio, structural_similarity
+```
+
+## Agenda
+
+- Introducción a métricas de calidad
+- Métricas matemáticas básicas (MSE, PSNR)
+- Métricas perceptuales (SSIM)
+- Métricas para segmentación
+- Comparación práctica
+- Conclusiones y recomendaciones
+
+---
+
+## Introducción {.smaller}
+
+::: {.columns}
+::: {.column width="60%"} 
+### ¿Por qué métricas?
+- Evaluar **objetivamente** la calidad de imagen
+- Comparar diferentes algoritmos de procesamiento
+- Optimizar parámetros de procesamiento
+- Control de calidad automático
+
+### Tipos principales:
+- **Sin referencia**: evalúan calidad absoluta
+- **Con referencia**: comparan con imagen original
+:::
+
+::: {.column width="40%"}
+```{python}
+#| echo: false
+#| fig-width: 4
+#| fig-height: 3
+
+# Crear ejemplo usando la imagen camera
+original_demo = img_as_float(data.camera())[100:200, 100:200]  # crop pequeño
+
+# Diferentes tipos de degradación
+ruido_demo = original_demo + 0.1*np.random.randn(*original_demo.shape)
+ruido_demo = np.clip(ruido_demo, 0, 1)
+
+blur_demo = cv2.GaussianBlur(original_demo, (15,15), 5)
+
+# Mostrar comparación
+fig, axes = plt.subplots(1, 3, figsize=(9, 3))
+axes[0].imshow(original_demo, cmap='gray')
+axes[0].set_title("Original", fontsize=10)
+axes[1].imshow(ruido_demo, cmap='gray') 
+axes[1].set_title("Con ruido", fontsize=10)
+axes[2].imshow(blur_demo, cmap='gray')
+axes[2].set_title("Con blur", fontsize=10)
+
+for ax in axes:
+    ax.axis('off')
+
+plt.tight_layout()
+plt.show()
+```
+:::
+:::
+
+- La calidad de imagen después del procesamiento se evalúa mediante **métricas cuantitativas**.  
+- Dos grandes enfoques:
+  - **Métricas matemáticas:** MSE, PSNR.  
+  - **Métricas perceptuales:** inspiradas en el sistema visual humano (SSIM).  
+- También se usan métricas en tareas específicas como **segmentación**.  
+
+---
+
+## Ejemplo base en Python
+
+```{python}
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+from skimage import data, img_as_float
+from skimage.metrics import mean_squared_error, peak_signal_noise_ratio, structural_similarity
+
+# Imagen original de prueba
+original = img_as_float(data.camera())
+
+# Simulación: imagen degradada (ruido gaussiano)
+ruido = original + 0.05*np.random.randn(*original.shape)
+ruido = np.clip(ruido, 0, 1)
+
+# Visualización
+fig, axes = plt.subplots(1,2, figsize=(10,5))
+axes[0].imshow(original, cmap="gray"); axes[0].set_title("Original")
+axes[1].imshow(ruido, cmap="gray"); axes[1].set_title("Con ruido")
+plt.show()
+```
+
+
+
+
+```{python}
+mse = mean_squared_error(original, ruido)
+psnr = peak_signal_noise_ratio(original, ruido, data_range=1.0)
+print(f"MSE: {mse:.6f}")
+print(f"PSNR: {psnr:.2f} dB")
+```
+
+---
+
+# Compresión: Métricas clásicas 
+
+## Error Cuadrático Medio (MSE) {.smaller .scrollable}
+
+$$
+MSE = \frac{1}{MN}\sum_{x=1}^M \sum_{y=1}^N [I(x,y) - I'(x,y)]^2
+$$
+
+
+
+- **Definición**: mide la diferencia promedio al cuadrado entre la imagen original $I(x,y)$ y la procesada $I'(x,y)$.  
+- **M, N**: dimensiones de la imagen.  
+- Un valor de **MSE = 0** significa que ambas imágenes son **idénticas**.  
+
+### Interpretación
+
+- MSE evalúa el error absoluto, pero no considera cómo lo percibe el ojo humano.  
+- Valores más bajos → imágenes más parecidas.  
+- Valores más altos → mayor diferencia entre original y procesada.  
+
+### Rangos típicos (8 bits, escala de 0–255)
+
+- **0 – 100** → diferencias imperceptibles o mínimas.  
+- **100 – 1000** → diferencias visibles pero moderadas.  
+- **> 1000** → diferencias notables, degradación fuerte.  
+
+Nota: el rango depende del tamaño y tipo de imagen, por lo que se suele reportar junto con **PSNR** para una mejor interpretación.  
+
+## Proporción Señal-Ruido Pico (PSNR) {.smaller .scrollable}
+
+
+$$
+PSNR = 10 \cdot \log_{10}\left(\frac{(maxI)^2}{MSE}\right)
+$$
+
+
+- **Definición**: mide la relación entre la señal máxima de la imagen y el ruido introducido por el procesamiento (compresión, transmisión, etc.).  
+- **maxI**: intensidad máxima posible de un píxel (255 en imágenes de 8 bits).  
+- **MSE**: error cuadrático medio entre la imagen original y la reconstruida.  
+
+
+### Interpretación
+
+- Valores más altos de PSNR → **mejor calidad** (menos ruido/distorsión).  
+- Valores bajos de PSNR → mayor degradación visual.  
+
+### Rangos típicos
+
+- **> 40 dB** → calidad excelente, casi indistinguible del original.  
+- **30–40 dB** → calidad buena, diferencias leves.  
+- **20–30 dB** → calidad aceptable pero con artefactos visibles.  
+- **< 20 dB** → calidad pobre, distorsión severa.  
+
+---
+
+## Ejemplo: Compresión JPEG
+
+```{python}
+# Guardamos y leemos con compresión JPEG
+cv2.imwrite("temp.jpg", (original*255).astype(np.uint8), [int(cv2.IMWRITE_JPEG_QUALITY), 20])
+jpeg = cv2.imread("temp.jpg", cv2.IMREAD_GRAYSCALE)/255.0
+
+# Visualización
+fig, axes = plt.subplots(1,2, figsize=(10,5))
+axes[0].imshow(original, cmap="gray"); axes[0].set_title("Original")
+axes[1].imshow(jpeg, cmap="gray"); axes[1].set_title("JPEG Q=20")
+plt.show()
+
+
+mse_jpeg = mean_squared_error(original, jpeg)
+psnr_jpeg = peak_signal_noise_ratio(original, jpeg, data_range=1.0)
+
+print("\nMétricas para compresión JPEG:")
+print(f"MSE: {mse_jpeg:.6f}")
+print(f"PSNR: {psnr_jpeg:.2f} dB")
+```
+
+---
+
+
+## Segmentación: Métricas (ejemplo) {.smaller .scrollable}
+
+### Coeficiente de Jaccard
+
+$$
+J(A,B) = \frac{|A \cap B|}{|A \cup B|}
+$$
+
+- **Definición**: mide la similitud entre dos conjuntos de píxeles:  
+  - $A$: máscara de referencia (segmentación "real" o ground truth).  
+  - $B$: máscara obtenida por el algoritmo de segmentación.  
+- Rango: $0 \leq J(A,B) \leq 1$.  
+
+### Interpretación
+
+- **J = 1** → las dos máscaras son idénticas (segmentación perfecta).  
+- **J cercano a 0** → muy poca coincidencia entre predicción y referencia.  
+- Valores intermedios indican el grado de solapamiento.  
+
+### Usos típicos
+
+- Evaluación de **segmentación médica** (órganos, tumores).  
+- Comparación de **detección de objetos** en imágenes satelitales.  
+- Validación de algoritmos de **visión por computadora**.  
+
+---
+
+## Ejemplo práctico: Coeficiente de Jaccard
+
+```{python}
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.metrics import jaccard_score
+
+# Máscara de referencia (círculo)
+x, y = np.ogrid[:100, :100]
+mask_ref = (x-50)**2 + (y-50)**2 <= 30**2   # círculo en el centro
+
+# Máscara predicha (círculo desplazado)
+mask_pred = (x-55)**2 + (y-50)**2 <= 30**2
+
+# Cálculo del coeficiente de Jaccard
+jaccard = jaccard_score(mask_ref.ravel(), mask_pred.ravel())
+print("Coeficiente de Jaccard:", jaccard)
+
+# Visualización
+fig, axes = plt.subplots(1,3, figsize=(10,3))
+axes[0].imshow(mask_ref, cmap="gray"); axes[0].set_title("Máscara real (A)")
+axes[1].imshow(mask_pred, cmap="gray"); axes[1].set_title("Máscara predicha (B)")
+axes[2].imshow(mask_ref & mask_pred, cmap="gray"); axes[2].set_title("Intersección A∩B")
+plt.show()
+```
+
+---
+
+```{python}
+from skimage.filters import threshold_otsu
+
+# Umbralado Otsu
+thresh = threshold_otsu(original)
+mask_ref = original > thresh  # máscara de referencia
+mask_pred = ruido > thresh    # máscara sobre imagen ruidosa
+
+
+
+# Visualización
+fig, axes = plt.subplots(1,3, figsize=(10,3))
+axes[0].imshow(mask_ref, cmap="gray"); axes[0].set_title("Máscara real (A)")
+axes[1].imshow(mask_pred, cmap="gray"); axes[1].set_title("Máscara predicha (B)")
+axes[2].imshow(mask_ref & mask_pred, cmap="gray"); axes[2].set_title("Intersección A∩B")
+plt.show()
+
+# Jaccard
+from sklearn.metrics import jaccard_score
+jaccard = jaccard_score(mask_ref.ravel(), mask_pred.ravel())
+print(f"Coeficiente de Jaccard: {jaccard:.4f}")
+```
+
+---
+
+## Calidad perceptual: SSIM {.smaller .scrollable}
+
+### Structural Similarity Index (SSIM)
+
+$$
+SSIM(x,y) = \frac{(2\mu_x\mu_y + c_1)(2\sigma_{xy} + c_2)}{(\mu_x^2 + \mu_y^2 + c_1)(\sigma_x^2 + \sigma_y^2 + c_2)}
+$$
+
+- **Definición**: mide la similitud perceptual entre dos imágenes, considerando:
+  - **Luminancia** (brillo promedio).  
+  - **Contraste** (desviación estándar).  
+  - **Estructura** (correlación local).  
+
+### Interpretación
+
+- Rango: $-1 \leq SSIM \leq 1$  
+- $SSIM = 1$ → imágenes idénticas.  
+- $SSIM \approx 0$ → baja similitud estructural.  
+- A diferencia de $MSE$ y $PSNR$, $SSIM$ se correlaciona mejor con la percepción humana.  
+
+
+---
+
+## Ejmplo práctico calidad perceptual: SSIM {.smaller .scrollable}
+
+Calidad perceptual entre original y jpeg
+
+```{python}
+ssim, diff = structural_similarity(original, jpeg, full=True, data_range=1.0)
+ssim
+```
+
+```{python}
+# Visualizar mapa de diferencias SSIM
+plt.imshow(diff, cmap="hot")
+plt.colorbar()
+plt.title("Mapa de similitud estructural")
+plt.show()
+```
+
+---
+
+## Limitaciones del MSE y PSNR {.smaller .scrollable}
+
+::: {.columns}
+::: {.column width="25%"}
+```{python}
+# Crear dos imágenes con mismo MSE pero distinta percepción
+import numpy as np
+import matplotlib.pyplot as plt
+from skimage.metrics import mean_squared_error
+
+img1 = np.zeros((100, 100))
+img1[45:55, 45:55] = 1  # cuadrado blanco
+
+img2 = img1.copy()
+img2 += 0.1 * np.random.randn(100, 100)  # ruido gaussiano
+img2 = np.clip(img2, 0, 1)
+
+img3 = np.roll(img1, 5, axis=1)  # desplazamiento horizontal
+
+mse1 = mean_squared_error(img1, img2)
+mse2 = mean_squared_error(img1, img3)
+
+print(f"MSE ruido: {mse1:.6f}")
+print(f"MSE desplazamiento: {mse2:.6f}")
+```
+:::
+
+::: {.column width="75%"}
+```{python}
+fig, axes = plt.subplots(1, 3, figsize=(12, 4))
+axes[0].imshow(img1, cmap='gray'); axes[0].set_title("Original")
+axes[1].imshow(img2, cmap='gray'); axes[1].set_title("Con ruido")
+axes[2].imshow(img3, cmap='gray'); axes[2].set_title("Desplazado")
+plt.tight_layout()
+plt.show()
+```
+
+**Observación**:  
+- $MSE$ valores similares en ambas imágenes.  
+- Sin embargo, la percepción es muy distinta:  
+  - Con ruido → el objeto se reconoce bien.  
+  - Desplazado → el objeto cambia completamente de posición.  
+- Conclusión: $MSE$ y $PSNR$ no siempre reflejan la **calidad perceptual**.  
+:::
+:::
+
+---
+
+# Métricas de Segmentación 
+
+---
+
+## Segmentación: Matriz de confusión {.smaller .scrollable}
+
+**Definición**: tabla que resume los resultados de un clasificador (o segmentación) comparando etiquetas **reales** ($y_{true}$) contra las **predichas** ($y_{pred}$).  
+
+### Estructura
+
+|                | Predicho Positivo | Predicho Negativo |
+|----------------|------------------|------------------|
+| **Verdadero Positivo (TP)** | píxeles de objeto correctamente detectados |  |
+| **Verdadero Negativo (TN)** |  | píxeles de fondo correctamente detectados |
+| **Falso Positivo (FP)** | píxeles clasificados como objeto pero que eran fondo |  |
+| **Falso Negativo (FN)** | píxeles de objeto que el algoritmo no detectó |  |
+
+### Métricas derivadas
+
+**Precisión**: 
+
+$$
+Precision = \frac{TP}{TP+FP}
+$$  
+
+(qué tan confiables son las detecciones positivas).  
+
+**Recall / Sensibilidad**: 
+
+$$
+Recall = \frac{TP}{TP+FN}
+$$  
+
+(qué tanto detectamos de lo que realmente había).  
+
+**F1-Score**: media armónica entre Precisión y Recall.  
+
+---
+
+### Matriz de confusión
+```{python}
+from sklearn.metrics import confusion_matrix, classification_report
+import seaborn as sns
+
+# Crear ejemplo de segmentación
+y_true = mask_ref.ravel()
+y_pred = mask_pred.ravel()
+
+cm = confusion_matrix(y_true, y_pred)
+
+# Visualizar matriz de confusión
+plt.figure(figsize=(6,4))
+sns.heatmap(cm, annot=True, fmt='d', cmap='Blues')
+plt.title('Matriz de Confusión')
+plt.ylabel('Verdadero')
+plt.xlabel('Predicho')
+plt.show()
+
+# Métricas derivadas
+from sklearn.metrics import precision_score, recall_score, f1_score
+
+precision = precision_score(y_true, y_pred)
+recall = recall_score(y_true, y_pred)
+f1 = f1_score(y_true, y_pred)
+
+print(f"Precisión: {precision:.4f}")
+print(f"Sensibilidad (Recall): {recall:.4f}")
+print(f"F1-Score: {f1:.4f}")
+```
+
+---
+
+## Comparación de Métricas {.smaller}
+
+```{python}
+# Tabla comparativa de diferentes degradaciones
+degradaciones = {
+    'Original': original,
+    'Ruido Gaussiano': ruido,
+    'JPEG Q=20': jpeg,
+    'Blur': cv2.GaussianBlur(original, (15,15), 5)
+}
+
+resultados = []
+for nombre, img in degradaciones.items():
+    if nombre != 'Original':
+        mse_val = mean_squared_error(original, img)
+        psnr_val = peak_signal_noise_ratio(original, img, data_range=1.0)
+        ssim_val, _ = structural_similarity(original, img, full=True, data_range=1.0)
+        resultados.append([nombre, mse_val, psnr_val, ssim_val])
+
+import pandas as pd
+df = pd.DataFrame(resultados, columns=['Degradación', 'MSE', 'PSNR (dB)', 'SSIM'])
+print(df.to_string(index=False, float_format='%.4f'))
+```
+
+### Interpretación:
+
+- **PSNR > 30 dB**: Buena calidad
+- **SSIM > 0.9**: Muy similar estructuralmente
+- **MSE < 0.01**: Diferencia baja (en rango [0,1])
+
+---
+
+## Recomendaciones Prácticas {.smaller}
+
+::: {.columns}
+::: {.column width="50%"}
+### Por tarea:
+
+**Compresión de imágenes:**
+
+- PSNR para comparación rápida
+- SSIM para calidad perceptual
+
+**Restauración de imágenes:**
+
+- SSIM (correlaciona mejor con percepción)
+- MSE para optimización
+
+**Segmentación:**
+
+- IoU (Jaccard) para detección de objetos
+- F1-Score para clasificación píxel a píxel
+:::
+
+::: {.column width="50%"}
+### Limitaciones:
+
+- **MSE/PSNR**: No consideran estructura visual
+- **SSIM**: Computacionalmente más costoso
+- **Métricas de segmentación**: Sensibles a desbalance de clases
+
+### Buenas prácticas:
+
+- Usar múltiples métricas
+- Validar con evaluación humana
+- Considerar el contexto de la aplicación
+:::
+:::
+
+## Referencias y Recursos {.smaller}
+
+### Papers fundamentales:
+- Wang et al. (2004): "Image quality assessment: from error visibility to structural similarity"
+- Sheikh & Bovik (2006): "Image information and visual quality"
+
+### Librerías útiles:
+- **scikit-image**: métricas básicas
+- **pytorch-fid**: para deep learning
