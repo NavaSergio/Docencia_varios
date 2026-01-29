@@ -1,0 +1,176 @@
+---
+title: "Revisión Sistemática de la Literatura"
+subtitle: "Ciencia de Datos y Aplicaciones Industriales"
+author: "Nombre del autor"
+date: "`r Sys.Date()`"
+lang: es
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    number-sections: true
+  pdf:
+    toc: true
+    number-sections: true
+    geometry: margin=1in
+execute:
+  echo: true
+  warning: false
+  message: false
+bibliography: referencias.bib
+csl: apa.csl
+---
+
+# Introducción
+
+La revisión sistemática de la literatura (RSL) es un estudio secundario cuyo objetivo es identificar, evaluar y sintetizar de manera rigurosa la evidencia empírica existente sobre una pregunta de investigación claramente definida. En el contexto de la **ciencia de datos y las aplicaciones industriales**, una RSL permite fundamentar decisiones metodológicas, seleccionar modelos analíticos y detectar vacíos de investigación relevantes para la práctica.
+
+Este documento presenta una revisión sistemática orientada a aplicaciones industriales de ciencia de datos, tales como predicción, detección de anomalías, optimización de procesos y análisis de riesgo.
+
+# Objetivo de la revisión
+
+El objetivo general de esta revisión sistemática es:
+
+> Sintetizar la evidencia empírica existente sobre ______________________ en el contexto de ______________________.
+
+## Objetivos específicos
+
+- Identificar los principales enfoques metodológicos utilizados.
+- Comparar el desempeño de distintas técnicas de ciencia de datos.
+- Analizar los contextos industriales donde se han aplicado.
+- Identificar limitaciones y líneas de investigación futura.
+
+# Preguntas de investigación
+
+Las preguntas de investigación (Research Questions, RQ) guían todo el proceso de la revisión.
+
+- **RQ1**: ¿Qué técnicas de ciencia de datos se han utilizado para ______________________?
+- **RQ2**: ¿En qué sectores o contextos industriales se han aplicado estas técnicas?
+- **RQ3**: ¿Qué métricas y esquemas de validación se reportan con mayor frecuencia?
+- **RQ4**: ¿Qué ventajas y limitaciones se identifican en la evidencia empírica?
+
+# Metodología
+
+## Protocolo de la revisión
+
+La revisión se llevó a cabo siguiendo un protocolo definido *a priori*, con el fin de garantizar transparencia, reproducibilidad y minimizar sesgos.
+
+## Estrategia de búsqueda
+
+### Fuentes de información
+
+Se consultaron las siguientes bases de datos científicas:
+
+- Scopus
+- Web of Science
+- IEEE Xplore
+- ACM Digital Library
+- ScienceDirect
+- Google Scholar (búsqueda complementaria)
+
+### Cadenas de búsqueda
+
+Las cadenas de búsqueda se construyeron a partir de las preguntas de investigación, combinando términos relacionados con:
+
+- Ciencia de datos / machine learning
+- Tipo de problema (predicción, clasificación, anomalías, etc.)
+- Contexto industrial
+
+**Ejemplo**:
+
+```
+("anomaly detection" OR "outlier detection")
+AND ("machine learning" OR "statistical model")
+AND (industry OR industrial)
+```
+
+## Criterios de inclusión y exclusión
+
+### Criterios de inclusión
+
+- Estudios empíricos con datos reales.
+- Aplicaciones en contextos industriales o productivos.
+- Reporte de métricas cuantitativas de desempeño.
+- Publicaciones arbitradas.
+
+### Criterios de exclusión
+
+- Estudios puramente teóricos o conceptuales.
+- Opiniones, editoriales o revisiones narrativas.
+- Estudios sin descripción clara del diseño experimental.
+
+## Proceso de selección de estudios
+
+El proceso de selección se realizó en las siguientes etapas:
+
+1. Revisión de título y resumen.
+2. Revisión de texto completo.
+3. Evaluación de calidad metodológica.
+
+Un diagrama de flujo resume el proceso de selección.
+
+## Evaluación de calidad
+
+La calidad metodológica de los estudios se evaluó considerando:
+
+- Claridad del objetivo y del problema abordado.
+- Adecuación del diseño experimental.
+- Descripción del conjunto de datos.
+- Métricas y validación empleadas.
+- Reproducibilidad del estudio.
+
+# Extracción de datos
+
+Para cada estudio incluido se extrajo la siguiente información:
+
+- Autor y año
+- Sector industrial
+- Tipo de problema
+- Técnicas de ciencia de datos empleadas
+- Tamaño y tipo de datos
+- Métricas de evaluación
+- Principales resultados
+- Limitaciones reportadas
+
+# Síntesis de resultados
+
+## Caracterización general de los estudios
+
+Se presenta una descripción global de los estudios incluidos, considerando año de publicación, sector industrial y tipo de problema.
+
+## Técnicas de ciencia de datos utilizadas
+
+Se analizan las técnicas más frecuentes, tales como:
+
+- Modelos estadísticos clásicos
+- Árboles y métodos de ensamble
+- Redes neuronales profundas
+- Métodos híbridos
+
+## Métricas y esquemas de validación
+
+Se sintetizan las métricas más utilizadas (MAE, RMSE, AUC, etc.) y los esquemas de validación empleados.
+
+## Comparación de resultados
+
+Cuando es posible, se comparan los resultados reportados entre distintos enfoques, identificando patrones consistentes o contradictorios.
+
+# Discusión
+
+Los resultados se discuten a la luz de las preguntas de investigación, resaltando implicaciones prácticas para la industria y para el diseño de soluciones de ciencia de datos.
+
+# Limitaciones de la revisión
+
+Esta revisión presenta las siguientes limitaciones:
+
+- Posible sesgo de publicación.
+- Restricción a bases de datos seleccionadas.
+- Heterogeneidad en métricas y diseños experimentales.
+
+# Conclusiones y trabajo futuro
+
+La revisión sistemática permite identificar tendencias consolidadas, áreas maduras y vacíos de investigación en aplicaciones industriales de ciencia de datos. A partir de los resultados, se proponen líneas de investigación futura y recomendaciones metodológicas.
+
+# Referencias
+
+Las referencias se presentan siguiendo el formato APA.

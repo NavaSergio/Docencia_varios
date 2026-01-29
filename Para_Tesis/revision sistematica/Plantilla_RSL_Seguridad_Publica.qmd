@@ -1,0 +1,163 @@
+---
+title: "Revisión Sistemática de la Literatura"
+subtitle: "Ciencia de Datos Aplicada a Seguridad Pública"
+author: "Nombre del autor"
+date: "`r Sys.Date()`"
+lang: es
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    number-sections: true
+  pdf:
+    toc: true
+    number-sections: true
+    geometry: margin=1in
+execute:
+  echo: true
+  warning: false
+  message: false
+bibliography: referencias.bib
+csl: apa.csl
+---
+
+
+# Introducción
+
+La seguridad pública genera datos heterogéneos (incidencia delictiva, llamadas de emergencia, victimización, patrullaje, movilidad, sensores, redes sociales), usualmente con sesgos de reporte y restricciones legales/éticas. Una RSL en este tema debe evaluar no solo desempeño predictivo, sino también criterios de equidad, explicabilidad, validez causal y riesgos de uso (p. ej., retroalimentación policial y sesgos por vigilancia).
+
+# Objetivo de la revisión
+
+El objetivo general de esta revisión sistemática es:
+
+> Sintetizar la evidencia empírica sobre el uso de ciencia de datos para ______________________ en seguridad pública, considerando desempeño, equidad y consideraciones éticas, en el contexto de ______________________.
+
+**Unidad de análisis sugerida**: evento/registro, zona-tiempo (celdas espacio-temporales) o individuo (si aplica), según el problema y las restricciones de privacidad.
+
+
+## Objetivos específicos
+
+- Identificar los principales enfoques metodológicos utilizados.
+- Comparar el desempeño de distintas técnicas y familias de modelos.
+- Analizar los contextos de aplicación y condiciones de despliegue.
+- Identificar limitaciones, sesgos y líneas de investigación futura.
+
+# Preguntas de investigación
+
+Las preguntas de investigación (Research Questions, RQ) guían todo el proceso de la revisión.
+
+- **RQ1**: ¿Qué problemas se abordan (predicción de hotspots, despliegue de recursos, detección de patrones, análisis de redes, clasificación de incidentes)?
+- **RQ2**: ¿Qué fuentes de datos se emplean y cómo se tratan sesgos de subreporte y calidad de registro?
+- **RQ3**: ¿Qué modelos se usan (espacio-temporales, ML, DL, grafos) y qué variables explicativas son más frecuentes?
+- **RQ4**: ¿Qué métricas se reportan y cuáles corresponden a utilidad operativa (p. ej., PAI, hit rate, AUC, precisión@k)?
+- **RQ5**: ¿Qué evidencia se reporta sobre equidad/impacto diferencial y mitigación de sesgos?
+- **RQ6**: ¿Se reportan evaluaciones cuasi-experimentales o de impacto (antes-después, DID, RDD) además de predicción?
+
+# Metodología
+
+## Protocolo de la revisión
+
+La revisión se llevó a cabo siguiendo un protocolo definido *a priori*, con el fin de garantizar transparencia, reproducibilidad y minimizar sesgos.
+
+## Estrategia de búsqueda
+
+### Fuentes de información
+
+Se consultaron bases de datos científicas (p. ej., Scopus, Web of Science, IEEE Xplore, ACM DL, ScienceDirect) y búsqueda complementaria en Google Scholar. Cuando el tema lo requiera, se consideran repositorios de *preprints* y literatura gris (p. ej., informes técnicos, documentos institucionales), documentando su tratamiento metodológico.
+
+### Cadenas de búsqueda
+
+Las cadenas de búsqueda se construyeron a partir de las preguntas de investigación, combinando términos relacionados con el problema, la familia de métodos y el contexto de aplicación.
+
+**Ejemplo de cadena**:
+
+```
+("public safety" OR policing OR crime OR "crime prediction" OR "hotspot" OR "predictive policing")
+AND ("machine learning" OR "spatiotemporal" OR "deep learning" OR "graph" OR "anomaly detection")
+AND (fairness OR bias OR ethics OR accountability OR explainability)
+```
+
+## Criterios de inclusión y exclusión
+
+### Criterios de inclusión
+
+- Estudios empíricos con datos reales (o datos sintéticos claramente justificados).
+- Descripción clara del conjunto de datos y del protocolo de validación.
+- Reporte de métricas cuantitativas (y, cuando aplique, evaluación operativa).
+- Publicaciones arbitradas; opcionalmente literatura gris con criterios explícitos de calidad.
+
+### Criterios de exclusión
+
+- Estudios puramente conceptuales sin evaluación empírica.
+- Reportes sin definición operativa del objetivo o sin metodología reproducible.
+- Estudios sin métricas, sin validación o con información insuficiente para extracción.
+
+## Proceso de selección de estudios
+
+El proceso de selección se realizó en etapas: (1) título/resumen, (2) texto completo y (3) evaluación de calidad. Se reporta el número de estudios en cada etapa y las razones de exclusión.
+
+## Evaluación de calidad
+
+La calidad metodológica se evaluó considerando, al menos:
+
+- Claridad del objetivo y del diseño experimental.
+- Descripción del conjunto de datos (origen, cobertura, sesgos, preprocesamiento).
+- Adecuación del esquema de validación (p. ej., *train/test*, CV, *backtesting*).
+- Elección de métricas y análisis de incertidumbre.
+- Reproducibilidad (código, hiperparámetros, semillas, disponibilidad de datos).
+- Riesgo de sesgo y validez externa (generalización a otros contextos).
+
+# Extracción de datos
+
+Para cada estudio incluido se extrajo la siguiente información (ajustable al tema):
+
+- Autor y año
+- País/ciudad y contexto institucional
+- Problema: hotspot/patrullaje/clasificación/detección/análisis de redes
+- Unidad de análisis (espacio-tiempo, evento, individuo) y granularidad
+- Fuentes de datos (reportes policiales, 911, denuncias, movilidad, etc.)
+- Preprocesamiento (geocodificación, agregación, imputación, anonimización)
+- Modelo(s) y comparadores (*baselines*)
+- Esquema de validación (temporal, espacial, espacio-temporal) y control de leakage
+- Métricas (AUC, F1, precision@k, PAI, hit rate) y evaluación operativa
+- Evidencia sobre sesgos/equidad (métricas, auditorías, mitigación)
+- Consideraciones éticas/legales y gobernanza (privacidad, consentimiento, uso responsable)
+- Resultados y limitaciones (generalización, *feedback loops*)
+
+# Síntesis de resultados
+
+## Panorama de problemas y datos
+Se clasifica la literatura por tipo de problema y por fuentes de datos, destacando sesgos de medición y cobertura.
+
+## Modelos y enfoques espacio-temporales
+Se sintetizan métodos estadísticos y de ML/DL (incluyendo grafos) y su adecuación al tipo de señal (raridad, *burstiness*, estacionalidad).
+
+## Validación y métricas operativas
+Se comparan estrategias de validación temporal/espacial y métricas orientadas a despliegue (PAI, precision@k).
+
+## Equidad, ética y gobernanza
+Se resume evidencia sobre impacto diferencial, auditorías de sesgo, mitigación y prácticas de gobernanza.
+
+## Evidencia de impacto
+Se identifican estudios con evaluación de impacto (cuasi-experimentos) y se distinguen de resultados meramente predictivos.
+
+# Discusión
+
+Los resultados se discuten a la luz de las preguntas de investigación, resaltando implicaciones prácticas (despliegue, mantenimiento, monitoreo, equidad, privacidad, gobernanza) y recomendaciones metodológicas para estudios futuros.
+
+# Limitaciones de la revisión
+
+Esta revisión presenta las siguientes limitaciones:
+
+- Posible sesgo de publicación y sesgo por idioma.
+- Restricción a bases de datos seleccionadas y a la cobertura temporal definida.
+- Heterogeneidad en datos, métricas y diseños experimentales.
+- Restricciones de acceso a datos y diferencias legales pueden limitar replicabilidad y comparabilidad.
+
+# Conclusiones y trabajo futuro
+
+La revisión sistemática permite identificar tendencias consolidadas, áreas maduras y vacíos de investigación. A partir de la síntesis, se proponen líneas de trabajo futuro y recomendaciones prácticas para investigación y despliegue en entornos reales.
+
+# Referencias
+
+Las referencias se presentan siguiendo el formato APA.
