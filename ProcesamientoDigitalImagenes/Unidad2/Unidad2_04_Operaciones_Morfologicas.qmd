@@ -1,0 +1,810 @@
+---
+title: "Unidad 2.4 – Operaciones Morfológicas"
+subtitle: "Tratamiento Digital de Imágenes"
+author: 
+  - name: Sergio M. Nava Muñoz
+    id: sn
+    email: s3rgio.nava@gmail.com
+    affiliation: 
+      - id: cimat
+        name: CIMAT/INFOTEC
+        city: Aguascalientes
+        state: Ags
+format: 
+  revealjs:
+    slide-number: true
+    theme: simple
+    footer: "CIMAT – INFOTEC"
+    css: style.css
+    chalkboard: true
+    menu: true
+    navigation-mode: linear
+    progress: true
+    transition: slide
+    background-transition: fade 
+    title-slide-attributes:
+      data-background-image: figs/DCCD.png
+      data-background-size: cover
+      data-background-opacity: "0.3"
+    toc: true
+    toc-depth: 2
+    toc-title: "Contenido"
+    code-fold: true
+    code-line-numbers: true
+    code-copy: true
+date: 2025-02-19
+---
+
+## Objetivos de aprendizaje
+
+- Comprender los fundamentos de la morfología matemática  
+- Aplicar binarización (threshold simple y Otsu)  
+- Implementar erosión y dilatación  
+- Utilizar operaciones compuestas (apertura y cierre)  
+- Reconocer aplicaciones prácticas de morfología  
+
+---
+
+## ¿Qué es la morfología matemática? {.smaller}
+
+::: {.columns}
+::: {.column width="60%"}
+- Conjunto de técnicas para analizar la **forma** de objetos en imágenes  
+- Se basa en la **teoría de conjuntos**  
+- Principalmente aplicada a **imágenes binarias** (blanco/negro)  
+- Usa un **elemento estructurante** (kernel) para explorar la imagen  
+
+**Aplicaciones:**
+
+- Eliminación de ruido  
+- Extracción de componentes  
+- Detección de formas  
+- Preprocesamiento para segmentación  
+:::
+
+::: {.column width="40%"}
+![Morfología](https://docs.opencv.org/4.x/morph21.gif){width=350}
+:::
+:::
+
+---
+
+## Paso previo: Binarización {.smaller}
+
+Antes de aplicar morfología, necesitamos una **imagen binaria**:
+
+**Threshold simple:**
+$$
+g(x,y) = \begin{cases}
+255 & \text{si } f(x,y) > T \\
+0 & \text{si } f(x,y) \leq T
+\end{cases}
+$$
+
+**Método de Otsu (automático):**
+
+- Calcula el umbral óptimo que minimiza la varianza intra-clase  
+- No requiere especificar el umbral manualmente  
+
+---
+
+## Ejemplo: Binarización {.smaller}
+
+```{python}
+#| echo: true
+import cv2
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Cargar imagen
+img = cv2.imread("imagenes/DPP0357.TIF", cv2.IMREAD_GRAYSCALE)
+
+# Threshold simple (manual)
+_, binary_simple = cv2.threshold(img, 127, 255, cv2.THRESH_BINARY)
+
+# Threshold de Otsu (automático)
+umbral_otsu, binary_otsu = cv2.threshold(img, 0, 255, 
+                                          cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+
+# Visualización
+plt.figure(figsize=(12,4))
+plt.subplot(1,3,1)
+plt.imshow(img, cmap='gray')
+plt.title('Original')
+plt.axis('off')
+
+plt.subplot(1,3,2)
+plt.imshow(binary_simple, cmap='gray')
+plt.title('Threshold = 127')
+plt.axis('off')
+
+plt.subplot(1,3,3)
+plt.imshow(binary_otsu, cmap='gray')
+plt.title(f'Otsu (umbral = {umbral_otsu:.0f})')
+plt.axis('off')
+
+plt.tight_layout()
+plt.show()
+```
+
+---
+
+## Elemento estructurante {.smaller}
+
+- Es una **matriz pequeña** (kernel) que define el vecindario  
+- Determina qué píxeles son afectados por la operación  
+- Formas comunes: rectangular, elíptica, cruz  
+
+```{python}
+#| echo: true
+# Elementos estructurantes en OpenCV
+kernel_rect = cv2.getStructuringElement(cv2.MORPH_RECT, (5,5))
+kernel_ellipse = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5,5))
+kernel_cross = cv2.getStructuringElement(cv2.MORPH_CROSS, (5,5))
+
+# Visualización
+fig, axes = plt.subplots(1, 3, figsize=(12,3))
+titles = ['Rectangular 5×5', 'Elíptico 5×5', 'Cruz 5×5']
+kernels = [kernel_rect, kernel_ellipse, kernel_cross]
+
+for ax, kernel, title in zip(axes, kernels, titles):
+    ax.imshow(kernel, cmap='gray', interpolation='nearest')
+    ax.set_title(title)
+    ax.axis('off')
+    # Mostrar valores
+    for i in range(kernel.shape[0]):
+        for j in range(kernel.shape[1]):
+            ax.text(j, i, str(kernel[i,j]), 
+                   ha='center', va='center', color='red', fontsize=10)
+
+plt.tight_layout()
+plt.show()
+```
+
+---
+
+## Erosión {.smaller}
+
+::: {.columns}
+::: {.column width="50%"}
+- **Reduce** el tamaño de los objetos blancos  
+- Elimina píxeles en los **bordes** de los objetos  
+- Útil para **eliminar ruido pequeño**  
+
+**Definición matemática:**  
+$$
+(A \ominus B)(x,y) = \min_{(i,j) \in B} A(x+i, y+j)
+$$
+
+**Efectos:**  
+- Objetos pequeños desaparecen  
+- Los huecos se agrandan  
+- Los objetos se adelgazan  
+:::
+
+::: {.column width="50%"}
+![Erosión](https://docs.opencv.org/4.x/erosion.png){width=350}
+:::
+:::
+
+---
+
+## Ejemplo: Erosión {.smaller}
+
+```{python}
+#| echo: true
+# Binarizar primero
+_, binary = cv2.threshold(img, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+
+# Crear kernel
+kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5,5))
+
+# Aplicar erosión con diferente número de iteraciones
+erosion_1 = cv2.erode(binary, kernel, iterations=1)
+erosion_2 = cv2.erode(binary, kernel, iterations=2)
+erosion_3 = cv2.erode(binary, kernel, iterations=3)
+
+# Visualización
+plt.figure(figsize=(14,4))
+plt.subplot(1,4,1)
+plt.imshow(binary, cmap='gray')
+plt.title('Binaria original')
+plt.axis('off')
+
+plt.subplot(1,4,2)
+plt.imshow(erosion_1, cmap='gray')
+plt.title('Erosión (iter=1)')
+plt.axis('off')
+
+plt.subplot(1,4,3)
+plt.imshow(erosion_2, cmap='gray')
+plt.title('Erosión (iter=2)')
+plt.axis('off')
+
+plt.subplot(1,4,4)
+plt.imshow(erosion_3, cmap='gray')
+plt.title('Erosión (iter=3)')
+plt.axis('off')
+
+plt.tight_layout()
+plt.show()
+```
+
+---
+
+## Dilatación {.smaller}
+
+::: {.columns}
+::: {.column width="50%"}
+- **Expande** el tamaño de los objetos blancos  
+- Añade píxeles en los **bordes** de los objetos  
+- Útil para **conectar regiones cercanas**  
+
+**Definición matemática:**  
+$$
+(A \oplus B)(x,y) = \max_{(i,j) \in B} A(x+i, y+j)
+$$
+
+**Efectos:**  
+- Los objetos crecen  
+- Los huecos se rellenan  
+- Los objetos cercanos se conectan  
+:::
+
+::: {.column width="50%"}
+![Dilatación](https://docs.opencv.org/4.x/dilation.png){width=350}
+:::
+:::
+
+---
+
+## Ejemplo: Dilatación {.smaller}
+
+```{python}
+#| echo: true
+# Aplicar dilatación con diferente número de iteraciones
+dilatacion_1 = cv2.dilate(binary, kernel, iterations=1)
+dilatacion_2 = cv2.dilate(binary, kernel, iterations=2)
+dilatacion_3 = cv2.dilate(binary, kernel, iterations=3)
+
+# Visualización
+plt.figure(figsize=(14,4))
+plt.subplot(1,4,1)
+plt.imshow(binary, cmap='gray')
+plt.title('Binaria original')
+plt.axis('off')
+
+plt.subplot(1,4,2)
+plt.imshow(dilatacion_1, cmap='gray')
+plt.title('Dilatación (iter=1)')
+plt.axis('off')
+
+plt.subplot(1,4,3)
+plt.imshow(dilatacion_2, cmap='gray')
+plt.title('Dilatación (iter=2)')
+plt.axis('off')
+
+plt.subplot(1,4,4)
+plt.imshow(dilatacion_3, cmap='gray')
+plt.title('Dilatación (iter=3)')
+plt.axis('off')
+
+plt.tight_layout()
+plt.show()
+```
+
+---
+
+## Comparación: Erosión vs Dilatación {.smaller}
+
+```{python}
+#| echo: true
+# Comparación lado a lado con una sola iteración
+plt.figure(figsize=(15,5))
+
+plt.subplot(1,3,1)
+plt.imshow(binary, cmap='gray')
+plt.title('Original binaria')
+plt.axis('off')
+
+plt.subplot(1,3,2)
+plt.imshow(erosion_1, cmap='gray')
+plt.title('Erosión (reduce objetos)')
+plt.axis('off')
+
+plt.subplot(1,3,3)
+plt.imshow(dilatacion_1, cmap='gray')
+plt.title('Dilatación (expande objetos)')
+plt.axis('off')
+
+plt.tight_layout()
+plt.show()
+```
+
+---
+
+## Apertura (Opening) {.smaller}
+
+::: {.columns}
+::: {.column width="50%"}
+**Apertura = Erosión + Dilatación**
+
+$$
+A \circ B = (A \ominus B) \oplus B
+$$
+
+**Efectos:**
+
+- Elimina **ruido externo** pequeño  
+- Suaviza **contornos externos**  
+- Separa objetos conectados débilmente  
+- Preserva el tamaño aproximado de objetos grandes  
+
+**Uso típico:**
+
+- Limpiar ruido tipo "sal" (píxeles blancos aislados)  
+:::
+
+::: {.column width="50%"}
+![Apertura](https://docs.opencv.org/4.x/opening.png){width=350}
+:::
+:::
+
+---
+
+## Ejemplo: Apertura {.smaller}
+
+```{python}
+#| echo: true
+# Apertura con cv2.morphologyEx
+apertura = cv2.morphologyEx(binary, cv2.MORPH_OPEN, kernel)
+
+# Comparar paso a paso
+erosion_temp = cv2.erode(binary, kernel, iterations=1)
+apertura_manual = cv2.dilate(erosion_temp, kernel, iterations=1)
+
+# Visualización
+plt.figure(figsize=(15,4))
+plt.subplot(1,4,1)
+plt.imshow(binary, cmap='gray')
+plt.title('1. Original binaria')
+plt.axis('off')
+
+plt.subplot(1,4,2)
+plt.imshow(erosion_temp, cmap='gray')
+plt.title('2. Erosión')
+plt.axis('off')
+
+plt.subplot(1,4,3)
+plt.imshow(apertura_manual, cmap='gray')
+plt.title('3. Dilatación\n(Apertura manual)')
+plt.axis('off')
+
+plt.subplot(1,4,4)
+plt.imshow(apertura, cmap='gray')
+plt.title('4. cv2.MORPH_OPEN\n(equivalente)')
+plt.axis('off')
+
+plt.tight_layout()
+plt.show()
+```
+
+---
+
+## Cierre (Closing) {.smaller}
+
+::: {.columns}
+::: {.column width="50%"}
+**Cierre = Dilatación + Erosión**
+
+$$
+A \bullet B = (A \oplus B) \ominus B
+$$
+
+**Efectos:**
+
+- Rellena **huecos internos** pequeños  
+- Suaviza **contornos internos**  
+- Conecta regiones cercanas  
+- Preserva el tamaño aproximado de objetos  
+
+**Uso típico:**
+
+- Limpiar ruido tipo "pimienta" (píxeles negros en objetos)  
+:::
+
+::: {.column width="50%"}
+![Cierre](https://docs.opencv.org/4.x/closing.png){width=350}
+:::
+:::
+
+---
+
+## Ejemplo: Cierre {.smaller}
+
+```{python}
+#| echo: true
+# Cierre con cv2.morphologyEx
+cierre = cv2.morphologyEx(binary, cv2.MORPH_CLOSE, kernel)
+
+# Comparar paso a paso
+dilatacion_temp = cv2.dilate(binary, kernel, iterations=1)
+cierre_manual = cv2.erode(dilatacion_temp, kernel, iterations=1)
+
+# Visualización
+plt.figure(figsize=(15,4))
+plt.subplot(1,4,1)
+plt.imshow(binary, cmap='gray')
+plt.title('1. Original binaria')
+plt.axis('off')
+
+plt.subplot(1,4,2)
+plt.imshow(dilatacion_temp, cmap='gray')
+plt.title('2. Dilatación')
+plt.axis('off')
+
+plt.subplot(1,4,3)
+plt.imshow(cierre_manual, cmap='gray')
+plt.title('3. Erosión\n(Cierre manual)')
+plt.axis('off')
+
+plt.subplot(1,4,4)
+plt.imshow(cierre, cmap='gray')
+plt.title('4. cv2.MORPH_CLOSE\n(equivalente)')
+plt.axis('off')
+
+plt.tight_layout()
+plt.show()
+```
+
+---
+
+## Comparación: Apertura vs Cierre {.smaller}
+
+```{python}
+#| echo: true
+plt.figure(figsize=(12,4))
+
+plt.subplot(1,3,1)
+plt.imshow(binary, cmap='gray')
+plt.title('Original binaria')
+plt.axis('off')
+
+plt.subplot(1,3,2)
+plt.imshow(apertura, cmap='gray')
+plt.title('Apertura\n(elimina ruido externo)')
+plt.axis('off')
+
+plt.subplot(1,3,3)
+plt.imshow(cierre, cmap='gray')
+plt.title('Cierre\n(rellena huecos internos)')
+plt.axis('off')
+
+plt.tight_layout()
+plt.show()
+```
+
+---
+
+## Ejemplo práctico: Limpieza de ruido {.smaller}
+
+```{python}
+#| echo: true
+# Añadir ruido sal y pimienta a la imagen binaria
+def agregar_ruido_sp(imagen, prob_sal=0.01, prob_pimienta=0.01):
+    """Agrega ruido sal y pimienta a una imagen binaria"""
+    ruidosa = imagen.copy()
+    
+    # Sal (píxeles blancos)
+    num_sal = int(prob_sal * imagen.size)
+    coords_sal = [np.random.randint(0, i, num_sal) 
+                  for i in imagen.shape]
+    ruidosa[coords_sal[0], coords_sal[1]] = 255
+    
+    # Pimienta (píxeles negros)
+    num_pimienta = int(prob_pimienta * imagen.size)
+    coords_pimienta = [np.random.randint(0, i, num_pimienta) 
+                       for i in imagen.shape]
+    ruidosa[coords_pimienta[0], coords_pimienta[1]] = 0
+    
+    return ruidosa
+
+# Crear imagen con ruido
+binary_ruidosa = agregar_ruido_sp(binary, prob_sal=0.02, prob_pimienta=0.02)
+
+# Limpiar con apertura (elimina sal)
+limpia_apertura = cv2.morphologyEx(binary_ruidosa, cv2.MORPH_OPEN, kernel)
+
+# Limpiar con cierre (elimina pimienta)
+limpia_cierre = cv2.morphologyEx(limpia_apertura, cv2.MORPH_CLOSE, kernel)
+```
+
+---
+
+## Resultado de limpieza {.smaller}
+
+```{python}
+#| echo: true
+plt.figure(figsize=(15,4))
+
+plt.subplot(1,4,1)
+plt.imshow(binary, cmap='gray')
+plt.title('Original limpia')
+plt.axis('off')
+
+plt.subplot(1,4,2)
+plt.imshow(binary_ruidosa, cmap='gray')
+plt.title('Con ruido sal y pimienta')
+plt.axis('off')
+
+plt.subplot(1,4,3)
+plt.imshow(limpia_apertura, cmap='gray')
+plt.title('Después de apertura\n(elimina sal)')
+plt.axis('off')
+
+plt.subplot(1,4,4)
+plt.imshow(limpia_cierre, cmap='gray')
+plt.title('Después de cierre\n(elimina pimienta)')
+plt.axis('off')
+
+plt.tight_layout()
+plt.show()
+```
+
+---
+
+## Otras operaciones morfológicas {.smaller}
+
+**Gradiente morfológico:**
+$$
+\text{Gradiente} = \text{Dilatación} - \text{Erosión}
+$$
+Resalta los **bordes** de los objetos
+
+```{python}
+#| echo: true
+gradiente = cv2.morphologyEx(binary, cv2.MORPH_GRADIENT, kernel)
+
+plt.figure(figsize=(10,4))
+plt.subplot(1,2,1)
+plt.imshow(binary, cmap='gray')
+plt.title('Original binaria')
+plt.axis('off')
+
+plt.subplot(1,2,2)
+plt.imshow(gradiente, cmap='gray')
+plt.title('Gradiente morfológico\n(Dilatación - Erosión)')
+plt.axis('off')
+
+plt.tight_layout()
+plt.show()
+```
+
+---
+
+## Top Hat y Black Hat {.smaller}
+
+::: {.columns}
+::: {.column width="50%"}
+**Top Hat:**
+$$
+\text{Top Hat} = \text{Original} - \text{Apertura}
+$$
+Extrae objetos **pequeños brillantes**
+
+**Black Hat:**
+$$
+\text{Black Hat} = \text{Cierre} - \text{Original}
+$$
+Extrae objetos **pequeños oscuros**
+:::
+
+::: {.column width="50%"}
+```{python}
+#| echo: true
+tophat = cv2.morphologyEx(binary, 
+    cv2.MORPH_TOPHAT, kernel)
+blackhat = cv2.morphologyEx(binary, 
+    cv2.MORPH_BLACKHAT, kernel)
+
+plt.figure(figsize=(8,8))
+plt.subplot(2,1,1)
+plt.imshow(tophat, cmap='gray')
+plt.title('Top Hat')
+plt.axis('off')
+
+plt.subplot(2,1,2)
+plt.imshow(blackhat, cmap='gray')
+plt.title('Black Hat')
+plt.axis('off')
+
+plt.tight_layout()
+plt.show()
+```
+:::
+:::
+
+---
+
+## Resumen de operaciones {.smaller}
+
+| Operación | Fórmula | Efecto | Uso típico |
+|-----------|---------|--------|------------|
+| **Erosión** | $A \ominus B$ | Reduce objetos | Eliminar ruido pequeño |
+| **Dilatación** | $A \oplus B$ | Expande objetos | Conectar regiones |
+| **Apertura** | $(A \ominus B) \oplus B$ | Elimina ruido externo | Limpiar "sal" |
+| **Cierre** | $(A \oplus B) \ominus B$ | Rellena huecos | Limpiar "pimienta" |
+| **Gradiente** | Dilatación - Erosión | Detecta bordes | Segmentación |
+| **Top Hat** | Original - Apertura | Objetos brillantes | Detección de picos |
+| **Black Hat** | Cierre - Original | Objetos oscuros | Detección de valles |
+
+---
+
+## Ejemplo integrador {.smaller}
+
+```{python}
+#| echo: true
+# Crear un ejemplo visual completo
+operaciones = {
+    'Original': binary,
+    'Erosión': cv2.erode(binary, kernel, iterations=1),
+    'Dilatación': cv2.dilate(binary, kernel, iterations=1),
+    'Apertura': cv2.morphologyEx(binary, cv2.MORPH_OPEN, kernel),
+    'Cierre': cv2.morphologyEx(binary, cv2.MORPH_CLOSE, kernel),
+    'Gradiente': cv2.morphologyEx(binary, cv2.MORPH_GRADIENT, kernel)
+}
+
+fig, axes = plt.subplots(2, 3, figsize=(15, 10))
+axes = axes.ravel()
+
+for i, (nombre, imagen) in enumerate(operaciones.items()):
+    axes[i].imshow(imagen, cmap='gray')
+    axes[i].set_title(nombre, fontsize=12)
+    axes[i].axis('off')
+
+plt.tight_layout()
+plt.show()
+```
+
+---
+
+## Tamaño del kernel importa {.smaller}
+
+```{python}
+#| echo: true
+# Comparar diferentes tamaños de kernel
+kernel_3 = cv2.getStructuringElement(cv2.MORPH_RECT, (3,3))
+kernel_7 = cv2.getStructuringElement(cv2.MORPH_RECT, (7,7))
+kernel_11 = cv2.getStructuringElement(cv2.MORPH_RECT, (11,11))
+
+apertura_3 = cv2.morphologyEx(binary, cv2.MORPH_OPEN, kernel_3)
+apertura_7 = cv2.morphologyEx(binary, cv2.MORPH_OPEN, kernel_7)
+apertura_11 = cv2.morphologyEx(binary, cv2.MORPH_OPEN, kernel_11)
+
+plt.figure(figsize=(15,4))
+plt.subplot(1,4,1)
+plt.imshow(binary, cmap='gray')
+plt.title('Original')
+plt.axis('off')
+
+plt.subplot(1,4,2)
+plt.imshow(apertura_3, cmap='gray')
+plt.title('Apertura 3×3')
+plt.axis('off')
+
+plt.subplot(1,4,3)
+plt.imshow(apertura_7, cmap='gray')
+plt.title('Apertura 7×7')
+plt.axis('off')
+
+plt.subplot(1,4,4)
+plt.imshow(apertura_11, cmap='gray')
+plt.title('Apertura 11×11')
+plt.axis('off')
+
+plt.tight_layout()
+plt.show()
+```
+
+---
+
+## Aplicaciones prácticas
+
+::: {.columns}
+::: {.column width="50%"}
+**Preprocesamiento:**  
+- Eliminación de ruido  
+- Separación de objetos  
+- Relleno de huecos  
+
+**Detección de características:**  
+- Extracción de esqueletos  
+- Detección de esquinas  
+- Identificación de formas  
+
+**Segmentación:**  
+- Separación de regiones  
+- Detección de bordes  
+- Análisis de componentes conectadas  
+:::
+
+::: {.column width="50%"}
+```{python}
+#| echo: false
+#| fig-width: 6
+#| fig-height: 7
+import numpy as np
+import matplotlib.pyplot as plt
+import cv2
+
+# Crear imagen binaria de ejemplo
+img = np.zeros((80, 80), dtype=np.uint8)
+img[20:60, 20:60] = 255
+img[30:35, 25:55] = 0  # Hueco horizontal
+img[25:55, 30:35] = 0  # Hueco vertical
+
+# Añadir ruido
+noise_points = np.random.random((80, 80)) > 0.95
+img[noise_points] = 255
+
+kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
+
+# Operaciones
+erosion = cv2.erode(img, kernel, iterations=1)
+dilatacion = cv2.dilate(img, kernel, iterations=1)
+apertura = cv2.morphologyEx(img, cv2.MORPH_OPEN, kernel)
+cierre = cv2.morphologyEx(img, cv2.MORPH_CLOSE, kernel)
+
+fig, axes = plt.subplots(3, 2, figsize=(7, 9))
+
+axes[0, 0].imshow(img, cmap='gray')
+axes[0, 0].set_title('Original\n(con ruido y huecos)', fontweight='bold')
+axes[0, 0].axis('off')
+
+axes[0, 1].imshow(erosion, cmap='gray')
+axes[0, 1].set_title('Erosión\n(reduce objetos)', fontweight='bold')
+axes[0, 1].axis('off')
+
+axes[1, 0].imshow(dilatacion, cmap='gray')
+axes[1, 0].set_title('Dilatación\n(expande objetos)', fontweight='bold')
+axes[1, 0].axis('off')
+
+axes[1, 1].imshow(apertura, cmap='gray')
+axes[1, 1].set_title('Apertura\n(elimina ruido externo)', fontweight='bold')
+axes[1, 1].axis('off')
+
+axes[2, 0].imshow(cierre, cmap='gray')
+axes[2, 0].set_title('Cierre\n(rellena huecos)', fontweight='bold')
+axes[2, 0].axis('off')
+
+# Gradiente morfológico
+gradiente = cv2.morphologyEx(img, cv2.MORPH_GRADIENT, kernel)
+axes[2, 1].imshow(gradiente, cmap='gray')
+axes[2, 1].set_title('Gradiente morfológico\n(detecta bordes)', fontweight='bold')
+axes[2, 1].axis('off')
+
+plt.suptitle('Aplicaciones de Operaciones Morfológicas', fontsize=13, fontweight='bold', y=0.995)
+plt.tight_layout()
+plt.show()
+```
+:::
+:::
+
+---
+
+## Conclusiones
+
+- La **binarización** es el paso previo esencial (Otsu es automático y robusto)  
+- El **elemento estructurante** define el alcance de las operaciones  
+- **Erosión** reduce objetos, **dilatación** los expande  
+- **Apertura** elimina ruido externo, **cierre** rellena huecos  
+- Combinar operaciones morfológicas es clave para limpiar imágenes  
+- El **tamaño del kernel** afecta significativamente el resultado  
+
+---
+
+## Aprende más
+
+- Gonzalez, R. C., & Woods, R. E. (2018). *Digital Image Processing*. Capítulo 9.  
+- OpenCV Documentation: [Morphological Transformations](https://docs.opencv.org/4.x/d9/d61/tutorial_py_morphological_ops.html)  
+- Serra, J. (1982). *Image Analysis and Mathematical Morphology*.  

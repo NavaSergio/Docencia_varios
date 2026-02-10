@@ -11,7 +11,7 @@ format:
     incremental: true
     footer: "Métricas en Procesamiento de Imágenes"
     logo: "figs/logo-infotec.jpeg"  # si tienes un logo
-jupyter: python3
+jupyter: opencv_imgproc
 ---
 
 ```{python}

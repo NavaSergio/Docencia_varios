@@ -1,0 +1,577 @@
+---
+title: "Unidad 2.2 – Transformaciones de Intensidad"
+subtitle: "Tratamiento Digital de Imágenes"
+author: 
+  - name: Sergio M. Nava Muñoz
+    id: sn
+    email: s3rgio.nava@gmail.com
+    affiliation: 
+      - id: cimat
+        name: CIMAT/INFOTEC
+        city: Aguascalientes
+        state: Ags
+format: 
+  revealjs:
+    slide-number: true
+    theme: simple
+    footer: "CIMAT – INFOTEC"
+    css: style.css
+    chalkboard: true
+    menu: true
+    navigation-mode: linear
+    progress: true
+    transition: slide
+    background-transition: fade 
+    title-slide-attributes:
+      data-background-image: figs/DCCD.png
+      data-background-size: cover
+      data-background-opacity: "0.3"
+    toc: true
+    toc-depth: 2
+    toc-title: "Contenido"
+    code-fold: true
+    code-line-numbers: true
+    code-copy: true
+date: 2025-02-19
+---
+
+## Objetivos de aprendizaje
+
+- Comprender las transformaciones de intensidad en imágenes digitales  
+- Aplicar ajustes lineales de brillo y contraste  
+- Utilizar transformaciones no lineales (corrección gamma)  
+- Reconocer cuándo usar cada tipo de transformación  
+
+---
+
+## ¿Qué son las transformaciones de intensidad?
+
+- Operaciones que modifican el **valor de cada píxel** de forma independiente  
+- No dependen de los píxeles vecinos (a diferencia de los filtros espaciales)  
+- Fórmula general:  
+
+$$
+g(x,y) = T[f(x,y)]
+$$
+
+donde:
+
+- $f(x,y)$ = imagen de entrada  
+- $g(x,y)$ = imagen de salida  
+- $T$ = función de transformación  
+
+---
+
+## Tipos de transformaciones
+
+::: {.columns}
+::: {.column width="50%"}
+**Lineales:**
+
+- Cambio de brillo
+- Ajuste de contraste
+- Negativo de imagen
+
+**No lineales:**
+
+- Corrección gamma
+- Transformaciones logarítmicas
+- Ecualización de histograma
+:::
+
+::: {.column width="50%"}
+```{python}
+#| echo: false
+#| fig-width: 5
+#| fig-height: 4
+# Visualizar diferentes tipos de transformaciones
+import matplotlib.pyplot as plt
+import numpy as np
+
+x = np.linspace(0, 255, 256)
+
+plt.figure(figsize=(6, 5))
+plt.plot(x, x, 'k--', label='Identidad', linewidth=2)
+plt.plot(x, 1.5*x - 50, 'b-', label='Lineal (α=1.5, β=-50)', linewidth=2, clip_on=True)
+plt.plot(x, 255 * (x/255)**0.5, 'r-', label='Gamma (γ=0.5)', linewidth=2)
+plt.plot(x, 30 * np.log(1 + x/30), 'g-', label='Logarítmica', linewidth=2)
+plt.plot(x, 255 - x, 'm-', label='Negativo', linewidth=2, alpha=0.7)
+
+plt.xlabel('Intensidad de entrada', fontsize=11)
+plt.ylabel('Intensidad de salida', fontsize=11)
+plt.title('Tipos de transformaciones', fontsize=12, fontweight='bold')
+plt.legend(fontsize=9, loc='upper left')
+plt.grid(True, alpha=0.3)
+plt.xlim([0, 255])
+plt.ylim([0, 255])
+plt.tight_layout()
+plt.show()
+```
+:::
+:::
+
+---
+
+## Transformación lineal {.smaller}
+
+La forma más simple de ajustar brillo y contraste:
+
+$$
+g(x,y) = \alpha \cdot f(x,y) + \beta
+$$
+
+donde:
+
+- $\alpha$ controla el **contraste** (ganancia)  
+  - $\alpha > 1$: aumenta contraste  
+  - $0 < \alpha < 1$: disminuye contraste  
+- $\beta$ controla el **brillo** (offset)  
+  - $\beta > 0$: aumenta brillo  
+  - $\beta < 0$: disminuye brillo  
+
+---
+
+## Ejemplo visual: ajuste de brillo {.smaller}
+
+```{python}
+#| echo: true
+import cv2
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Cargar imagen en escala de grises
+img = cv2.imread("imagenes/DPP0357.TIF", cv2.IMREAD_GRAYSCALE)
+
+# Diferentes valores de brillo (beta)
+brillo_oscuro = cv2.convertScaleAbs(img, alpha=1.0, beta=-50)
+brillo_original = img
+brillo_claro = cv2.convertScaleAbs(img, alpha=1.0, beta=50)
+
+# Visualización
+plt.figure(figsize=(12,4))
+plt.subplot(1,3,1)
+plt.imshow(brillo_oscuro, cmap='gray')
+plt.title('β = -50 (más oscuro)')
+plt.axis('off')
+
+plt.subplot(1,3,2)
+plt.imshow(brillo_original, cmap='gray')
+plt.title('β = 0 (original)')
+plt.axis('off')
+
+plt.subplot(1,3,3)
+plt.imshow(brillo_claro, cmap='gray')
+plt.title('β = +50 (más claro)')
+plt.axis('off')
+
+plt.tight_layout()
+plt.show()
+```
+
+---
+
+## Ejemplo visual: ajuste de contraste {.smaller}
+
+```{python}
+#| echo: true
+# Diferentes valores de contraste (alpha)
+contraste_bajo = cv2.convertScaleAbs(img, alpha=0.5, beta=0)
+contraste_original = img
+contraste_alto = cv2.convertScaleAbs(img, alpha=1.5, beta=0)
+
+# Visualización
+plt.figure(figsize=(12,4))
+plt.subplot(1,3,1)
+plt.imshow(contraste_bajo, cmap='gray')
+plt.title('α = 0.5 (bajo contraste)')
+plt.axis('off')
+
+plt.subplot(1,3,2)
+plt.imshow(contraste_original, cmap='gray')
+plt.title('α = 1.0 (original)')
+plt.axis('off')
+
+plt.subplot(1,3,3)
+plt.imshow(contraste_alto, cmap='gray')
+plt.title('α = 1.5 (alto contraste)')
+plt.axis('off')
+
+plt.tight_layout()
+plt.show()
+```
+
+---
+
+## Efecto combinado: brillo + contraste {.smaller}
+
+```{python}
+#| echo: true
+# Combinando alpha y beta
+ajustada = cv2.convertScaleAbs(img, alpha=1.3, beta=30)
+
+# Visualización con histogramas
+fig, axes = plt.subplots(2, 2, figsize=(12,8))
+
+axes[0,0].imshow(img, cmap='gray')
+axes[0,0].set_title('Original')
+axes[0,0].axis('off')
+
+axes[0,1].imshow(ajustada, cmap='gray')
+axes[0,1].set_title('Ajustada (α=1.3, β=30)')
+axes[0,1].axis('off')
+
+axes[1,0].hist(img.ravel(), bins=256, color='gray', alpha=0.7)
+axes[1,0].set_title('Histograma original')
+axes[1,0].set_xlim([0,256])
+
+axes[1,1].hist(ajustada.ravel(), bins=256, color='blue', alpha=0.7)
+axes[1,1].set_title('Histograma ajustado')
+axes[1,1].set_xlim([0,256])
+
+plt.tight_layout()
+plt.show()
+```
+
+---
+
+## Limitaciones del ajuste lineal {.smaller}
+
+::: {.columns}
+::: {.column width="50%"}
+**Problema:**  
+- El ajuste lineal afecta **uniformemente** toda la imagen  
+- Puede saturar (valores >255 o <0)  
+- No diferencia entre tonos claros y oscuros  
+
+**Solución:**  
+- Transformaciones **no lineales**  
+- Ajustan diferentes rangos de intensidad de forma diferente  
+:::
+
+::: {.column width="50%"}
+```{python}
+#| echo: false
+#| fig-width: 5
+#| fig-height: 4
+# Comparación entre transformación lineal y no lineal
+import matplotlib.pyplot as plt
+import numpy as np
+
+x = np.linspace(0, 255, 256)
+
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(8, 3.5))
+
+# Transformación lineal
+ax1.plot(x, x, 'k--', label='Original', linewidth=1.5, alpha=0.5)
+ax1.plot(x, np.clip(1.5*x + 20, 0, 255), 'b-', label='α=1.5, β=20', linewidth=2.5)
+ax1.set_xlabel('Entrada', fontsize=10)
+ax1.set_ylabel('Salida', fontsize=10)
+ax1.set_title('Lineal', fontsize=11, fontweight='bold')
+ax1.legend(fontsize=8)
+ax1.grid(True, alpha=0.3)
+ax1.set_xlim([0, 255])
+ax1.set_ylim([0, 255])
+
+# Transformación no lineal (gamma)
+ax2.plot(x, x, 'k--', label='Original', linewidth=1.5, alpha=0.5)
+ax2.plot(x, 255 * (x/255)**0.5, 'r-', label='γ=0.5', linewidth=2.5)
+ax2.plot(x, 255 * (x/255)**2.0, 'g-', label='γ=2.0', linewidth=2.5)
+ax2.set_xlabel('Entrada', fontsize=10)
+ax2.set_ylabel('Salida', fontsize=10)
+ax2.set_title('No lineal (Gamma)', fontsize=11, fontweight='bold')
+ax2.legend(fontsize=8)
+ax2.grid(True, alpha=0.3)
+ax2.set_xlim([0, 255])
+ax2.set_ylim([0, 255])
+
+plt.tight_layout()
+plt.show()
+```
+:::
+:::
+
+---
+
+## Corrección gamma {.smaller}
+
+Transformación no lineal más común:
+
+$$
+g(x,y) = c \cdot [f(x,y)]^\gamma
+$$
+
+donde:
+
+- $c$ es una constante de normalización (usualmente $c=1$)  
+- $\gamma$ (gamma) controla la curvatura de la transformación  
+
+**Normalización en práctica:**
+$$
+g(x,y) = 255 \cdot \left(\frac{f(x,y)}{255}\right)^\gamma
+$$
+
+---
+
+## Efecto del valor de gamma {.smaller}
+
+::: {.columns}
+::: {.column width="50%"}
+**$\gamma < 1$ (por ejemplo, 0.5):**
+
+- Aclara la imagen  
+- Expande los tonos oscuros  
+- Comprime los tonos claros  
+- Útil para imágenes subexpuestas  
+
+**$\gamma > 1$ (por ejemplo, 2.0):**
+
+- Oscurece la imagen  
+- Comprime los tonos oscuros  
+- Expande los tonos claros  
+- Útil para imágenes sobreexpuestas  
+
+**$\gamma = 1$:**
+
+- Sin cambio (lineal)  
+:::
+
+::: {.column width="50%"}
+```{python}
+#| echo: false
+#| fig-width: 5
+#| fig-height: 5
+# Visualización de diferentes curvas gamma
+import matplotlib.pyplot as plt
+import numpy as np
+
+x = np.linspace(0, 255, 256)
+
+plt.figure(figsize=(6, 5.5))
+
+# Diferentes valores de gamma
+gammas = [0.3, 0.5, 1.0, 1.5, 2.0, 2.5]
+colors = ['purple', 'blue', 'black', 'orange', 'red', 'darkred']
+styles = ['-', '-', '--', '-', '-', '-']
+widths = [2, 2.5, 2, 2.5, 2, 2]
+
+for gamma, color, style, width in zip(gammas, colors, styles, widths):
+    y = 255 * (x/255)**gamma
+    label = f'γ = {gamma}'
+    if gamma == 1.0:
+        label += ' (lineal)'
+    plt.plot(x, y, color=color, linestyle=style, linewidth=width, label=label, alpha=0.8)
+
+plt.xlabel('Intensidad de entrada', fontsize=12)
+plt.ylabel('Intensidad de salida', fontsize=12)
+plt.title('Curvas de corrección gamma', fontsize=13, fontweight='bold')
+plt.legend(fontsize=9, loc='upper left')
+plt.grid(True, alpha=0.3, linestyle=':')
+plt.xlim([0, 255])
+plt.ylim([0, 255])
+
+# Añadir anotaciones
+plt.text(200, 50, 'γ > 1\n(oscurece)', fontsize=9, ha='center', 
+         bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.3))
+plt.text(50, 200, 'γ < 1\n(aclara)', fontsize=9, ha='center',
+         bbox=dict(boxstyle='round', facecolor='lightblue', alpha=0.3))
+
+plt.tight_layout()
+plt.show()
+```
+:::
+:::
+
+---
+
+## Ejemplo: corrección gamma {.smaller}
+
+```{python}
+#| echo: true
+# Función para aplicar corrección gamma
+def ajustar_gamma(imagen, gamma=1.0):
+    # Crear tabla de búsqueda (LUT)
+    tabla = np.array([((i / 255.0) ** gamma) * 255 
+                      for i in range(256)]).astype("uint8")
+    # Aplicar la tabla
+    return cv2.LUT(imagen, tabla)
+
+# Aplicar diferentes valores de gamma
+gamma_05 = ajustar_gamma(img, gamma=0.5)
+gamma_10 = img  # Original
+gamma_20 = ajustar_gamma(img, gamma=2.0)
+
+# Visualización
+plt.figure(figsize=(12,4))
+plt.subplot(1,3,1)
+plt.imshow(gamma_05, cmap='gray')
+plt.title('γ = 0.5 (más claro)')
+plt.axis('off')
+
+plt.subplot(1,3,2)
+plt.imshow(gamma_10, cmap='gray')
+plt.title('γ = 1.0 (original)')
+plt.axis('off')
+
+plt.subplot(1,3,3)
+plt.imshow(gamma_20, cmap='gray')
+plt.title('γ = 2.0 (más oscuro)')
+plt.axis('off')
+
+plt.tight_layout()
+plt.show()
+```
+
+---
+
+## Comparación: curvas de transformación {.smaller}
+
+```{python}
+#| echo: true
+# Visualizar las curvas de transformación
+x = np.linspace(0, 255, 256)
+
+plt.figure(figsize=(10,6))
+plt.plot(x, x, 'k--', label='γ = 1.0 (identidad)', linewidth=2)
+plt.plot(x, 255 * (x/255)**0.5, 'b-', label='γ = 0.5', linewidth=2)
+plt.plot(x, 255 * (x/255)**2.0, 'r-', label='γ = 2.0', linewidth=2)
+plt.plot(x, 255 * (x/255)**0.3, 'g-', label='γ = 0.3', linewidth=2, alpha=0.6)
+
+plt.xlabel('Intensidad de entrada', fontsize=12)
+plt.ylabel('Intensidad de salida', fontsize=12)
+plt.title('Curvas de corrección gamma', fontsize=14)
+plt.legend(fontsize=10)
+plt.grid(True, alpha=0.3)
+plt.xlim([0, 255])
+plt.ylim([0, 255])
+plt.show()
+```
+
+---
+
+## Otras transformaciones útiles {.smaller}
+
+**Negativo de imagen:**
+$$
+g(x,y) = 255 - f(x,y)
+$$
+
+```{python}
+#| echo: true
+# Negativo
+negativo = 255 - img
+
+plt.figure(figsize=(10,4))
+plt.subplot(1,2,1)
+plt.imshow(img, cmap='gray')
+plt.title('Original')
+plt.axis('off')
+
+plt.subplot(1,2,2)
+plt.imshow(negativo, cmap='gray')
+plt.title('Negativo')
+plt.axis('off')
+
+plt.tight_layout()
+plt.show()
+```
+
+---
+
+## Transformación logarítmica {.smaller}
+
+Útil para expandir valores oscuros y comprimir valores claros:
+
+$$
+g(x,y) = c \cdot \log(1 + f(x,y))
+$$
+
+```{python}
+#| echo: true
+# Transformación logarítmica
+c = 255 / np.log(1 + np.max(img))
+log_transformado = c * np.log(1 + img.astype(np.float32))
+log_transformado = np.uint8(log_transformado)
+
+plt.figure(figsize=(10,4))
+plt.subplot(1,2,1)
+plt.imshow(img, cmap='gray')
+plt.title('Original')
+plt.axis('off')
+
+plt.subplot(1,2,2)
+plt.imshow(log_transformado, cmap='gray')
+plt.title('Transformación logarítmica')
+plt.axis('off')
+
+plt.tight_layout()
+plt.show()
+```
+
+---
+
+## ¿Cuándo usar cada transformación? {.smaller}
+
+| Transformación | Cuándo usar | Ejemplo de aplicación |
+|----------------|-------------|----------------------|
+| **Ajuste lineal** | Correcciones simples de brillo/contraste | Imagen ligeramente oscura |
+| **Gamma < 1** | Imágenes subexpuestas (muy oscuras) | Fotografía nocturna |
+| **Gamma > 1** | Imágenes sobreexpuestas (muy claras) | Imagen con flash excesivo |
+| **Logarítmica** | Realzar detalles en zonas oscuras | Imágenes con alto rango dinámico |
+| **Negativo** | Visualizar detalles oscuros | Radiografías médicas |
+| **Ecualización** | Distribución desigual de intensidades | Mejorar contraste global |
+
+---
+
+## Resumen comparativo {.smaller}
+
+```{python}
+#| echo: true
+# Crear una imagen de comparación
+fig, axes = plt.subplots(2, 3, figsize=(15,8))
+
+axes[0,0].imshow(img, cmap='gray')
+axes[0,0].set_title('Original', fontsize=12)
+axes[0,0].axis('off')
+
+axes[0,1].imshow(cv2.convertScaleAbs(img, alpha=1.3, beta=30), cmap='gray')
+axes[0,1].set_title('Ajuste lineal (α=1.3, β=30)', fontsize=12)
+axes[0,1].axis('off')
+
+axes[0,2].imshow(ajustar_gamma(img, 0.5), cmap='gray')
+axes[0,2].set_title('Gamma = 0.5', fontsize=12)
+axes[0,2].axis('off')
+
+axes[1,0].imshow(ajustar_gamma(img, 2.0), cmap='gray')
+axes[1,0].set_title('Gamma = 2.0', fontsize=12)
+axes[1,0].axis('off')
+
+axes[1,1].imshow(log_transformado, cmap='gray')
+axes[1,1].set_title('Logarítmica', fontsize=12)
+axes[1,1].axis('off')
+
+axes[1,2].imshow(cv2.equalizeHist(img), cmap='gray')
+axes[1,2].set_title('Ecualización', fontsize=12)
+axes[1,2].axis('off')
+
+plt.tight_layout()
+plt.show()
+```
+
+---
+
+## Conclusiones
+
+- Las **transformaciones de intensidad** modifican cada píxel de forma independiente  
+- El **ajuste lineal** ($\alpha f + \beta$) es simple pero puede saturar valores  
+- La **corrección gamma** es no lineal y más flexible  
+  - $\gamma < 1$: aclara (útil para imágenes oscuras)  
+  - $\gamma > 1$: oscurece (útil para imágenes claras)  
+- Elegir la transformación adecuada según el **histograma** y la **aplicación**  
+
+---
+
+## Aprende más
+
+- Gonzalez, R. C., & Woods, R. E. (2018). *Digital Image Processing*. Capítulo 3.  
+- OpenCV Documentation: [Image Transformations](https://docs.opencv.org/4.x/d3/dc1/tutorial_basic_linear_transform.html)  
+- Cambridge in Colour: [Gamma Correction](https://www.cambridgeincolour.com/tutorials/gamma-correction.htm)  

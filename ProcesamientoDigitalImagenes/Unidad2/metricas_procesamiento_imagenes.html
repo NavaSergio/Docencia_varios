@@ -6,11 +6,11 @@
 <script src="metricas_procesamiento_imagenes_files/libs/quarto-html/tippy.umd.min.js"></script>
 <link href="metricas_procesamiento_imagenes_files/libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="metricas_procesamiento_imagenes_files/libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="metricas_procesamiento_imagenes_files/libs/quarto-html/quarto-syntax-highlighting-e1a5c8363afafaef2c763b6775fbf3ca.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.7.31">
+<link href="metricas_procesamiento_imagenes_files/libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.8.27">
 
   <meta name="author" content="Curso Tratamiento Digital de Imágenes">
-  <meta name="dcterms.date" content="2025-09-30">
+  <meta name="dcterms.date" content="2026-02-09">
   <title>Una revisión de las métricas aplicadas en el procesamiento de imágenes</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -30,7 +30,7 @@
       vertical-align: middle;
     }
   </style>
-  <link rel="stylesheet" href="metricas_procesamiento_imagenes_files/libs/revealjs/dist/theme/quarto-2c1b5f745a11cfad616ebade4a4a7d24.css">
+  <link rel="stylesheet" href="metricas_procesamiento_imagenes_files/libs/revealjs/dist/theme/quarto-0fde88a82f0356838740f155f1088782.css">
   <link href="metricas_procesamiento_imagenes_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="metricas_procesamiento_imagenes_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
   <link href="metricas_procesamiento_imagenes_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
@@ -139,7 +139,7 @@ Curso Tratamiento Digital de Imágenes
 </div>
 </div>
 
-  <p class="date">2025-09-30</p>
+  <p class="date">2026-02-09</p>
 </section><section id="TOC">
 <nav role="doc-toc"> 
 <h2 id="toc-title">Table of contents</h2>
@@ -231,7 +231,7 @@ Curso Tratamiento Digital de Imágenes
 <li class="fragment"><strong>Con referencia</strong>: comparan con imagen original</li>
 </ul>
 </div><div class="column" style="width:40%;">
-<div id="df77e70b" class="cell" data-fig-height="3" data-fig-width="4" data-execution_count="2">
+<div id="f0a9714b" class="cell" data-fig-height="3" data-fig-width="4" data-execution_count="2">
 <div class="cell-output cell-output-display">
 <div>
 <figure>
@@ -256,7 +256,7 @@ Curso Tratamiento Digital de Imágenes
 </section>
 <section id="ejemplo-base-en-python" class="slide level2">
 <h2>Ejemplo base en Python</h2>
-<div id="d79e6039" class="cell" data-execution_count="3">
+<div id="a47a53e3" class="cell" data-execution_count="3">
 <div class="cell-output cell-output-display">
 <div>
 <figure>
@@ -265,9 +265,9 @@ Curso Tratamiento Digital de Imágenes
 </div>
 </div>
 </div>
-<div id="590a5e26" class="cell" data-execution_count="4">
+<div id="e3fa0f94" class="cell" data-execution_count="4">
 <div class="cell-output cell-output-stdout">
-<pre><code>MSE: 0.002415
+<pre><code>MSE: 0.002414
 PSNR: 26.17 dB</code></pre>
 </div>
 </div>
@@ -341,7 +341,7 @@ PSNR = 10 \cdot \log_{10}\left(\frac{(maxI)^2}{MSE}\right)
 </section>
 <section id="ejemplo-compresión-jpeg" class="slide level2">
 <h2>Ejemplo: Compresión JPEG</h2>
-<div id="2eae3f53" class="cell" data-execution_count="5">
+<div id="3c611f2a" class="cell" data-execution_count="5">
 <div class="cell-output cell-output-display">
 <div>
 <figure>
@@ -392,7 +392,7 @@ J(A,B) = \frac{|A \cap B|}{|A \cup B|}
 </section>
 <section id="ejemplo-práctico-coeficiente-de-jaccard" class="slide level2">
 <h2>Ejemplo práctico: Coeficiente de Jaccard</h2>
-<div id="aded4a75" class="cell" data-execution_count="6">
+<div id="fa0ccd39" class="cell" data-execution_count="6">
 <div class="cell-output cell-output-stdout">
 <pre><code>Coeficiente de Jaccard: 0.809493264913406</code></pre>
 </div>
@@ -407,7 +407,7 @@ J(A,B) = \frac{|A \cap B|}{|A \cup B|}
 </section>
 <section class="slide level2">
 
-<div id="9586210b" class="cell" data-execution_count="7">
+<div id="941710ec" class="cell" data-execution_count="7">
 <div class="cell-output cell-output-display">
 <div>
 <figure>
@@ -416,7 +416,7 @@ J(A,B) = \frac{|A \cap B|}{|A \cup B|}
 </div>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Coeficiente de Jaccard: 0.9867</code></pre>
+<pre><code>Coeficiente de Jaccard: 0.9873</code></pre>
 </div>
 </div>
 </section>
@@ -450,12 +450,12 @@ SSIM(x,y) = \frac{(2\mu_x\mu_y + c_1)(2\sigma_{xy} + c_2)}{(\mu_x^2 + \mu_y^2 + 
 <section id="ejmplo-práctico-calidad-perceptual-ssim" class="slide level2 smaller scrollable">
 <h2>Ejmplo práctico calidad perceptual: SSIM</h2>
 <p>Calidad perceptual entre original y jpeg</p>
-<div id="c7ba4ee2" class="cell" data-execution_count="8">
-<div class="cell-output cell-output-display" data-execution_count="21">
+<div id="a55ce047" class="cell" data-execution_count="8">
+<div class="cell-output cell-output-display" data-execution_count="8">
 <pre><code>np.float64(0.8545161159906695)</code></pre>
 </div>
 </div>
-<div id="6d06c48a" class="cell" data-execution_count="9">
+<div id="e03d3bbd" class="cell" data-execution_count="9">
 <div class="cell-output cell-output-display">
 <div>
 <figure>
@@ -469,14 +469,14 @@ SSIM(x,y) = \frac{(2\mu_x\mu_y + c_1)(2\sigma_{xy} + c_2)}{(\mu_x^2 + \mu_y^2 + 
 <h2>Limitaciones del MSE y PSNR</h2>
 <div class="columns">
 <div class="column" style="width:25%;">
-<div id="8360c975" class="cell" data-execution_count="10">
+<div id="761ea248" class="cell" data-execution_count="10">
 <div class="cell-output cell-output-stdout">
-<pre><code>MSE ruido: 0.004995
+<pre><code>MSE ruido: 0.004970
 MSE desplazamiento: 0.010000</code></pre>
 </div>
 </div>
 </div><div class="column" style="width:75%;">
-<div id="ffd832da" class="cell" data-execution_count="11">
+<div id="63562928" class="cell" data-execution_count="11">
 <div class="cell-output cell-output-display">
 <div>
 <figure>
@@ -557,7 +557,7 @@ Recall = \frac{TP}{TP+FN}
 <section class="slide level2">
 
 <h3 id="matriz-de-confusión">Matriz de confusión</h3>
-<div id="e1e26a14" class="cell" data-execution_count="12">
+<div id="34f4f544" class="cell" data-execution_count="12">
 <div class="cell-output cell-output-display">
 <div>
 <figure>
@@ -567,17 +567,17 @@ Recall = \frac{TP}{TP+FN}
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Precisión: 0.9949
-Sensibilidad (Recall): 0.9918
-F1-Score: 0.9933</code></pre>
+Sensibilidad (Recall): 0.9923
+F1-Score: 0.9936</code></pre>
 </div>
 </div>
 </section>
 <section id="comparación-de-métricas" class="slide level2 smaller">
 <h2>Comparación de Métricas</h2>
-<div id="08d2689d" class="cell" data-execution_count="13">
+<div id="35984106" class="cell" data-execution_count="13">
 <div class="cell-output cell-output-stdout">
 <pre><code>    Degradación    MSE  PSNR (dB)   SSIM
-Ruido Gaussiano 0.0024    26.1705 0.5208
+Ruido Gaussiano 0.0024    26.1720 0.5212
       JPEG Q=20 0.0009    30.2380 0.8545
            Blur 0.0050    22.9801 0.6454</code></pre>
 </div>
@@ -828,7 +828,7 @@ Ruido Gaussiano 0.0024    26.1705 0.5208
         margin: 0.1,
 
         math: {
-          mathjax: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js',
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js',
           config: 'TeX-AMS_HTML-full',
           tex2jax: {
             inlineMath: [['\\(','\\)']],
@@ -902,13 +902,14 @@ Ruido Gaussiano 0.0024    26.1705 0.5208
           e.clearSelection();
         }
         const getTextToCopy = function(trigger) {
-            const codeEl = trigger.previousElementSibling.cloneNode(true);
-            for (const childEl of codeEl.children) {
-              if (isCodeAnnotation(childEl)) {
-                childEl.remove();
-              }
+          const outerScaffold = trigger.parentElement.cloneNode(true);
+          const codeEl = outerScaffold.querySelector('code');
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
             }
-            return codeEl.innerText;
+          }
+          return codeEl.innerText;
         }
         const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
           text: getTextToCopy

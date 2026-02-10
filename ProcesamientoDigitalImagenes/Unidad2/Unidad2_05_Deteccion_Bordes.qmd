@@ -1,0 +1,438 @@
+---
+title: "Detección de Bordes"
+subtitle: "Fundamentos y métodos"
+author: "Curso de Tratamiento Digital de Imágenes"
+format: revealjs
+---
+
+## ¿Qué es un borde?
+
+- Un **borde** es una transición abrupta de intensidad en la imagen.  
+- Generalmente corresponde a límites de objetos.  
+- Detectar bordes es un paso clave en **segmentación** y **reconocimiento**.  
+
+```{python}
+#| echo: false
+#| fig-width: 8
+#| fig-height: 3
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Crear imagen sintética con bordes
+img = np.ones((100, 300)) * 255
+img[:, 100:200] = 100  # Región oscura
+img[30:70, 50:250] = 50  # Rectángulo
+
+# Perfil de intensidad
+perfil = img[50, :]
+
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 3))
+
+ax1.imshow(img, cmap='gray')
+ax1.axhline(y=50, color='red', linestyle='--', linewidth=1.5)
+ax1.set_title('Imagen con bordes', fontweight='bold')
+ax1.axis('off')
+
+ax2.plot(perfil, linewidth=2, color='blue')
+ax2.set_title('Perfil de intensidad (línea roja)', fontweight='bold')
+ax2.set_xlabel('Posición (píxeles)')
+ax2.set_ylabel('Intensidad')
+ax2.grid(True, alpha=0.3)
+ax2.axvspan(50, 100, alpha=0.2, color='red', label='Borde')
+ax2.axvspan(100, 200, alpha=0.2, color='green')
+ax2.axvspan(200, 250, alpha=0.2, color='red', label='Borde')
+ax2.legend()
+
+plt.tight_layout()
+plt.show()
+```
+
+---
+
+## Gradientes {.smaller .scrollable}
+
+- Los bordes se relacionan con el **gradiente de la imagen**:  
+  $$\nabla I = \left( \frac{\partial I}{\partial x}, \frac{\partial I}{\partial y} \right)$$  
+- Magnitud del gradiente:  
+  $$|\nabla I| = \sqrt{\left(\frac{\partial I}{\partial x}\right)^2 + \left(\frac{\partial I}{\partial y}\right)^2}$$  
+
+```{python}
+#| echo: false
+#| fig-width: 10
+#| fig-height: 3
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy import ndimage
+
+# Crear imagen simple con círculo
+img = np.zeros((100, 100))
+y, x = np.ogrid[-50:50, -50:50]
+mask = x**2 + y**2 <= 30**2
+img[mask] = 255
+
+# Calcular gradientes
+gx = ndimage.sobel(img, axis=1)
+gy = ndimage.sobel(img, axis=0)
+magnitud = np.sqrt(gx**2 + gy**2)
+
+fig, axes = plt.subplots(1, 4, figsize=(12, 3))
+
+axes[0].imshow(img, cmap='gray')
+axes[0].set_title('Imagen original', fontweight='bold')
+axes[0].axis('off')
+
+axes[1].imshow(gx, cmap='RdBu')
+axes[1].set_title('Gradiente en X (∂I/∂x)', fontweight='bold')
+axes[1].axis('off')
+
+axes[2].imshow(gy, cmap='RdBu')
+axes[2].set_title('Gradiente en Y (∂I/∂y)', fontweight='bold')
+axes[2].axis('off')
+
+axes[3].imshow(magnitud, cmap='hot')
+axes[3].set_title('Magnitud |∇I|', fontweight='bold')
+axes[3].axis('off')
+
+plt.tight_layout()
+plt.show()
+```
+
+---
+
+## Operadores de Gradiente {.smaller .scrollable}
+
+Los gradientes se aproximan con **operadores de convolución**:
+
+- **Roberts**
+$$
+R_x = \begin{bmatrix} 1 & 0 \\ 0 & -1 \end{bmatrix}, \quad
+R_y = \begin{bmatrix} 0 & 1 \\ -1 & 0 \end{bmatrix}
+$$
+
+- **Prewitt**
+$$
+P_x = \begin{bmatrix} -1 & 0 & 1 \\ -1 & 0 & 1 \\ -1 & 0 & 1 \end{bmatrix}, \quad
+P_y = \begin{bmatrix} -1 & -1 & -1 \\ 0 & 0 & 0 \\ 1 & 1 & 1 \end{bmatrix}
+$$
+
+- **Sobel** (más usado)
+$$
+S_x = \begin{bmatrix} -1 & 0 & 1 \\ -2 & 0 & 2 \\ -1 & 0 & 1 \end{bmatrix}, \quad
+S_y = \begin{bmatrix} -1 & -2 & -1 \\ 0 & 0 & 0 \\ 1 & 2 & 1 \end{bmatrix}
+$$
+
+```{python}
+#| echo: false
+#| fig-width: 10
+#| fig-height: 3
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy import ndimage
+
+# Crear imagen de prueba con formas geométricas
+img = np.zeros((120, 120))
+img[20:50, 20:50] = 255  # Cuadrado
+y, x = np.ogrid[-60:60, -60:60]
+mask = (x-30)**2 + (y)**2 <= 25**2
+img[mask] = 200  # Círculo
+img = ndimage.gaussian_filter(img, sigma=1)
+
+# Operadores
+roberts_x = np.array([[1, 0], [0, -1]])
+roberts_y = np.array([[0, 1], [-1, 0]])
+
+prewitt_x = np.array([[-1, 0, 1], [-1, 0, 1], [-1, 0, 1]])
+sobel_x = np.array([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]])
+
+# Aplicar operadores
+roberts = np.abs(ndimage.convolve(img, roberts_x)) + np.abs(ndimage.convolve(img, roberts_y))
+prewitt = ndimage.prewitt(img)
+sobel = ndimage.sobel(img)
+
+fig, axes = plt.subplots(1, 4, figsize=(12, 3))
+
+axes[0].imshow(img, cmap='gray')
+axes[0].set_title('Original', fontweight='bold')
+axes[0].axis('off')
+
+axes[1].imshow(roberts, cmap='gray')
+axes[1].set_title('Roberts', fontweight='bold')
+axes[1].axis('off')
+
+axes[2].imshow(prewitt, cmap='gray')
+axes[2].set_title('Prewitt', fontweight='bold')
+axes[2].axis('off')
+
+axes[3].imshow(sobel, cmap='gray')
+axes[3].set_title('Sobel', fontweight='bold')
+axes[3].axis('off')
+
+plt.tight_layout()
+plt.show()
+```
+
+---
+
+## Método Sobel
+
+- Usa máscaras convolucionales para aproximar derivadas.  
+- Filtrando con $S_x, S_y$ se obtienen los bordes en X e Y.  
+- Luego se calcula la magnitud del gradiente.  
+
+```{python}
+#| echo: false
+#| fig-width: 10
+#| fig-height: 3
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy import ndimage
+
+# Crear imagen con texto/formas
+img = np.zeros((100, 150))
+img[30:70, 30:50] = 255
+img[30:70, 70:120] = 200
+img[50:90, 100:140] = 180
+img = ndimage.gaussian_filter(img, sigma=2)
+
+# Sobel en X y Y
+sobel_x = ndimage.sobel(img, axis=1)
+sobel_y = ndimage.sobel(img, axis=0)
+magnitud = np.sqrt(sobel_x**2 + sobel_y**2)
+
+fig, axes = plt.subplots(1, 4, figsize=(12, 3))
+
+axes[0].imshow(img, cmap='gray')
+axes[0].set_title('Imagen original', fontweight='bold')
+axes[0].axis('off')
+
+axes[1].imshow(sobel_x, cmap='RdBu')
+axes[1].set_title('Sobel X (Sx)', fontweight='bold')
+axes[1].axis('off')
+
+axes[2].imshow(sobel_y, cmap='RdBu')
+axes[2].set_title('Sobel Y (Sy)', fontweight='bold')
+axes[2].axis('off')
+
+axes[3].imshow(magnitud, cmap='gray')
+axes[3].set_title('Magnitud del gradiente', fontweight='bold')
+axes[3].axis('off')
+
+plt.tight_layout()
+plt.show()
+```
+
+---
+
+## Método Canny
+
+1. Suavizado con filtro gaussiano.  
+2. Cálculo de gradientes.  
+3. **No-maximum suppression** (adelgaza bordes).  
+4. **Hysteresis thresholding** (clasifica píxeles como borde fuerte, débil o no borde).  
+
+```{python}
+#| echo: false
+#| fig-width: 12
+#| fig-height: 3
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy import ndimage
+from skimage import feature
+
+# Crear imagen compleja
+img = np.zeros((120, 150))
+y, x = np.ogrid[:120, :150]
+
+# Añadir formas
+circle1 = (x - 40)**2 + (y - 40)**2 <= 25**2
+circle2 = (x - 110)**2 + (y - 40)**2 <= 20**2
+img[circle1] = 255
+img[circle2] = 255
+img[70:110, 30:120] = 200
+
+# Añadir ruido
+np.random.seed(42)
+img = img + np.random.normal(0, 10, img.shape)
+img = np.clip(img, 0, 255)
+
+# Paso 1: Suavizado gaussiano
+smooth = ndimage.gaussian_filter(img, sigma=1.5)
+
+# Paso 2: Gradiente
+sobel = ndimage.sobel(smooth)
+
+# Paso 4: Canny completo
+edges_canny = feature.canny(img, sigma=1.5, low_threshold=20, high_threshold=60)
+
+fig, axes = plt.subplots(1, 4, figsize=(13, 3))
+
+axes[0].imshow(img, cmap='gray')
+axes[0].set_title('1. Original (con ruido)', fontweight='bold', fontsize=10)
+axes[0].axis('off')
+
+axes[1].imshow(smooth, cmap='gray')
+axes[1].set_title('2. Suavizado Gaussiano', fontweight='bold', fontsize=10)
+axes[1].axis('off')
+
+axes[2].imshow(sobel, cmap='gray')
+axes[2].set_title('3. Gradiente', fontweight='bold', fontsize=10)
+axes[2].axis('off')
+
+axes[3].imshow(edges_canny, cmap='gray')
+axes[3].set_title('4. Canny (final)', fontweight='bold', fontsize=10)
+axes[3].axis('off')
+
+plt.tight_layout()
+plt.show()
+```
+
+---
+
+## Comparación visual
+
+- Roberts y Prewitt: simples, pero sensibles al ruido.  
+- Sobel: rápido y más robusto.  
+- Canny: más elaborado, produce bordes finos y continuos.  
+
+```{python}
+#| echo: false
+#| fig-width: 11
+#| fig-height: 4
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy import ndimage
+from skimage import feature
+
+# Imagen de prueba compleja
+img = np.zeros((150, 150))
+
+# Crear varias formas
+y, x = np.ogrid[:150, :150]
+circle = (x - 50)**2 + (y - 50)**2 <= 30**2
+img[circle] = 255
+img[80:130, 20:70] = 220
+img[90:140, 90:140] = 200
+
+# Añadir textura y ruido
+np.random.seed(123)
+img = ndimage.gaussian_filter(img, sigma=1)
+img = img + np.random.normal(0, 15, img.shape)
+img = np.clip(img, 0, 255)
+
+# Aplicar diferentes métodos
+sobel_edges = ndimage.sobel(img)
+canny_edges = feature.canny(img, sigma=1.5, low_threshold=15, high_threshold=45)
+
+fig, axes = plt.subplots(1, 3, figsize=(11, 4))
+
+axes[0].imshow(img, cmap='gray')
+axes[0].set_title('Original (con ruido)', fontweight='bold', fontsize=12)
+axes[0].axis('off')
+
+axes[1].imshow(sobel_edges, cmap='gray')
+axes[1].set_title('Sobel\n(bordes gruesos, sensible a ruido)', fontweight='bold', fontsize=12)
+axes[1].axis('off')
+
+axes[2].imshow(canny_edges, cmap='gray')
+axes[2].set_title('Canny\n(bordes finos y continuos)', fontweight='bold', fontsize=12)
+axes[2].axis('off')
+
+plt.tight_layout()
+plt.show()
+```
+
+---
+
+## Ejemplo en Python (OpenCV) {.smaller .scrollable}
+
+```python
+import cv2
+import matplotlib.pyplot as plt
+
+img = cv2.imread("imagen.png", 0)
+
+edges_roberts = cv2.filter2D(img, -1, np.array([[1,0],[0,-1]]))
+edges_prewittx = cv2.filter2D(img, -1, np.array([[-1,0,1],[-1,0,1],[-1,0,1]]))
+edges_sobel = cv2.Sobel(img, cv2.CV_64F, 1, 1, ksize=3)
+edges_canny = cv2.Canny(img, 100, 200)
+
+plt.figure(figsize=(10,8))
+plt.subplot(2,2,1); plt.imshow(edges_roberts, cmap="gray"); plt.title("Roberts")
+plt.subplot(2,2,2); plt.imshow(edges_prewittx, cmap="gray"); plt.title("Prewitt X")
+plt.subplot(2,2,3); plt.imshow(edges_sobel, cmap="gray"); plt.title("Sobel")
+plt.subplot(2,2,4); plt.imshow(edges_canny, cmap="gray"); plt.title("Canny")
+plt.show()
+```
+
+---
+
+## Aplicaciones {.smaller .scrollable}
+
+- Segmentación de objetos.  
+- Reconocimiento de formas.  
+- Análisis de movimiento.  
+- Visión en medicina, industria y satélites.  
+
+```{python}
+#| echo: false
+#| fig-width: 12
+#| fig-height: 3.5
+import numpy as np
+import matplotlib.pyplot as plt
+from skimage import feature
+from scipy import ndimage
+
+fig, axes = plt.subplots(1, 4, figsize=(13, 3.5))
+
+# 1. Segmentación de objetos
+img1 = np.zeros((100, 120))
+y, x = np.ogrid[:100, :120]
+obj1 = (x - 30)**2 + (y - 50)**2 <= 20**2
+obj2 = (x - 90)**2 + (y - 50)**2 <= 18**2
+img1[obj1] = 255
+img1[obj2] = 240
+img1[40:60, 50:70] = 200
+edges1 = feature.canny(img1, sigma=1)
+axes[0].imshow(edges1, cmap='gray')
+axes[0].set_title('Segmentación\nde objetos', fontweight='bold', fontsize=11)
+axes[0].axis('off')
+
+# 2. Reconocimiento de formas (contornos)
+img2 = np.zeros((100, 100))
+for i in range(20, 80, 3):
+    circle = (x[:100, :100] - 50)**2 + (y[:100, :100] - 50)**2
+    img2[np.abs(circle - i**2) < 50] = 255
+edges2 = feature.canny(img2, sigma=1)
+axes[1].imshow(edges2, cmap='gray')
+axes[1].set_title('Reconocimiento\nde formas', fontweight='bold', fontsize=11)
+axes[1].axis('off')
+
+# 3. Análisis industrial (inspección)
+img3 = np.ones((100, 100)) * 200
+img3[10:90, 10:30] = 100
+img3[10:90, 40:60] = 100
+img3[10:90, 70:90] = 100
+img3[30:35, :] = 50  # Defecto
+img3 = ndimage.gaussian_filter(img3, sigma=1)
+edges3 = feature.canny(img3, sigma=1.5)
+axes[2].imshow(edges3, cmap='gray')
+axes[2].set_title('Inspección\nindustrial', fontweight='bold', fontsize=11)
+axes[2].axis('off')
+
+# 4. Visión médica
+img4 = np.zeros((100, 100))
+y4, x4 = np.ogrid[:100, :100]
+brain = (x4 - 50)**2/30**2 + (y4 - 50)**2/35**2 <= 1
+lesion = (x4 - 60)**2 + (y4 - 45)**2 <= 8**2
+img4[brain] = 180
+img4[lesion] = 255
+img4 = ndimage.gaussian_filter(img4, sigma=1.5)
+edges4 = feature.canny(img4, sigma=1.2)
+axes[3].imshow(edges4, cmap='gray')
+axes[3].set_title('Visión\nmédica', fontweight='bold', fontsize=11)
+axes[3].axis('off')
+
+plt.suptitle('Aplicaciones de la Detección de Bordes', fontsize=14, fontweight='bold', y=1.02)
+plt.tight_layout()
+plt.show()
+```
