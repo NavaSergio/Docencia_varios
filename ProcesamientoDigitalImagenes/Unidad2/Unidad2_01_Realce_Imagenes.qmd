@@ -17,14 +17,14 @@ format:
     #logo: figs/logo-infotec.jpeg
     footer: "CIMAT – INFOTEC"
     css: style.css
-    chalkboard: true
-    menu: true
     navigation-mode: linear
     progress: true
     transition: slide
-    background-transition: fade 
+    background-transition: fade
+    scrollable: true
+    self-contained: true
     title-slide-attributes:
-      data-background-image: figs/DCCD.png
+      data-background-image: figs/dccd.png
       data-background-size: cover
       data-background-opacity: "0.3"
     toc: true
@@ -163,11 +163,11 @@ display(Markdown(f"""
 ## Mezcla aditiva de colores – Modelo RGB {.smaller}
 
 ::: {.columns}
-::: {.column width="50%"}
+::: {.column width="40%"}
 ![RGB color model venn diagram](https://tse4.mm.bing.net/th/id/OIP.LGzz_j3Bt826nHdzSRywlQHaHa?r=0&pid=Api){width=350}
 :::
 
-::: {.column width="50%" }
+::: {.column width="60%" .smaller}
 **Explicación:**
 
 - El modelo **RGB** (Red, Green, Blue) es **aditivo**.  
@@ -281,7 +281,11 @@ donde:
 
 ::: {.columns}
 ::: {.column width="50%"}
-Consideremos una imagen de $M \times N = 8$ píxeles, con intensidades de 3 bits  
+Consideremos una imagen de 
+
+$$M \times N = 8$$ 
+
+píxeles, con intensidades de 3 bits  
 ($L = 8$ niveles, de 0 a 7):
 
 $$
@@ -289,7 +293,8 @@ I = [3, 3, 4, 5, 6, 6, 6, 7]
 $$
 :::
 ::: {.column width="50%" }
-### 1. Histograma de frecuencias
+1. Histograma de frecuencias
+
 | Intensidad ($r_k$) | Frecuencia ($n_k$) |
 |--------------------|--------------------|
 | 0 | 0 |
@@ -323,7 +328,7 @@ Probabilidad: $p(r_k) = n_k / 8$
 
 ---
 
-### 3. Nueva asignación de intensidades
+### 3. Nueva asignación de intensidades {.smaller}
 
 ::: {.columns}
 ::: {.column width="50%"}
@@ -332,9 +337,9 @@ s_k = (L-1)\sum_{j=0}^k p(r_j)
 $$
 :::
 
-<small>
 
-::: {.column width="50%"}
+
+::: {.column width="50%" .smaller}
 Con $L-1 = 7$:
 
 | $r_k$ | CDF | $s_k$ |
@@ -347,7 +352,7 @@ Con $L-1 = 7$:
 :::
 :::
 
-</small>
+
 
 ---
 
@@ -367,7 +372,7 @@ $$
 
 ---
 
-### Código: Ecualización con OpenCV
+### Código: Ecualización con OpenCV {.smaller .scrollable}
 
 ```{python}
 #| echo: true
@@ -409,6 +414,8 @@ plt.tight_layout()
 plt.show()
 
 ```
+
+
 
 ---
 

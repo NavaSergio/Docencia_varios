@@ -1,6 +1,6 @@
 /*-- scss:defaults --*/
 
-$font-size-root: 22px !default;
+$font-size-root: 18px !default;
 
 
 
@@ -8,7 +8,7 @@ $font-size-root: 22px !default;
 $presentation-heading-font: "Palatino Linotype", "Book Antiqua", Palatino,
   FreeSerif, serif !default;
 $presentation-heading-color: #383d3d !default;
-$presentation-heading-size: 2.5em !default;
+$presentation-heading-size: 2em !default;
 $presentation-heading-line-height: 1.1 !default;
 $presentation-heading-margin-bottom: 1.5em !default;
 $presentation-heading-font-weight: bold !default;
@@ -19,7 +19,7 @@ $presentation-heading-text-transform: uppercase !default;
 
 /* Letra más pequeña para todas las slides RevealJS */
 .reveal .slides section {
-  font-size: 0.85em !important;
+  font-size: 0.75em !important;
 }
 
 /* Encabezados de presentación */
@@ -28,7 +28,7 @@ $presentation-heading-text-transform: uppercase !default;
   color: #383d3d;
   font-weight: bold;
   text-align: center;
-  text-transform: uppercase;
+  font-size: 0.95em;
 }
 
 .custom-small table {

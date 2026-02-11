@@ -16,14 +16,14 @@ format:
     theme: simple
     footer: "CIMAT – INFOTEC"
     css: style.css
-    chalkboard: true
-    menu: true
     navigation-mode: linear
     progress: true
     transition: slide
-    background-transition: fade 
+    background-transition: fade
+    scrollable: true
+    self-contained: true
     title-slide-attributes:
-      data-background-image: figs/DCCD.png
+      data-background-image: figs/dccd.png
       data-background-size: cover
       data-background-opacity: "0.3"
     toc: true
@@ -488,8 +488,11 @@ $$
 ```{python}
 #| echo: true
 # Transformación logarítmica
-c = 255 / np.log(1 + np.max(img))
-log_transformado = c * np.log(1 + img.astype(np.float32))
+# Normalizar a [0,1], aplicar log, y escalar a [0,255]
+img_normalizada = img.astype(np.float32) / 255.0
+log_transformado = np.log1p(img_normalizada)  # log1p es log(1+x)
+# Normalizar resultado a [0,255]
+log_transformado = (log_transformado / log_transformado.max()) * 255
 log_transformado = np.uint8(log_transformado)
 
 plt.figure(figsize=(10,4))

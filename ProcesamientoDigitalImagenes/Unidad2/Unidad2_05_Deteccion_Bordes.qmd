@@ -2,7 +2,29 @@
 title: "Detección de Bordes"
 subtitle: "Fundamentos y métodos"
 author: "Curso de Tratamiento Digital de Imágenes"
-format: revealjs
+format: 
+  revealjs:
+    slide-number: true
+    theme: simple
+    footer: "CIMAT – INFOTEC"
+    css: style.css
+    navigation-mode: linear
+    progress: true
+    transition: slide
+    background-transition: fade
+    scrollable: true
+    self-contained: true
+    title-slide-attributes:
+      data-background-image: figs/dccd.png
+      data-background-size: cover
+      data-background-opacity: "0.3"
+    toc: true
+    toc-depth: 2
+    toc-title: "Contenido"
+    code-fold: true
+    code-line-numbers: true
+    code-copy: true
+date: 2025-02-19
 ---
 
 ## ¿Qué es un borde?

@@ -16,14 +16,14 @@ format:
     theme: simple
     footer: "CIMAT – INFOTEC"
     css: style.css
-    chalkboard: true
-    menu: true
     navigation-mode: linear
     progress: true
     transition: slide
-    background-transition: fade 
+    background-transition: fade
+    scrollable: true
+    self-contained: true
     title-slide-attributes:
-      data-background-image: figs/DCCD.png
+      data-background-image: figs/dccd.png
       data-background-size: cover
       data-background-opacity: "0.3"
     toc: true
