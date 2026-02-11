@@ -59,7 +59,7 @@ Se usa cuando quieres destacar al **autor** como parte de la redacción.
 
 **Ejemplo 3** Nava-Muñoz et al. (2023) destacan que las competencias en procesamiento de lenguaje natural requieren herramientas estadísticas para diferenciar con claridad el desempeño de los sistemas.  
 
-**Ejemplo 4** Rivera Castillo (2024) demuestra que las redes neuronales convolucionales mejoran significativamente la precisión en la clasificación automática de imágenes médicas.  
+**Ejemplo 4** Nava Muñoz (2024) demuestra que el análisis estadístico riguroso de competencias de aprendizaje supervisado permite identificar diferencias significativas en el desempeño de los sistemas.  
 :::
 
 
@@ -79,7 +79,7 @@ Se emplea cuando lo importante es la **idea**, no el autor.
 
 **Ejemplo 3** Las competencias colaborativas en NLP se han convertido en un referente para establecer nuevos benchmarks (Nava-Muñoz, Graff, & Escalante, 2023).  
 
-**Ejemplo 4** El uso de redes convolucionales profundas permite automatizar el diagnóstico médico con alto grado de precisión (Rivera Castillo, 2024).  
+**Ejemplo 4** El uso de herramientas estadísticas avanzadas permite evaluar de manera confiable el rendimiento de algoritmos en competencias de machine learning (Nava Muñoz, 2024).  
 :::
 
 ---
@@ -99,7 +99,7 @@ Se utiliza para reproducir textualmente **menos de 40 palabras**, dando protagon
 
 **Ejemplo 3** Nava-Muñoz et al. (2023) mencionan que “collaborative competitions have gained popularity in the scientific and technological fields” (p. 1).  
 
-**Ejemplo 4** Rivera Castillo (2024) concluye que "las CNN superan en un 15% la precisión de los métodos tradicionales en la detección de anomalías" (p. 87).  
+**Ejemplo 4** Nava Muñoz (2024) concluye que "las pruebas estadísticas propuestas superan a los métodos tradicionales en la identificación de diferencias significativas entre sistemas" (p. 87).  
 :::
 
 ---
@@ -119,7 +119,7 @@ Es similar a la anterior, pero se coloca todo (autor, año y página) entre par�
 
 **Ejemplo 3** En las competencias, “statistical tools are often used for this purpose” (Nava-Muñoz et al., 2023, p. 1).  
 
-**Ejemplo 4** Los resultados muestran que "la arquitectura ResNet-50 obtuvo el mejor desempeño con un 94.3% de accuracy" (Rivera Castillo, 2024, p. 92).  
+**Ejemplo 4** Los resultados muestran que "la prueba de Friedman-Nemenyi permite establecer rankings confiables con un nivel de confianza del 95%" (Nava Muñoz, 2024, p. 92).  
 :::
 
 ---
@@ -151,9 +151,9 @@ Se usa cuando la cita tiene **40 palabras o más** y quieres presentar al autor 
 
 > An essential challenge for organizers arises when comparing algorithms’ performance, assessing multiple participants, and ranking them. Statistical tools are often used for this purpose; however, traditional statistical methods often fail to capture decisive differences between systems’ performance. (p. 1)  
 
-**Ejemplo 4** Rivera Castillo (2024) explica:  
+**Ejemplo 4** Nava Muñoz (2024) explica:  
 
-> Las redes neuronales convolucionales han revolucionado el campo del procesamiento de imágenes médicas, permitiendo la detección automática de patologías con niveles de precisión comparables a especialistas humanos. Este avance representa un punto de inflexión en la implementación de sistemas de apoyo al diagnóstico clínico. (p. 15)  
+> El análisis de competencias de aprendizaje supervisado requiere herramientas estadísticas robustas que consideren la naturaleza de los datos y las características específicas de cada tarea. Las pruebas no paramétricas han demostrado ser particularmente efectivas en la evaluación comparativa de múltiples sistemas, permitiendo establecer rankings confiables incluso con conjuntos de datos limitados. (p. 15)
 :::
 
 ---
@@ -187,7 +187,7 @@ También para **40 palabras o más**, pero sin introducir al autor en la narrati
 
 **Ejemplo 4**  
 
-> La implementación de transfer learning mediante el uso de pesos pre-entrenados en ImageNet permitió reducir el tiempo de entrenamiento en un 60% y mejorar la generalización del modelo, especialmente en escenarios con datos limitados, característica común en el ámbito médico. (Rivera Castillo, 2024, p. 78)  
+> La implementación de métodos estadísticos avanzados para el análisis de competencias de aprendizaje supervisado permite a los organizadores establecer rankings justos y confiables. El uso de pruebas post-hoc apropiadas resulta fundamental para identificar diferencias significativas entre los participantes, especialmente cuando el número de sistemas evaluados es elevado y las diferencias de rendimiento son sutiles. (Nava Muñoz, 2024, p. 78)  
 :::
 
 ---
@@ -226,7 +226,7 @@ También para **40 palabras o más**, pero sin introducir al autor en la narrati
 
 - **Tesis**  
   Ejemplo:  
-  Rivera Castillo, A. (2024). *Clasificación de imágenes médicas mediante redes neuronales convolucionales* [Tesis de maestría, Centro de Investigación en Matemáticas]. Repositorio CIMAT. https://repositorio.cimat.mx/handle/20.500.11799/112345  
+  Nava Muñoz, S. M. (2024). *Analysis of Systems' Performance in Supervised Learning Challenges* [Tesis de Doctorado, INFOTEC Centro de Investigación e Innovación en Tecnologías de la Información y Comunicación]. Repositorio Institucional de INFOTEC. https://infotec.repositorioinstitucional.mx/jspui/handle/1027/738  
 
 --- 
 
@@ -250,7 +250,7 @@ También para **40 palabras o más**, pero sin introducir al autor en la narrati
 - Gómez Bastar, S. (2012). *Metodología de la investigación*. Red Tercer Milenio. ISBN 978-607-733-149-0.  
 - Lerma González, H. D. (2009). *Metodología de la investigación* (4ª ed.). Ecoe Ediciones.  
 - Nava-Muñoz, S., Graff, M., & Escalante, H. J. (2023). Analysis of systems' performance in natural language processing competitions. *Pattern Recognition Letters*. Elsevier.  
-- Rivera Castillo, A. (2024). *Clasificación de imágenes médicas mediante redes neuronales convolucionales* [Tesis de maestría, Centro de Investigación en Matemáticas]. Repositorio CIMAT. https://repositorio.cimat.mx/handle/20.500.11799/112345
+- Nava Muñoz, S. M. (2024). *Analysis of Systems' Performance in Supervised Learning Challenges* [Tesis de Doctorado, INFOTEC Centro de Investigación e Innovación en Tecnologías de la Información y Comunicación]. Repositorio Institucional de INFOTEC. https://infotec.repositorioinstitucional.mx/jspui/handle/1027/738
 
 
 ---
