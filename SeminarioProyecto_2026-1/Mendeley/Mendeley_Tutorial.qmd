@@ -24,7 +24,7 @@ format:
     title-slide-attributes:
       data-background-image: figs/dccd.png
       data-background-size: 50% 50%;     
-date: 2026-02-11
+date: 2026-02-25
 ---
 
 ## Objetivo de la clase
@@ -376,22 +376,6 @@ Si deseas explorar otros gestores de referencias:
 - **JabRef**: Especializado en BibTeX, ideal para usuarios de LaTeX.  
 - **RefWorks**: Basado en web, institucional.  
 - **Citavi**: Popular en Europa, especialmente en Alemania.  
-
----
-
-## Ejercicio práctico: Crear tu primera bibliografía con Mendeley {.smaller}
-
-**Instrucciones:**  
-
-1. Descarga **3 artículos científicos** en PDF relacionados con tu tema de investigación.  
-2. Crea una cuenta en Mendeley e instala **Mendeley Desktop**.  
-3. Importa los 3 PDFs a Mendeley arrastrándolos a la ventana.  
-4. Revisa y corrige los **metadatos** (autores, título, año, revista, DOI).  
-5. Crea una **carpeta** llamada "Práctica Mendeley" y organiza tus referencias.  
-6. Instala el **plugin de Mendeley para Word**.  
-7. Abre un documento en Word, inserta **2 citas** usando el plugin.  
-8. Genera la **bibliografía automática** al final del documento en estilo **APA 7**.  
-9. Cambia el estilo a **IEEE** y observa cómo se actualizan las citas.  
 
 ---
 
