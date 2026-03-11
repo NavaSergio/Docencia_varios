@@ -555,7 +555,7 @@ print("Centros de k-means (intensidad):", np.sort(centers.ravel()))
 
 ---
 
-## Ejemplo completo integrador 2: `DPP0519.TIF` {.smaller .scrollable}
+## Ejemplo completo integrador 2: `DPP0029.TIF` {.smaller .scrollable}
 
 ```{python}
 #| echo: true
@@ -566,9 +566,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # 1) Carga de segunda imagen TIF
-img_bgr2 = cv2.imread("imagenes/DPP0519.TIF")
+img_bgr2 = cv2.imread("imagenes/DPP0029.TIF")
 if img_bgr2 is None:
-        raise FileNotFoundError("No se encontró la imagen en 'imagenes/DPP0519.TIF'")
+    raise FileNotFoundError("No se encontró la imagen en 'imagenes/DPP0029.TIF'")
 
 img_gray2 = cv2.cvtColor(img_bgr2, cv2.COLOR_BGR2GRAY)
 
