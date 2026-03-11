@@ -1,0 +1,673 @@
+---
+title: "Segmentación por agrupamiento"
+subtitle: "K-means en intensidades y refinamiento de máscaras"
+author: "Curso de Procesamiento Digital de Imágenes"
+format:
+  revealjs:
+    slide-number: true
+    theme: simple
+    footer: "CIMAT - INFOTEC"
+    css: style.css
+    navigation-mode: linear
+    progress: true
+    transition: slide
+    background-transition: fade
+    scrollable: true
+    self-contained: true
+    title-slide-attributes:
+      data-background-image: figs/dccd.png
+      data-background-size: cover
+      data-background-opacity: "0.3"
+    toc: true
+    toc-depth: 2
+    toc-title: "Contenido"
+    code-fold: true
+    code-line-numbers: true
+    code-copy: true
+date: "2026-03-10"
+---
+
+## Propósito de la sesión
+
+Al finalizar, podrás:
+
+- Aplicar **k-means** para segmentar por similaridad de intensidades.
+- Comparar **umbralización** vs **agrupamiento** bajo un mismo caso de estudio.
+- Refinar máscaras con operaciones morfológicas simples.
+- Argumentar decisiones técnicas pensando en etapas posteriores de **descripción** y **reconocimiento**.
+
+---
+
+## Marco de la unidad (hilo completo)
+
+En esta unidad, la segmentación se usa para dividir la imagen en regiones significativas:
+
+- **Discontinuidades**: bordes (Sobel, Canny).
+- **Similaridad**: umbralización global, Otsu, adaptativa.
+- **Agrupamiento**: k-means por intensidades.
+
+Idea clave: la calidad de segmentación impacta directamente la extracción de características y el reconocimiento posterior.
+
+---
+
+## Puente con la clase anterior
+
+Ya vimos que la umbralización:
+
+- es rápida y fácil de interpretar,
+- depende de la iluminación y del histograma,
+- puede fallar si no existe un umbral único representativo.
+
+Hoy agregamos una alternativa: **agrupar píxeles en K clases** sin fijar un solo umbral manual.
+
+---
+
+## K-means: intuición
+
+K-means busca centroides que representen grupos de píxeles similares.
+
+1. Inicializa $K$ centroides.
+2. Asigna cada píxel al centroide más cercano.
+3. Recalcula centroides.
+4. Repite hasta converger.
+
+Objetivo:
+
+$$
+\min \sum_{k=1}^{K} \sum_{x_i \in C_k} ||x_i - \mu_k||^2
+$$
+
+En esta sesión: $x_i$ será la intensidad (1D).
+
+---
+
+## OpenCV: llamada base
+
+`cv2.kmeans(data, K, bestLabels, criteria, attempts, flags)`
+
+Parámetros clave:
+
+- `data`: matriz `float32` de muestras (N x d).
+- `K`: número de grupos.
+- `criteria`: máx. iteraciones y/o epsilon.
+- `attempts`: reinicios para mejorar estabilidad.
+- `flags`: inicialización (`cv2.KMEANS_PP_CENTERS` recomendado).
+
+Salida:
+
+- compactness, labels, centers.
+
+---
+
+## Ejemplo sintético: comparación directa {.smaller .scrollable}
+
+```{python}
+#| echo: true
+#| fig-width: 14
+#| fig-height: 9
+import numpy as np
+import cv2
+import matplotlib.pyplot as plt
+
+# Imagen sintética con gradiente + objetos
+H, W = 220, 320
+x = np.linspace(0, 1, W)
+bg = (90 + 110*x)[None, :].repeat(H, axis=0)
+img = bg.copy()
+
+yy, xx = np.ogrid[:H, :W]
+mask1 = (yy - 90)**2 + (xx - 95)**2 <= 42**2
+mask2 = (yy - 140)**2 + (xx - 220)**2 <= 35**2
+img[mask1] = 60
+img[mask2] = 170
+img = np.clip(img, 0, 255).astype(np.uint8)
+
+# Umbralización (global, Otsu, adaptativa)
+_, th_global = cv2.threshold(img, 120, 255, cv2.THRESH_BINARY_INV)
+ret_otsu, th_otsu = cv2.threshold(img, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
+th_adapt = cv2.adaptiveThreshold(
+    img, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 31, 5
+)
+
+# K-means en intensidades (K=3)
+Z = img.reshape((-1, 1)).astype(np.float32)
+criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.2)
+_, labels, centers = cv2.kmeans(
+    Z, 3, None, criteria, 10, cv2.KMEANS_PP_CENTERS
+)
+centers = np.uint8(centers)
+labels2d = labels.reshape(img.shape)
+seg_km = centers[labels.flatten()].reshape(img.shape)
+
+# Ordenamos clusters por intensidad para interpretar mejor los grupos
+cent_vals = centers.ravel().astype(np.float32)
+order = np.argsort(cent_vals)
+low_id, mid_id, high_id = order[0], order[1], order[2]
+
+# Tomamos como objeto el cluster de menor intensidad
+obj_cluster = int(low_id)
+mask_km = (labels2d == obj_cluster).astype(np.uint8) * 255
+
+# Mascaras de cada grupo para visualizacion
+mask_low = (labels2d == low_id).astype(np.uint8) * 255
+mask_mid = (labels2d == mid_id).astype(np.uint8) * 255
+mask_high = (labels2d == high_id).astype(np.uint8) * 255
+
+# Histograma de intensidades y centros de k-means
+hist, bins = np.histogram(img.ravel(), bins=256, range=(0, 256))
+
+fig, axs = plt.subplots(3, 4, figsize=(14, 9))
+axs[0, 0].imshow(img, cmap="gray")
+axs[0, 0].set_title("Original", fontweight="bold")
+axs[0, 0].axis("off")
+
+axs[0, 1].imshow(th_global, cmap="gray")
+axs[0, 1].set_title("Global (T=120)", fontweight="bold")
+axs[0, 1].axis("off")
+
+axs[0, 2].imshow(th_otsu, cmap="gray")
+axs[0, 2].set_title(f"Otsu (T={ret_otsu:.0f})", fontweight="bold")
+axs[0, 2].axis("off")
+
+axs[0, 3].imshow(th_adapt, cmap="gray")
+axs[0, 3].set_title("Adaptativa (Gauss)", fontweight="bold")
+axs[0, 3].axis("off")
+
+axs[1, 0].imshow(seg_km, cmap="gray")
+axs[1, 0].set_title("Imagen cuantizada (K=3)", fontweight="bold")
+axs[1, 0].axis("off")
+
+axs[1, 1].imshow(mask_km, cmap="gray")
+axs[1, 1].set_title("Máscara desde k-means", fontweight="bold")
+axs[1, 1].axis("off")
+
+axs[1, 2].plot(hist, color="tab:blue", linewidth=1.8)
+for c in np.sort(cent_vals):
+    axs[1, 2].axvline(c, color="crimson", linestyle="--", linewidth=1.5)
+axs[1, 2].set_xlim([0, 255])
+axs[1, 2].set_title("Histograma + centros k-means", fontweight="bold")
+axs[1, 2].set_xlabel("Intensidad")
+axs[1, 2].set_ylabel("Frecuencia")
+axs[1, 2].grid(True, alpha=0.25)
+
+axs[1, 3].axis("off")
+axs[1, 3].text(
+    0.03,
+    0.7,
+    "Grupos k-means\nordenados por\nintensidad",
+    fontsize=11,
+    weight="bold",
+)
+axs[1, 3].text(
+    0.03,
+    0.42,
+    f"c1={cent_vals[low_id]:.0f}\nc2={cent_vals[mid_id]:.0f}\nc3={cent_vals[high_id]:.0f}",
+    fontsize=11,
+)
+
+axs[2, 0].imshow(mask_low, cmap="gray")
+axs[2, 0].set_title(f"Grupo oscuro (c={cent_vals[low_id]:.0f})", fontweight="bold")
+axs[2, 0].axis("off")
+
+axs[2, 1].imshow(mask_mid, cmap="gray")
+axs[2, 1].set_title(f"Grupo medio (c={cent_vals[mid_id]:.0f})", fontweight="bold")
+axs[2, 1].axis("off")
+
+axs[2, 2].imshow(mask_high, cmap="gray")
+axs[2, 2].set_title(f"Grupo claro (c={cent_vals[high_id]:.0f})", fontweight="bold")
+axs[2, 2].axis("off")
+
+axs[2, 3].axis("off")
+
+plt.tight_layout()
+plt.show()
+
+print("Centros (ordenados):", np.sort(cent_vals))
+```
+
+---
+
+## Caso real: `frutas.jpg` con k-means {.smaller .scrollable}
+
+```{python}
+#| echo: true
+#| fig-width: 11
+#| fig-height: 5
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+
+img_bgr = cv2.imread("imagenes/frutas.jpg")
+if img_bgr is None:
+    raise FileNotFoundError("No se encontró la imagen en 'imagenes/frutas.jpg'")
+
+img_gray = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2GRAY)
+
+Z = img_gray.reshape((-1, 1)).astype(np.float32)
+criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 40, 0.1)
+compactness, labels, centers = cv2.kmeans(
+    Z, 3, None, criteria, 12, cv2.KMEANS_PP_CENTERS
+)
+
+centers = np.uint8(centers)
+labels2d = labels.reshape(img_gray.shape)
+seg = centers[labels.flatten()].reshape(img_gray.shape)
+
+# Elegimos como objeto el cluster más oscuro (ajustable según imagen)
+obj_id = int(np.argmin(centers))
+mask = (labels2d == obj_id).astype(np.uint8) * 255
+
+fig, axs = plt.subplots(1, 3, figsize=(11, 5))
+axs[0].imshow(img_gray, cmap="gray")
+axs[0].set_title("Original en gris", fontweight="bold")
+axs[0].axis("off")
+
+axs[1].imshow(seg, cmap="gray")
+axs[1].set_title("k-means (K=3)", fontweight="bold")
+axs[1].axis("off")
+
+axs[2].imshow(mask, cmap="gray")
+axs[2].set_title("Máscara del cluster", fontweight="bold")
+axs[2].axis("off")
+
+plt.tight_layout()
+plt.show()
+
+print("Centros (intensidad):", centers.ravel())
+print("Compactness:", compactness)
+```
+
+---
+
+## Recordatorio: erosión y dilatación
+
+Sobre una máscara binaria (objeto blanco, fondo negro):
+
+- **Erosión**: contrae el objeto. Quita bordes y detalles finos.
+- **Dilatación**: expande el objeto. Engrosa bordes y puede unir fragmentos cercanos.
+
+Intuición con el kernel:
+
+- Erosión conserva un píxel blanco solo si su vecindad también es blanca.
+- Dilatación vuelve blanco un píxel si al menos parte de su vecindad toca objeto.
+
+---
+
+## Apertura vs cierre (concepto)
+
+- **Apertura = erosión + dilatación**
+    - Primero limpia puntos/ramas finas de ruido.
+    - Luego recupera parcialmente el tamaño del objeto.
+    - Uso típico: quitar salpicado blanco aislado.
+
+- **Cierre = dilatación + erosión**
+    - Primero tapa huecos o cortes pequeños.
+    - Luego vuelve a ajustar el contorno.
+    - Uso típico: rellenar agujeros negros dentro del objeto.
+
+Regla práctica:
+
+- Ruido blanco pequeño -> probar apertura.
+- Huecos negros pequeños -> probar cierre.
+
+---
+
+## Ejemplo sintético 1: ruido y detalles finos {.smaller .scrollable}
+
+```{python}
+#| echo: true
+#| fig-width: 11
+#| fig-height: 4
+import numpy as np
+import cv2
+import matplotlib.pyplot as plt
+
+np.random.seed(7)
+
+# Máscara base con texto
+mask_txt = np.zeros((180, 360), dtype=np.uint8)
+cv2.putText(mask_txt, "PDI", (25, 120), cv2.FONT_HERSHEY_SIMPLEX, 2.6, 255, 7, cv2.LINE_AA)
+
+# Agregamos ruido blanco tipo "sal"
+noise = np.random.rand(*mask_txt.shape) < 0.02
+mask_noise = mask_txt.copy()
+mask_noise[noise] = 255
+
+kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3, 3))
+eroded = cv2.erode(mask_noise, kernel, iterations=1)
+dilated = cv2.dilate(mask_noise, kernel, iterations=1)
+opened = cv2.morphologyEx(mask_noise, cv2.MORPH_OPEN, kernel, iterations=1)
+
+fig, axs = plt.subplots(1, 4, figsize=(11, 4))
+axs[0].imshow(mask_noise, cmap="gray")
+axs[0].set_title("Máscara con ruido", fontweight="bold")
+axs[0].axis("off")
+
+axs[1].imshow(eroded, cmap="gray")
+axs[1].set_title("Erosión", fontweight="bold")
+axs[1].axis("off")
+
+axs[2].imshow(dilated, cmap="gray")
+axs[2].set_title("Dilatación", fontweight="bold")
+axs[2].axis("off")
+
+axs[3].imshow(opened, cmap="gray")
+axs[3].set_title("Apertura", fontweight="bold")
+axs[3].axis("off")
+
+plt.tight_layout()
+plt.show()
+```
+
+---
+
+## Ejemplo sintético 2: huecos internos y cortes {.smaller .scrollable}
+
+```{python}
+#| echo: true
+#| fig-width: 10
+#| fig-height: 4
+import numpy as np
+import cv2
+import matplotlib.pyplot as plt
+
+# Máscara con objeto principal + huecos/cortes artificiales
+mask_obj = np.zeros((220, 320), dtype=np.uint8)
+cv2.circle(mask_obj, (110, 110), 55, 255, -1)
+cv2.rectangle(mask_obj, (180, 60), (285, 170), 255, -1)
+
+# Creamos huecos negros y un corte
+cv2.circle(mask_obj, (110, 110), 12, 0, -1)
+cv2.circle(mask_obj, (235, 110), 14, 0, -1)
+cv2.line(mask_obj, (180, 115), (285, 115), 0, 4)
+
+kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (7, 7))
+closed = cv2.morphologyEx(mask_obj, cv2.MORPH_CLOSE, kernel, iterations=1)
+opened_then_closed = cv2.morphologyEx(
+        cv2.morphologyEx(mask_obj, cv2.MORPH_OPEN, kernel, iterations=1),
+        cv2.MORPH_CLOSE,
+        kernel,
+        iterations=1,
+)
+
+fig, axs = plt.subplots(1, 3, figsize=(10, 4))
+axs[0].imshow(mask_obj, cmap="gray")
+axs[0].set_title("Máscara con huecos", fontweight="bold")
+axs[0].axis("off")
+
+axs[1].imshow(closed, cmap="gray")
+axs[1].set_title("Cierre", fontweight="bold")
+axs[1].axis("off")
+
+axs[2].imshow(opened_then_closed, cmap="gray")
+axs[2].set_title("Apertura + cierre", fontweight="bold")
+axs[2].axis("off")
+
+plt.tight_layout()
+plt.show()
+```
+
+---
+
+## Refinamiento de máscara (caso `frutas.jpg`)
+
+Operación recomendada después de segmentar:
+
+- **Apertura**: elimina ruido pequeño (erosión + dilatación).
+- **Cierre**: rellena huecos pequeños (dilatación + erosión).
+
+```{python}
+#| echo: true
+#| fig-width: 10
+#| fig-height: 4
+import cv2
+import matplotlib.pyplot as plt
+
+kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5))
+mask_open = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel, iterations=1)
+mask_ref = cv2.morphologyEx(mask_open, cv2.MORPH_CLOSE, kernel, iterations=1)
+
+fig, axs = plt.subplots(1, 3, figsize=(10, 4))
+axs[0].imshow(mask, cmap="gray")
+axs[0].set_title("Máscara inicial", fontweight="bold")
+axs[0].axis("off")
+
+axs[1].imshow(mask_open, cmap="gray")
+axs[1].set_title("Tras apertura", fontweight="bold")
+axs[1].axis("off")
+
+axs[2].imshow(mask_ref, cmap="gray")
+axs[2].set_title("Tras apertura+cierre", fontweight="bold")
+axs[2].axis("off")
+
+plt.tight_layout()
+plt.show()
+```
+
+---
+
+## Comparación de métodos (para discusión)
+
+- **Discontinuidades (bordes)**: destacan cambios bruscos de intensidad.
+- **Similaridad (umbralización global/adaptativa)**: generan máscaras por criterio de intensidad.
+- **Agrupamiento (k-means)**: separa clases de intensidad sin fijar un único umbral.
+
+Pregunta guía: ¿qué salida segmenta mejor para una etapa de descripción y reconocimiento?
+
+---
+
+## Ejemplo completo integrador: `DPP0357.TIF` {.smaller .scrollable}
+
+```{python}
+#| echo: true
+#| fig-width: 13
+#| fig-height: 7
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+
+# 1) Carga de imagen (distinta de frutas)
+img_bgr = cv2.imread("imagenes/DPP0357.TIF")
+if img_bgr is None:
+    raise FileNotFoundError("No se encontró la imagen en 'imagenes/DPP0357.TIF'")
+
+img_gray = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2GRAY)
+
+# 2) Segmentación basada en discontinuidades (bordes)
+img_blur = cv2.GaussianBlur(img_gray, (5, 5), 1.2)
+edges = cv2.Canny(img_blur, 70, 150)
+
+# 3) Segmentación por similaridad
+# 3a) Umbralización global (manual)
+_, th_global = cv2.threshold(img_gray, 120, 255, cv2.THRESH_BINARY)
+
+# 3b) Umbralización adaptativa
+th_adapt = cv2.adaptiveThreshold(
+    img_gray,
+    255,
+    cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+    cv2.THRESH_BINARY,
+    31,
+    4,
+)
+
+# 4) Segmentación por agrupamiento (k-means en intensidades)
+Z = img_gray.reshape((-1, 1)).astype(np.float32)
+criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 40, 0.1)
+_, labels, centers = cv2.kmeans(
+    Z,
+    3,
+    None,
+    criteria,
+    12,
+    cv2.KMEANS_PP_CENTERS,
+)
+
+centers = np.uint8(centers)
+labels2d = labels.reshape(img_gray.shape)
+seg_kmeans = centers[labels.flatten()].reshape(img_gray.shape)
+
+# Máscara de ejemplo: cluster más oscuro
+obj_id = int(np.argmin(centers))
+mask_kmeans = (labels2d == obj_id).astype(np.uint8) * 255
+
+# 5) Visualización comparativa
+fig, axs = plt.subplots(2, 3, figsize=(13, 7))
+
+axs[0, 0].imshow(cv2.cvtColor(img_bgr, cv2.COLOR_BGR2RGB))
+axs[0, 0].set_title("Original (RGB)", fontweight="bold")
+axs[0, 0].axis("off")
+
+axs[0, 1].imshow(img_gray, cmap="gray")
+axs[0, 1].set_title("Escala de grises", fontweight="bold")
+axs[0, 1].axis("off")
+
+axs[0, 2].imshow(edges, cmap="gray")
+axs[0, 2].set_title("Bordes (Canny)", fontweight="bold")
+axs[0, 2].axis("off")
+
+axs[1, 0].imshow(th_global, cmap="gray")
+axs[1, 0].set_title("Umbralización global", fontweight="bold")
+axs[1, 0].axis("off")
+
+axs[1, 1].imshow(th_adapt, cmap="gray")
+axs[1, 1].set_title("Umbralización adaptativa", fontweight="bold")
+axs[1, 1].axis("off")
+
+axs[1, 2].imshow(mask_kmeans, cmap="gray")
+axs[1, 2].set_title("k-means (máscara cluster)", fontweight="bold")
+axs[1, 2].axis("off")
+
+plt.tight_layout()
+plt.show()
+
+print("Centros de k-means (intensidad):", np.sort(centers.ravel()))
+```
+
+---
+
+## Lectura rápida del ejemplo
+
+- **Bordes (Canny)**: útil para contornos, no separa por sí solo objeto/fondo completo.
+- **Global**: simple y rápido, pero sensible a cambios de iluminación.
+- **Adaptativa**: mejora zonas con iluminación desigual, a costa de más ruido local.
+- **k-means**: ofrece una partición por clases de intensidad; requiere interpretar qué cluster representa el objeto de interés.
+
+---
+
+## Ejemplo completo integrador 2: `DPP0519.TIF` {.smaller .scrollable}
+
+```{python}
+#| echo: true
+#| fig-width: 13
+#| fig-height: 7
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+
+# 1) Carga de segunda imagen TIF
+img_bgr2 = cv2.imread("imagenes/DPP0519.TIF")
+if img_bgr2 is None:
+        raise FileNotFoundError("No se encontró la imagen en 'imagenes/DPP0519.TIF'")
+
+img_gray2 = cv2.cvtColor(img_bgr2, cv2.COLOR_BGR2GRAY)
+
+# 2) Discontinuidades (bordes)
+blur2 = cv2.GaussianBlur(img_gray2, (5, 5), 1.0)
+edges2 = cv2.Canny(blur2, 60, 140)
+
+# 3) Similaridad
+_, th_global2 = cv2.threshold(img_gray2, 125, 255, cv2.THRESH_BINARY)
+th_adapt2 = cv2.adaptiveThreshold(
+        img_gray2,
+        255,
+        cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+        cv2.THRESH_BINARY,
+        35,
+        5,
+)
+
+# 4) Agrupamiento por intensidades (k-means)
+Z2 = img_gray2.reshape((-1, 1)).astype(np.float32)
+criteria2 = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 45, 0.1)
+_, labels2, centers2 = cv2.kmeans(
+        Z2,
+        3,
+        None,
+        criteria2,
+        15,
+        cv2.KMEANS_PP_CENTERS,
+)
+
+centers2 = np.uint8(centers2)
+labels2d_2 = labels2.reshape(img_gray2.shape)
+
+# Cluster de interés: menor intensidad (ajustable según objetivo)
+obj_id2 = int(np.argmin(centers2))
+mask_kmeans2 = (labels2d_2 == obj_id2).astype(np.uint8) * 255
+
+# Refinamiento opcional para análisis posterior
+kernel2 = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5))
+mask_kmeans2_ref = cv2.morphologyEx(mask_kmeans2, cv2.MORPH_OPEN, kernel2, iterations=1)
+mask_kmeans2_ref = cv2.morphologyEx(mask_kmeans2_ref, cv2.MORPH_CLOSE, kernel2, iterations=1)
+
+# 5) Comparación visual
+fig, axs = plt.subplots(2, 3, figsize=(13, 7))
+
+axs[0, 0].imshow(cv2.cvtColor(img_bgr2, cv2.COLOR_BGR2RGB))
+axs[0, 0].set_title("Original (RGB)", fontweight="bold")
+axs[0, 0].axis("off")
+
+axs[0, 1].imshow(img_gray2, cmap="gray")
+axs[0, 1].set_title("Escala de grises", fontweight="bold")
+axs[0, 1].axis("off")
+
+axs[0, 2].imshow(edges2, cmap="gray")
+axs[0, 2].set_title("Bordes (Canny)", fontweight="bold")
+axs[0, 2].axis("off")
+
+axs[1, 0].imshow(th_global2, cmap="gray")
+axs[1, 0].set_title("Umbralización global", fontweight="bold")
+axs[1, 0].axis("off")
+
+axs[1, 1].imshow(th_adapt2, cmap="gray")
+axs[1, 1].set_title("Umbralización adaptativa", fontweight="bold")
+axs[1, 1].axis("off")
+
+axs[1, 2].imshow(mask_kmeans2_ref, cmap="gray")
+axs[1, 2].set_title("k-means + morfología", fontweight="bold")
+axs[1, 2].axis("off")
+
+plt.tight_layout()
+plt.show()
+
+print("Centros de k-means (intensidad):", np.sort(centers2.ravel()))
+```
+
+---
+
+## ¿Cómo argumentar decisiones técnicas? {.smaller}
+
+Para justificar una segmentación en función de **descripción** y **reconocimiento**, reporta evidencia concreta:
+
+- **Separación objeto/fondo**:
+    - ¿El objeto de interés queda completo o fragmentado?
+    - ¿El fondo introduce falsos positivos?
+- **Calidad geométrica de la máscara**:
+    - continuidad de contornos,
+    - cantidad de huecos internos,
+    - presencia de ruido fino.
+- **Estabilidad para descriptores**:
+    - descriptores de forma (área, perímetro, circularidad) son sensibles a bordes ruidosos,
+    - descriptores de textura/intensidad son sensibles a fuga de fondo.
+- **Impacto esperado en reconocimiento**:
+    - segmentaciones limpias reducen variabilidad intra-clase,
+    - menos ruido mejora consistencia entre muestras,
+    - fragmentación puede degradar clasificación o conteo.
+
+Formato breve sugerido para tu informe:
+
+1. Método y parámetros exactos.
+2. Evidencia visual comparativa (misma escala/layout).
+3. Riesgos observados (ruido, pérdida de objeto, sobresegmentación).
+4. Decisión final y justificación orientada al objetivo de reconocimiento.
