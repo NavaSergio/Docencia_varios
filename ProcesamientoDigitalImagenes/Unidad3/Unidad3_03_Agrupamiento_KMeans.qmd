@@ -24,7 +24,7 @@ format:
     code-fold: true
     code-line-numbers: true
     code-copy: true
-date: "2026-03-10"
+date: "2026-03-11"
 ---
 
 ## Propósito de la sesión
@@ -452,7 +452,6 @@ plt.show()
 - **Similaridad (umbralización global/adaptativa)**: generan máscaras por criterio de intensidad.
 - **Agrupamiento (k-means)**: separa clases de intensidad sin fijar un único umbral.
 
-Pregunta guía: ¿qué salida segmenta mejor para una etapa de descripción y reconocimiento?
 
 ---
 

@@ -30,7 +30,7 @@ date: 2026-3-11
 ## ¿Qué es una pregunta de investigación?
 
 - Es la **interrogante central** de un estudio.
-- Sirve como **guía del proceso** investigativo.
+- Sirve como **guía del proceso** de investigación.
 - Debe ser:
   - **Clara** y comprensible.
   - **Enfocada** y precisa.
@@ -123,7 +123,7 @@ Según Baena
 
 ## Relación con los objetivos
 
-- La **pregunta guía** determina los **objetivos**.
+- La **pregunta de investigación** determina los **objetivos**.
 - Los **objetivos específicos** deben responder la pregunta.
 - No deben confundirse con actividades.
 - Deben ser:
