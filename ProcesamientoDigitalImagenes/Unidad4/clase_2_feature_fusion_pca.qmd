@@ -1,0 +1,562 @@
+---
+title: "Clase 2. Fusión de características y PCA para visualización de espacios de características"
+author: "Material de apoyo docente"
+format:
+    html:
+        toc: true
+        toc-depth: 3
+        code-fold: false
+        code-tools: true
+        df-print: paged
+        css: style.css
+        incremental: false
+        footer: "MCDI | Procesamiento Digital de Imágenes | Unidad 4"
+    revealjs:
+        theme: [default]
+        slide-number: c/t
+        code-fold: false
+        code-tools: true
+        css: style.css
+        incremental: false
+        footer: "MCDI | Procesamiento Digital de Imágenes | Unidad 4"
+execute:
+  echo: true
+  warning: false
+  message: false
+jupyter: python3
+lang: es
+---
+
+# Propósito de la clase
+
+En esta clase se construye un flujo completo para tareas de clasificación de imágenes usando descriptores clásicos. El énfasis está en cuatro etapas:
+
+1. **extracción de características** por imagen;
+2. **feature fusion** mediante concatenación de vectores;
+3. **escalamiento y reducción de dimensionalidad** con PCA;
+4. **visualización de separabilidad** entre clases.
+
+# Objetivos de aprendizaje
+
+Al finalizar la sesión, el estudiante será capaz de:
+
+- construir una matriz de características a partir de imágenes organizadas por carpetas;
+- concatenar descriptores heterogéneos en un solo vector;
+- justificar por qué debe escalarse antes de aplicar PCA;
+- proyectar datos a 2 y 3 componentes principales;
+- interpretar visualmente separabilidad, solapamiento y estructura de clases;
+- evitar errores frecuentes de fuga de información (*data leakage*).
+
+# Origen conceptual del flujo de trabajo
+
+## Fusión de características
+
+La idea de combinar descriptores de distinta naturaleza es clásica en visión por computadora y recuperación de imágenes: textura, forma y color aportan información complementaria. En este curso se usa una versión simple de esa idea: **concatenación directa** de vectores.
+
+## PCA
+
+El análisis de componentes principales es una técnica lineal de reducción de dimensionalidad implementada en `scikit-learn` mediante descomposición en valores singulares. Su objetivo es proyectar los datos en componentes ortogonales que explican máxima varianza.
+
+## Escalamiento previo
+
+`scikit-learn` recomienda estandarizar características cuando las variables están en escalas distintas. Esto es especialmente importante cuando se fusionan descriptores heterogéneos, porque de otro modo algunas familias pueden dominar numéricamente a las demás.
+
+# Conjunto de datos esperado
+
+Se asumirá una estructura de carpetas como la siguiente:
+
+```text
+dataset/
+  clase_A/
+    img1.jpg
+    img2.jpg
+  clase_B/
+    img3.jpg
+    img4.jpg
+  clase_C/
+    img5.jpg
+```
+
+Cada subcarpeta representa una clase.
+
+# Librerías
+
+```{python}
+from pathlib import Path
+
+import numpy as np
+import pandas as pd
+import cv2
+import matplotlib.pyplot as plt
+
+from scipy.stats import skew
+from skimage import color, img_as_ubyte
+from skimage.feature import graycomatrix, graycoprops
+from sklearn.preprocessing import StandardScaler
+from sklearn.decomposition import PCA
+from sklearn.pipeline import Pipeline
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import classification_report, ConfusionMatrixDisplay
+```
+
+# 1. Funciones de extracción
+
+En esta clase reutilizamos la idea de la clase anterior, pero dejaremos las funciones listas para un flujo más completo.
+
+```{python}
+def extract_glcm_features(
+    image_gray,
+    levels=32,
+    distances=(1, 3, 5),
+    angles=(0, np.pi/4, np.pi/2, 3*np.pi/4)
+):
+    img_q = (image_gray / 256 * levels).astype(np.uint8)
+    img_q = np.clip(img_q, 0, levels - 1)
+
+    glcm = graycomatrix(
+        img_q,
+        distances=list(distances),
+        angles=list(angles),
+        levels=levels,
+        symmetric=True,
+        normed=True,
+    )
+
+    props = ["contrast", "dissimilarity", "homogeneity", "ASM", "energy", "correlation"]
+    feats = []
+    names = []
+
+    for prop in props:
+        vals = graycoprops(glcm, prop)
+        for i, d in enumerate(distances):
+            for j, _ in enumerate(angles):
+                feats.append(vals[i, j])
+                names.append(f"glcm_{prop}_d{d}_a{j}")
+
+    return np.array(feats, dtype=float), names
+
+
+def extract_hu_features(image_gray, threshold=110):
+    _, mask = cv2.threshold(image_gray, threshold, 255, cv2.THRESH_BINARY)
+    moments = cv2.moments(mask)
+    hu = cv2.HuMoments(moments).flatten()
+    hu_log = -np.sign(hu) * np.log10(np.abs(hu) + 1e-12)
+    names = [f"hu_{i+1}" for i in range(7)]
+    return hu_log.astype(float), names
+
+
+def extract_color_moments(image_rgb):
+    feats = []
+    names = []
+    for idx, cname in enumerate(["R", "G", "B"]):
+        channel = image_rgb[:, :, idx].astype(np.float64).ravel()
+        feats.extend([
+            channel.mean(),
+            channel.std(ddof=0),
+            skew(channel, bias=False)
+        ])
+        names.extend([
+            f"color_mean_{cname}",
+            f"color_std_{cname}",
+            f"color_skew_{cname}"
+        ])
+    return np.array(feats, dtype=float), names
+
+
+def extract_fused_features(image_rgb):
+    image_gray = img_as_ubyte(color.rgb2gray(image_rgb))
+
+    glcm_vec, glcm_names = extract_glcm_features(image_gray)
+    hu_vec, hu_names = extract_hu_features(image_gray)
+    color_vec, color_names = extract_color_moments(image_rgb)
+
+    fused = np.concatenate([glcm_vec, hu_vec, color_vec])
+    names = glcm_names + hu_names + color_names
+    return fused, names
+```
+
+# 2. Carga del conjunto de imágenes
+
+```{python}
+def load_image(path):
+    img_bgr = cv2.imread(str(path))
+    if img_bgr is None:
+        raise ValueError(f"No se pudo leer la imagen: {path}")
+    return cv2.cvtColor(img_bgr, cv2.COLOR_BGR2RGB)
+
+
+def build_dataset_from_folders(root_dir):
+    root = Path(root_dir)
+    rows = []
+    labels = []
+    filepaths = []
+    feature_names = None
+
+    valid_ext = {".jpg", ".jpeg", ".png", ".bmp", ".tif", ".tiff"}
+
+    for class_dir in sorted([p for p in root.iterdir() if p.is_dir()]):
+        class_name = class_dir.name
+        for img_path in sorted(class_dir.iterdir()):
+            if img_path.suffix.lower() not in valid_ext:
+                continue
+
+            img = load_image(img_path)
+            vec, names = extract_fused_features(img)
+
+            rows.append(vec)
+            labels.append(class_name)
+            filepaths.append(str(img_path))
+
+            if feature_names is None:
+                feature_names = names
+
+    X = np.vstack(rows)
+    y = np.array(labels)
+    meta = pd.DataFrame({"filepath": filepaths, "label": labels})
+    return X, y, feature_names, meta
+```
+
+# 3. Construcción de la matriz de características
+
+```{python}
+# Sustituir por la ruta local del estudiante
+# X, y, feature_names, meta = build_dataset_from_folders("dataset")
+```
+
+Si no se desea ejecutar todavía con archivos locales, puede revisarse la estructura esperada de salida:
+
+```{python}
+print("Salida esperada:")
+print("X -> matriz numérica de tamaño (n_imágenes, n_características)")
+print("y -> vector de etiquetas")
+print("feature_names -> nombres de columnas")
+print("meta -> tabla con ruta y clase")
+```
+
+# 4. Inspección inicial
+
+Una vez construida la matriz `X`, conviene verificar:
+
+- número de imágenes por clase;
+- número total de variables;
+- presencia de valores faltantes o infinitos;
+- rangos y escalas muy distintas entre variables.
+
+```{python}
+def inspect_feature_matrix(X, y, feature_names):
+    df = pd.DataFrame(X, columns=feature_names)
+    print("Dimensión de X:", X.shape)
+    print("Número de clases:", len(np.unique(y)))
+    print("Conteo por clase:")
+    print(pd.Series(y).value_counts())
+    print("\nValores faltantes:", df.isna().sum().sum())
+    print("Valores infinitos:", np.isinf(df.to_numpy()).sum())
+    return df.describe().T[["mean", "std", "min", "max"]].head(10)
+```
+
+# 5. ¿Qué significa feature fusion?
+
+La fusión de características usada aquí consiste en concatenar vectores:
+
+$$
+\mathbf{x}^{(i)}_{fusion} = [\mathbf{x}^{(i)}_{GLCM} \; | \; \mathbf{x}^{(i)}_{Hu} \; | \; \mathbf{x}^{(i)}_{Color}]
+$$
+
+Si:
+
+- GLCM aporta 72 variables,
+- Hu aporta 7 variables,
+- color aporta 9 variables,
+
+entonces cada imagen queda representada por:
+
+$$
+72 + 7 + 9 = 88
+$$
+
+características.
+
+## Ventaja
+
+Combina información complementaria.
+
+## Riesgo
+
+Las familias pueden quedar en escalas numéricas muy diferentes. Por eso el siguiente paso es **escalar**.
+
+# 6. Escalamiento antes de PCA
+
+PCA maximiza varianza. Si una variable tiene magnitud mucho mayor que otra, puede dominar la proyección aunque no sea la más informativa. Por ello se suele aplicar `StandardScaler`:
+
+$$
+z = \frac{x - \mu}{\sigma}
+$$
+
+```{python}
+scaler = StandardScaler()
+
+# Ejemplo de uso una vez que exista X:
+# X_scaled = scaler.fit_transform(X)
+```
+
+# 7. PCA para visualización
+
+## PCA en dos dimensiones
+
+```{python}
+def pca_2d_projection(X):
+    scaler = StandardScaler()
+    pca = PCA(n_components=2, random_state=42)
+
+    X_scaled = scaler.fit_transform(X)
+    Z = pca.fit_transform(X_scaled)
+    return Z, pca
+```
+
+## PCA en tres dimensiones
+
+```{python}
+def pca_3d_projection(X):
+    scaler = StandardScaler()
+    pca = PCA(n_components=3, random_state=42)
+
+    X_scaled = scaler.fit_transform(X)
+    Z = pca.fit_transform(X_scaled)
+    return Z, pca
+```
+
+# 8. Visualización de separabilidad en 2D
+
+```{python}
+def plot_pca_2d(Z, y, pca):
+    plt.figure(figsize=(8, 6))
+    for cls in np.unique(y):
+        idx = y == cls
+        plt.scatter(Z[idx, 0], Z[idx, 1], label=cls, alpha=0.8)
+
+    plt.xlabel(f"PC1 ({pca.explained_variance_ratio_[0]*100:.2f}% var.)")
+    plt.ylabel(f"PC2 ({pca.explained_variance_ratio_[1]*100:.2f}% var.)")
+    plt.title("Proyección PCA en 2D")
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+```
+
+Interpretación didáctica:
+
+- si las clases forman grupos separados, hay evidencia de separabilidad lineal o casi lineal en el espacio proyectado;
+- si las clases se traslapan, puede requerirse otra representación o un clasificador más flexible;
+- si hay outliers, conviene revisar imágenes problemáticas o errores de segmentación/extracción.
+
+# 9. Visualización de separabilidad en 3D
+
+```{python}
+def plot_pca_3d(Z, y, pca):
+    fig = plt.figure(figsize=(9, 7))
+    ax = fig.add_subplot(111, projection="3d")
+
+    for cls in np.unique(y):
+        idx = y == cls
+        ax.scatter(Z[idx, 0], Z[idx, 1], Z[idx, 2], label=cls, alpha=0.8)
+
+    ax.set_xlabel(f"PC1 ({pca.explained_variance_ratio_[0]*100:.2f}%)")
+    ax.set_ylabel(f"PC2 ({pca.explained_variance_ratio_[1]*100:.2f}%)")
+    ax.set_zlabel(f"PC3 ({pca.explained_variance_ratio_[2]*100:.2f}%)")
+    ax.set_title("Proyección PCA en 3D")
+    ax.legend()
+    plt.show()
+```
+
+# 10. Flujo completo recomendado
+
+```{python}
+def run_pca_workflow(root_dir):
+    X, y, feature_names, meta = build_dataset_from_folders(root_dir)
+
+    # Limpieza preventiva
+    X = np.nan_to_num(X, nan=0.0, posinf=0.0, neginf=0.0)
+
+    # PCA 2D
+    Z2, pca2 = pca_2d_projection(X)
+    plot_pca_2d(Z2, y, pca2)
+
+    # PCA 3D
+    Z3, pca3 = pca_3d_projection(X)
+    plot_pca_3d(Z3, y, pca3)
+
+    return X, y, feature_names, meta, Z2, Z3, pca2, pca3
+```
+
+# 11. Separabilidad visual y clasificación
+
+Una buena visualización PCA no garantiza por sí sola alto desempeño predictivo, pero sí ayuda a responder preguntas como:
+
+- ¿las clases parecen separarse naturalmente?
+- ¿qué tan compactos son los grupos?
+- ¿hay solapamiento fuerte entre categorías?
+- ¿existen imágenes atípicas?
+
+Una extensión natural es entrenar un clasificador base sobre los vectores fusionados.
+
+# 12. Ejemplo con un clasificador base
+
+```{python}
+def evaluate_baseline_classifier(X, y, test_size=0.3, random_state=42):
+    X = np.nan_to_num(X, nan=0.0, posinf=0.0, neginf=0.0)
+
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=test_size, stratify=y, random_state=random_state
+    )
+
+    pipe = Pipeline([
+        ("scaler", StandardScaler()),
+        ("clf", LogisticRegression(max_iter=3000))
+    ])
+
+    pipe.fit(X_train, y_train)
+    y_pred = pipe.predict(X_test)
+
+    print(classification_report(y_test, y_pred))
+    ConfusionMatrixDisplay.from_predictions(y_test, y_pred)
+    plt.show()
+
+    return pipe
+```
+
+Aquí la parte importante no es el clasificador en sí, sino el principio metodológico:
+
+- el escalamiento se ajusta con entrenamiento;
+- la evaluación se hace en datos no usados para ajustar la transformación.
+
+Eso ayuda a evitar **fuga de información**.
+
+# 13. Error común: hacer PCA antes de separar entrenamiento y prueba
+
+Un error frecuente es:
+
+1. escalar todo el conjunto;
+2. ajustar PCA con todos los datos;
+3. después dividir en entrenamiento y prueba.
+
+Ese flujo incorpora información del conjunto de prueba en la transformación y sesga la evaluación. Lo correcto es ajustar transformaciones solo con entrenamiento o usar un `Pipeline`.
+
+# 14. Ejemplo de tabla final de características
+
+```{python}
+def build_feature_dataframe(X, y, feature_names):
+    df = pd.DataFrame(X, columns=feature_names)
+    df.insert(0, "label", y)
+    return df
+```
+
+Esta tabla es útil para:
+
+- guardar resultados en CSV;
+- inspeccionar variables;
+- usar otros algoritmos de clasificación;
+- documentar el proceso experimental.
+
+# 15. Recomendaciones de análisis para el estudiante
+
+## Analizar por bloques de descriptores
+
+Conviene comparar al menos cuatro escenarios:
+
+1. solo GLCM;
+2. solo Hu;
+3. solo color;
+4. fusión completa.
+
+## Preguntas útiles
+
+- ¿la fusión mejora la separabilidad visual?
+- ¿qué bloque aporta mayor discriminación?
+- ¿hay variables redundantes?
+- ¿cuánta varianza explican las primeras dos o tres componentes?
+
+# 16. Extensiones naturales
+
+A partir de este flujo pueden proponerse variantes como:
+
+- usar HSV o Lab en lugar de RGB;
+- calcular GLCM por regiones o parches;
+- sustituir PCA por t-SNE o UMAP para exploración visual;
+- incorporar selección de variables;
+- comparar varios clasificadores sobre los vectores fusionados.
+
+# Actividad sugerida en clase
+
+1. Organizar un conjunto de imágenes por carpetas.
+2. Extraer vectores fusionados.
+3. Estandarizar y aplicar PCA.
+4. Visualizar en 2D y 3D.
+5. Entrenar un clasificador base.
+6. Comparar con el uso de un solo bloque de descriptores.
+
+# Mini ejemplo real (opcional)
+
+Para una demo completa con descarga de datos reales, fusión y PCA listos para clase, puedes usar:
+
+- [ejemplo_real_clase_2_fusion_pca.qmd](ejemplo_real_clase_2_fusion_pca.qmd)
+- [ejemplo_real_clase_2_fusion_pca_slides.html](ejemplo_real_clase_2_fusion_pca_slides.html)
+
+Vista compacta de muestras por clase (si ya existe `datos_ejemplo/flower_photos`):
+
+```{python}
+FLOWERS_DIR = Path("datos_ejemplo") / "flower_photos"
+classes = ["daisy", "sunflowers", "roses"]
+
+if FLOWERS_DIR.exists():
+    fig, axes = plt.subplots(len(classes), 3, figsize=(9, 8))
+
+    for i, cls in enumerate(classes):
+        cls_paths = sorted([
+            p for p in (FLOWERS_DIR / cls).glob("*")
+            if p.suffix.lower() in {".jpg", ".jpeg", ".png"}
+        ])
+        picks = [0, 20, 40]
+
+        for j, pos in enumerate(picks):
+            ax = axes[i, j]
+            if pos < len(cls_paths):
+                img_bgr = cv2.imread(str(cls_paths[pos]))
+                img = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2RGB)
+                ax.imshow(img)
+                ax.set_title(f"{cls} | id={pos}")
+            ax.axis("off")
+
+    plt.tight_layout()
+    plt.show()
+else:
+    print("No se encontro datos_ejemplo/flower_photos. Ejecuta el notebook de ejemplo real para descargar el dataset.")
+```
+
+# Cierre conceptual
+
+Este flujo de trabajo resume una práctica clásica y pedagógicamente muy valiosa en visión por computadora:
+
+- pasar de la imagen al descriptor,
+- del descriptor a la matriz de datos,
+- de la matriz a un espacio proyectado,
+- y del espacio proyectado a una interpretación sobre separabilidad de clases.
+
+Además, prepara el terreno para métodos más complejos, ya que mantiene una lógica experimental clara y reproducible.
+
+# Referencias y origen
+
+- Haralick, R. M., Shanmugam, K., y Dinstein, I. (1973). *Textural Features for Image Classification*.
+- Hu, M.-K. (1962). *Visual Pattern Recognition by Moment Invariants*.
+- Stricker, M. A., y Orengo, M. (1995). *Similarity of Color Images*.
+- Documentación de `scikit-image` para `graycomatrix` y `graycoprops`.
+- Documentación de OpenCV para `moments` y `HuMoments`.
+- Documentación de `scikit-learn` para `StandardScaler`, `PCA` y `Pipeline`.
+
+# Tarea sugerida
+
+Preparar un experimento corto con tres categorías de imágenes y entregar:
+
+- la tabla de características fusionadas;
+- la gráfica PCA en 2D;
+- la gráfica PCA en 3D;
+- una breve discusión sobre separabilidad y desempeño de un clasificador base.

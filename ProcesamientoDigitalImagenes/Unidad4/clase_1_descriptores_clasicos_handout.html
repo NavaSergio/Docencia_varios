@@ -1,0 +1,1709 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Material de apoyo docente">
+
+<title>Clase 1. Descriptores de imagen clásicos: GLCM, Momentos de Hu y Momentos de Color</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="clase_1_descriptores_clasicos_files/libs/clipboard/clipboard.min.js"></script>
+<script src="clase_1_descriptores_clasicos_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="clase_1_descriptores_clasicos_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="clase_1_descriptores_clasicos_files/libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="clase_1_descriptores_clasicos_files/libs/quarto-html/popper.min.js"></script>
+<script src="clase_1_descriptores_clasicos_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="clase_1_descriptores_clasicos_files/libs/quarto-html/anchor.min.js"></script>
+<link href="clase_1_descriptores_clasicos_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="clase_1_descriptores_clasicos_files/libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="clase_1_descriptores_clasicos_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="clase_1_descriptores_clasicos_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="clase_1_descriptores_clasicos_files/libs/bootstrap/bootstrap-9e3ffae467580fdb927a41352e75a2e0.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body class="quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Tabla de contenidos</h2>
+   
+  <ul>
+  <li><a href="#propósito-de-la-clase" id="toc-propósito-de-la-clase" class="nav-link active" data-scroll-target="#propósito-de-la-clase">Propósito de la clase</a></li>
+  <li><a href="#objetivos-de-aprendizaje" id="toc-objetivos-de-aprendizaje" class="nav-link" data-scroll-target="#objetivos-de-aprendizaje">Objetivos de aprendizaje</a></li>
+  <li><a href="#origen-y-fundamento-de-los-descriptores" id="toc-origen-y-fundamento-de-los-descriptores" class="nav-link" data-scroll-target="#origen-y-fundamento-de-los-descriptores">Origen y fundamento de los descriptores</a>
+  <ul class="collapse">
+  <li><a href="#glcm" id="toc-glcm" class="nav-link" data-scroll-target="#glcm">GLCM</a></li>
+  <li><a href="#momentos-invariantes-de-hu" id="toc-momentos-invariantes-de-hu" class="nav-link" data-scroll-target="#momentos-invariantes-de-hu">Momentos invariantes de Hu</a></li>
+  <li><a href="#momentos-de-color" id="toc-momentos-de-color" class="nav-link" data-scroll-target="#momentos-de-color">Momentos de color</a></li>
+  </ul></li>
+  <li><a href="#idea-general-una-imagen-como-vector-de-características" id="toc-idea-general-una-imagen-como-vector-de-características" class="nav-link" data-scroll-target="#idea-general-una-imagen-como-vector-de-características">Idea general: una imagen como vector de características</a></li>
+  <li><a href="#preparación-del-entorno-en-python" id="toc-preparación-del-entorno-en-python" class="nav-link" data-scroll-target="#preparación-del-entorno-en-python">Preparación del entorno en Python</a></li>
+  <li><a href="#imágenes-de-ejemplo" id="toc-imágenes-de-ejemplo" class="nav-link" data-scroll-target="#imágenes-de-ejemplo">Imágenes de ejemplo</a></li>
+  <li><a href="#glcm-textura-basada-en-co-ocurrencia" id="toc-glcm-textura-basada-en-co-ocurrencia" class="nav-link" data-scroll-target="#glcm-textura-basada-en-co-ocurrencia">1. GLCM: textura basada en co-ocurrencia</a>
+  <ul class="collapse">
+  <li><a href="#intuición" id="toc-intuición" class="nav-link" data-scroll-target="#intuición">Intuición</a></li>
+  <li><a href="#decisiones-prácticas-importantes" id="toc-decisiones-prácticas-importantes" class="nav-link" data-scroll-target="#decisiones-prácticas-importantes">Decisiones prácticas importantes</a></li>
+  <li><a href="#ejemplo-básico-con-graycomatrix" id="toc-ejemplo-básico-con-graycomatrix" class="nav-link" data-scroll-target="#ejemplo-básico-con-graycomatrix">Ejemplo básico con <code>graycomatrix</code></a></li>
+  <li><a href="#propiedades-de-haralick-más-usadas" id="toc-propiedades-de-haralick-más-usadas" class="nav-link" data-scroll-target="#propiedades-de-haralick-más-usadas">Propiedades de Haralick más usadas</a></li>
+  <li><a href="#función-reusable-para-extraer-glcm" id="toc-función-reusable-para-extraer-glcm" class="nav-link" data-scroll-target="#función-reusable-para-extraer-glcm">Función reusable para extraer GLCM</a></li>
+  <li><a href="#comentarios-didácticos-sobre-glcm" id="toc-comentarios-didácticos-sobre-glcm" class="nav-link" data-scroll-target="#comentarios-didácticos-sobre-glcm">Comentarios didácticos sobre GLCM</a></li>
+  </ul></li>
+  <li><a href="#momentos-invariantes-de-hu-forma-global" id="toc-momentos-invariantes-de-hu-forma-global" class="nav-link" data-scroll-target="#momentos-invariantes-de-hu-forma-global">2. Momentos invariantes de Hu: forma global</a>
+  <ul class="collapse">
+  <li><a href="#idea-básica-de-momentos" id="toc-idea-básica-de-momentos" class="nav-link" data-scroll-target="#idea-básica-de-momentos">Idea básica de momentos</a></li>
+  <li><a href="#construcción-de-una-máscara-simple" id="toc-construcción-de-una-máscara-simple" class="nav-link" data-scroll-target="#construcción-de-una-máscara-simple">Construcción de una máscara simple</a></li>
+  <li><a href="#cálculo-de-momentos-de-hu" id="toc-cálculo-de-momentos-de-hu" class="nav-link" data-scroll-target="#cálculo-de-momentos-de-hu">Cálculo de momentos de Hu</a></li>
+  <li><a href="#función-reusable-para-hu" id="toc-función-reusable-para-hu" class="nav-link" data-scroll-target="#función-reusable-para-hu">Función reusable para Hu</a></li>
+  <li><a href="#comentarios-didácticos-sobre-hu" id="toc-comentarios-didácticos-sobre-hu" class="nav-link" data-scroll-target="#comentarios-didácticos-sobre-hu">Comentarios didácticos sobre Hu</a></li>
+  </ul></li>
+  <li><a href="#momentos-de-color-1" id="toc-momentos-de-color-1" class="nav-link" data-scroll-target="#momentos-de-color-1">3. Momentos de color</a>
+  <ul class="collapse">
+  <li><a href="#idea-básica" id="toc-idea-básica" class="nav-link" data-scroll-target="#idea-básica">Idea básica</a></li>
+  <li><a href="#implementación-en-python" id="toc-implementación-en-python" class="nav-link" data-scroll-target="#implementación-en-python">Implementación en Python</a></li>
+  <li><a href="#variante-en-hsv" id="toc-variante-en-hsv" class="nav-link" data-scroll-target="#variante-en-hsv">Variante en HSV</a></li>
+  </ul></li>
+  <li><a href="#comparación-rápida-entre-imágenes" id="toc-comparación-rápida-entre-imágenes" class="nav-link" data-scroll-target="#comparación-rápida-entre-imágenes">4. Comparación rápida entre imágenes</a></li>
+  <li><a href="#un-extractor-unificado-por-imagen" id="toc-un-extractor-unificado-por-imagen" class="nav-link" data-scroll-target="#un-extractor-unificado-por-imagen">5. Un extractor unificado por imagen</a></li>
+  <li><a href="#discusión-cuándo-conviene-cada-descriptor" id="toc-discusión-cuándo-conviene-cada-descriptor" class="nav-link" data-scroll-target="#discusión-cuándo-conviene-cada-descriptor">Discusión: cuándo conviene cada descriptor</a>
+  <ul class="collapse">
+  <li><a href="#glcm-1" id="toc-glcm-1" class="nav-link" data-scroll-target="#glcm-1">GLCM</a></li>
+  <li><a href="#hu" id="toc-hu" class="nav-link" data-scroll-target="#hu">Hu</a></li>
+  <li><a href="#color-moments" id="toc-color-moments" class="nav-link" data-scroll-target="#color-moments">Color moments</a></li>
+  </ul></li>
+  <li><a href="#actividad-sugerida-en-clase" id="toc-actividad-sugerida-en-clase" class="nav-link" data-scroll-target="#actividad-sugerida-en-clase">Actividad sugerida en clase</a></li>
+  <li><a href="#ejercicio-guiado" id="toc-ejercicio-guiado" class="nav-link" data-scroll-target="#ejercicio-guiado">Ejercicio guiado</a></li>
+  <li><a href="#cierre-conceptual" id="toc-cierre-conceptual" class="nav-link" data-scroll-target="#cierre-conceptual">Cierre conceptual</a></li>
+  <li><a href="#referencias-y-origen" id="toc-referencias-y-origen" class="nav-link" data-scroll-target="#referencias-y-origen">Referencias y origen</a></li>
+  <li><a href="#tarea-sugerida" id="toc-tarea-sugerida" class="nav-link" data-scroll-target="#tarea-sugerida">Tarea sugerida</a></li>
+  </ul>
+</nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title">Clase 1. Descriptores de imagen clásicos: GLCM, Momentos de Hu y Momentos de Color</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Código</button></div></div>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Autor/a</div>
+    <div class="quarto-title-meta-contents">
+             <p>Material de apoyo docente </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="propósito-de-la-clase" class="level1">
+<h1>Propósito de la clase</h1>
+<p>Esta clase introduce tres familias de descriptores clásicos de imagen que siguen siendo útiles para tareas de clasificación, recuperación y análisis exploratorio:</p>
+<ol type="1">
+<li><strong>GLCM (Gray-Level Co-occurrence Matrix)</strong> para describir <strong>textura</strong>.</li>
+<li><strong>Momentos invariantes de Hu</strong> para describir <strong>forma</strong>.</li>
+<li><strong>Momentos de color</strong> para resumir la <strong>distribución cromática</strong>.</li>
+</ol>
+<p>La idea central es que una imagen puede describirse mediante un vector numérico de características. En esta primera clase se estudia qué mide cada descriptor, cómo se calcula y cómo implementarlo en Python.</p>
+</section>
+<section id="objetivos-de-aprendizaje" class="level1">
+<h1>Objetivos de aprendizaje</h1>
+<p>Al finalizar la sesión, el estudiante será capaz de:</p>
+<ul>
+<li>explicar la diferencia entre descriptores de textura, forma y color;</li>
+<li>calcular matrices de co-ocurrencia y propiedades derivadas de GLCM;</li>
+<li>obtener momentos de Hu a partir de una máscara o contorno;</li>
+<li>calcular momentos de color por canal;</li>
+<li>construir vectores de características básicos para una imagen;</li>
+<li>reconocer fortalezas y limitaciones de estos descriptores en clasificación de imágenes.</li>
+</ul>
+</section>
+<section id="origen-y-fundamento-de-los-descriptores" class="level1">
+<h1>Origen y fundamento de los descriptores</h1>
+<section id="glcm" class="level2">
+<h2 class="anchored" data-anchor-id="glcm">GLCM</h2>
+<p>La idea de describir textura mediante dependencias espaciales entre niveles de gris se formalizó en el trabajo clásico de <strong>Haralick, Shanmugam y Dinstein (1973)</strong>. En ese artículo se plantean características texturales calculadas a partir de la frecuencia con la que pares de intensidades aparecen con un desplazamiento espacial dado. Ese artículo es la referencia histórica central para GLCM.</p>
+</section>
+<section id="momentos-invariantes-de-hu" class="level2">
+<h2 class="anchored" data-anchor-id="momentos-invariantes-de-hu">Momentos invariantes de Hu</h2>
+<p>Los <strong>siete momentos invariantes de Hu</strong> provienen del artículo de <strong>Ming-Kuei Hu (1962)</strong>. Su aporte fue construir combinaciones de momentos centralizados y normalizados que son invariantes a traslación, escala y rotación; el séptimo además cambia de signo ante reflexión.</p>
+</section>
+<section id="momentos-de-color" class="level2">
+<h2 class="anchored" data-anchor-id="momentos-de-color">Momentos de color</h2>
+<p>El uso de los <strong>primeros momentos estadísticos del color</strong> como descriptor global se consolidó en la literatura de recuperación de imágenes por contenido durante la década de 1990. Una referencia muy citada es <strong>Stricker y Orengo (1995)</strong>, quienes emplean momentos de color como resumen compacto de la distribución cromática. En la práctica, suele usarse por canal el trío:</p>
+<ul>
+<li>media,</li>
+<li>desviación estándar,</li>
+<li>asimetría.</li>
+</ul>
+</section>
+</section>
+<section id="idea-general-una-imagen-como-vector-de-características" class="level1">
+<h1>Idea general: una imagen como vector de características</h1>
+<p>Supongamos que tenemos una imagen y queremos clasificarla. En lugar de alimentar directamente todos sus pixeles a un algoritmo, podemos construir un vector como:</p>
+<p><span class="math display">\[
+\mathbf{x} = [\text{GLCM}_1, \ldots, \text{GLCM}_p, \text{Hu}_1, \ldots, \text{Hu}_7, \text{Color}_1, \ldots, \text{Color}_q]
+\]</span></p>
+<p>Cada bloque resume un aspecto diferente:</p>
+<ul>
+<li><strong>GLCM</strong>: textura local o regional;</li>
+<li><strong>Hu</strong>: geometría global de la forma;</li>
+<li><strong>Color moments</strong>: distribución tonal o cromática global.</li>
+</ul>
+</section>
+<section id="preparación-del-entorno-en-python" class="level1">
+<h1>Preparación del entorno en Python</h1>
+<div id="819a2d62" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> cv2</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> skimage <span class="im">import</span> data, color, img_as_ubyte</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> skimage.feature <span class="im">import</span> graycomatrix, graycoprops</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.stats <span class="im">import</span> skew</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="imágenes-de-ejemplo" class="level1">
+<h1>Imágenes de ejemplo</h1>
+<p>Usaremos imágenes de ejemplo incluidas en <code>scikit-image</code> para ilustrar los cálculos.</p>
+<div id="4cb3d59f" class="cell" data-execution_count="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>img_color_1 <span class="op">=</span> data.astronaut()</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>img_color_2 <span class="op">=</span> data.coffee()</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>img_gray_1 <span class="op">=</span> img_as_ubyte(color.rgb2gray(img_color_1))</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>img_gray_2 <span class="op">=</span> img_as_ubyte(color.rgb2gray(img_color_2))</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">2</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">8</span>))</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">0</span>, <span class="dv">0</span>].imshow(img_color_1)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">0</span>, <span class="dv">0</span>].set_title(<span class="st">"Astronaut"</span>)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">0</span>, <span class="dv">0</span>].axis(<span class="st">"off"</span>)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">0</span>, <span class="dv">1</span>].imshow(img_color_2)</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">0</span>, <span class="dv">1</span>].set_title(<span class="st">"Coffee"</span>)</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">0</span>, <span class="dv">1</span>].axis(<span class="st">"off"</span>)</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">1</span>, <span class="dv">0</span>].imshow(img_gray_1, cmap<span class="op">=</span><span class="st">"gray"</span>)</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">1</span>, <span class="dv">0</span>].set_title(<span class="st">"Astronaut en gris"</span>)</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">1</span>, <span class="dv">0</span>].axis(<span class="st">"off"</span>)</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">1</span>, <span class="dv">1</span>].imshow(img_gray_2, cmap<span class="op">=</span><span class="st">"gray"</span>)</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">1</span>, <span class="dv">1</span>].set_title(<span class="st">"Coffee en gris"</span>)</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">1</span>, <span class="dv">1</span>].axis(<span class="st">"off"</span>)</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="clase_1_descriptores_clasicos_files/figure-html/cell-3-output-1.png" width="884" height="758" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="glcm-textura-basada-en-co-ocurrencia" class="level1">
+<h1>1. GLCM: textura basada en co-ocurrencia</h1>
+<section id="intuición" class="level2">
+<h2 class="anchored" data-anchor-id="intuición">Intuición</h2>
+<p>La GLCM cuenta cuántas veces aparece un par de intensidades <span class="math inline">\((i, j)\)</span> separado por una distancia y una dirección dadas. Si una textura tiene patrones repetitivos, su matriz de co-ocurrencia tendrá una estructura característica.</p>
+<p>Formalmente, para una imagen cuantizada en <span class="math inline">\(L\)</span> niveles, la entrada <span class="math inline">\((i,j)\)</span> de la GLCM representa la frecuencia con la que un pixel con valor <span class="math inline">\(i\)</span> aparece junto a otro con valor <span class="math inline">\(j\)</span> según un desplazamiento especificado.</p>
+</section>
+<section id="decisiones-prácticas-importantes" class="level2">
+<h2 class="anchored" data-anchor-id="decisiones-prácticas-importantes">Decisiones prácticas importantes</h2>
+<p>Antes de calcular GLCM conviene decidir:</p>
+<ul>
+<li>número de niveles de gris (<code>levels</code>);</li>
+<li>distancia o distancias;</li>
+<li>ángulo o ángulos;</li>
+<li>si la matriz será simétrica;</li>
+<li>si se normalizará.</li>
+</ul>
+<p>Reducir el número de niveles suele ser útil para estabilizar el cálculo y reducir costo computacional.</p>
+</section>
+<section id="ejemplo-básico-con-graycomatrix" class="level2">
+<h2 class="anchored" data-anchor-id="ejemplo-básico-con-graycomatrix">Ejemplo básico con <code>graycomatrix</code></h2>
+<div id="ce8e0e12" class="cell" data-execution_count="3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Cuantización simple a 32 niveles</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>levels <span class="op">=</span> <span class="dv">32</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>img_q <span class="op">=</span> (img_gray_1 <span class="op">/</span> <span class="dv">256</span> <span class="op">*</span> levels).astype(np.uint8)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>img_q <span class="op">=</span> np.clip(img_q, <span class="dv">0</span>, levels <span class="op">-</span> <span class="dv">1</span>)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>glcm <span class="op">=</span> graycomatrix(</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    img_q,</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    distances<span class="op">=</span>[<span class="dv">1</span>, <span class="dv">3</span>],</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    angles<span class="op">=</span>[<span class="dv">0</span>, np.pi<span class="op">/</span><span class="dv">4</span>, np.pi<span class="op">/</span><span class="dv">2</span>, <span class="dv">3</span><span class="op">*</span>np.pi<span class="op">/</span><span class="dv">4</span>],</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    levels<span class="op">=</span>levels,</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    symmetric<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    normed<span class="op">=</span><span class="va">True</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>glcm.shape</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="39">
+<pre><code>(32, 32, 2, 4)</code></pre>
+</div>
+</div>
+<p>La salida tiene dimensiones:</p>
+<p><span class="math display">\[
+(\text{levels}, \text{levels}, \#\text{distancias}, \#\text{ángulos})
+\]</span></p>
+</section>
+<section id="propiedades-de-haralick-más-usadas" class="level2">
+<h2 class="anchored" data-anchor-id="propiedades-de-haralick-más-usadas">Propiedades de Haralick más usadas</h2>
+<p><code>scikit-image</code> implementa varias propiedades derivadas de la GLCM. Entre las más utilizadas están:</p>
+<ul>
+<li><code>contrast</code></li>
+<li><code>dissimilarity</code></li>
+<li><code>homogeneity</code></li>
+<li><code>ASM</code></li>
+<li><code>energy</code></li>
+<li><code>correlation</code></li>
+</ul>
+<div id="7ccb845d" class="cell" data-execution_count="4">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>props <span class="op">=</span> [<span class="st">"contrast"</span>, <span class="st">"dissimilarity"</span>, <span class="st">"homogeneity"</span>, <span class="st">"ASM"</span>, <span class="st">"energy"</span>, <span class="st">"correlation"</span>]</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>features_glcm <span class="op">=</span> {}</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> p <span class="kw">in</span> props:</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    values <span class="op">=</span> graycoprops(glcm, p)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    features_glcm[p] <span class="op">=</span> values.mean()</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>features_glcm</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="40">
+<pre><code>{'contrast': np.float64(9.26983641788257),
+ 'dissimilarity': np.float64(1.3507421136631752),
+ 'homogeneity': np.float64(0.6705625818198401),
+ 'ASM': np.float64(0.028447296405896605),
+ 'energy': np.float64(0.16849119255130862),
+ 'correlation': np.float64(0.9468835125475412)}</code></pre>
+</div>
+</div>
+</section>
+<section id="función-reusable-para-extraer-glcm" class="level2">
+<h2 class="anchored" data-anchor-id="función-reusable-para-extraer-glcm">Función reusable para extraer GLCM</h2>
+<div id="224772d9" class="cell" data-execution_count="5">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> extract_glcm_features(</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    image_gray,</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    levels<span class="op">=</span><span class="dv">32</span>,</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    distances<span class="op">=</span>(<span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">5</span>),</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    angles<span class="op">=</span>(<span class="dv">0</span>, np.pi<span class="op">/</span><span class="dv">4</span>, np.pi<span class="op">/</span><span class="dv">2</span>, <span class="dv">3</span><span class="op">*</span>np.pi<span class="op">/</span><span class="dv">4</span>)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>):</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    img_q <span class="op">=</span> (image_gray <span class="op">/</span> <span class="dv">256</span> <span class="op">*</span> levels).astype(np.uint8)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    img_q <span class="op">=</span> np.clip(img_q, <span class="dv">0</span>, levels <span class="op">-</span> <span class="dv">1</span>)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    glcm <span class="op">=</span> graycomatrix(</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>        img_q,</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>        distances<span class="op">=</span><span class="bu">list</span>(distances),</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>        angles<span class="op">=</span><span class="bu">list</span>(angles),</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>        levels<span class="op">=</span>levels,</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>        symmetric<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>        normed<span class="op">=</span><span class="va">True</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>    props <span class="op">=</span> [<span class="st">"contrast"</span>, <span class="st">"dissimilarity"</span>, <span class="st">"homogeneity"</span>, <span class="st">"ASM"</span>, <span class="st">"energy"</span>, <span class="st">"correlation"</span>]</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>    feats <span class="op">=</span> []</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>    names <span class="op">=</span> []</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> prop <span class="kw">in</span> props:</span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>        vals <span class="op">=</span> graycoprops(glcm, prop)</span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> i, d <span class="kw">in</span> <span class="bu">enumerate</span>(distances):</span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> j, a <span class="kw">in</span> <span class="bu">enumerate</span>(angles):</span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>                feats.append(vals[i, j])</span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>                names.append(<span class="ss">f"glcm_</span><span class="sc">{</span>prop<span class="sc">}</span><span class="ss">_d</span><span class="sc">{</span>d<span class="sc">}</span><span class="ss">_a</span><span class="sc">{</span>j<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.array(feats, dtype<span class="op">=</span><span class="bu">float</span>), names</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="058bf4f4" class="cell" data-execution_count="6">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>glcm_vec, glcm_names <span class="op">=</span> extract_glcm_features(img_gray_1)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="bu">len</span>(glcm_vec), glcm_names[:<span class="dv">5</span>]</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="42">
+<pre><code>(72,
+ ['glcm_contrast_d1_a0',
+  'glcm_contrast_d1_a1',
+  'glcm_contrast_d1_a2',
+  'glcm_contrast_d1_a3',
+  'glcm_contrast_d3_a0'])</code></pre>
+</div>
+</div>
+</section>
+<section id="comentarios-didácticos-sobre-glcm" class="level2">
+<h2 class="anchored" data-anchor-id="comentarios-didácticos-sobre-glcm">Comentarios didácticos sobre GLCM</h2>
+<ul>
+<li>GLCM funciona mejor cuando la <strong>textura</strong> es importante.</li>
+<li>Es sensible a cómo se haga la <strong>cuantización</strong> de niveles.</li>
+<li>La elección de distancias y ángulos cambia la información capturada.</li>
+<li>En imágenes muy grandes puede ser conveniente trabajar por <strong>parches</strong> o regiones.</li>
+</ul>
+</section>
+</section>
+<section id="momentos-invariantes-de-hu-forma-global" class="level1">
+<h1>2. Momentos invariantes de Hu: forma global</h1>
+<section id="idea-básica-de-momentos" class="level2">
+<h2 class="anchored" data-anchor-id="idea-básica-de-momentos">Idea básica de momentos</h2>
+<p>Los momentos de una imagen binaria o de una región describen cómo se distribuye su masa en el plano. A partir de los momentos espaciales, centrales y normalizados se construyen los <strong>siete invariantes de Hu</strong>.</p>
+<p>En OpenCV, el flujo típico es:</p>
+<ol type="1">
+<li>obtener una máscara o contorno;</li>
+<li>calcular <code>cv2.moments</code>;</li>
+<li>aplicar <code>cv2.HuMoments</code>.</li>
+</ol>
+</section>
+<section id="construcción-de-una-máscara-simple" class="level2">
+<h2 class="anchored" data-anchor-id="construcción-de-una-máscara-simple">Construcción de una máscara simple</h2>
+<p>Para ilustrar la idea, segmentaremos aproximadamente el objeto principal mediante umbralización en escala de grises.</p>
+<div id="6b852409" class="cell" data-execution_count="7">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>_, mask <span class="op">=</span> cv2.threshold(img_gray_1, <span class="dv">110</span>, <span class="dv">255</span>, cv2.THRESH_BINARY)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">4</span>))</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">0</span>].imshow(img_gray_1, cmap<span class="op">=</span><span class="st">"gray"</span>)</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">0</span>].set_title(<span class="st">"Imagen en gris"</span>)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">0</span>].axis(<span class="st">"off"</span>)</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">1</span>].imshow(mask, cmap<span class="op">=</span><span class="st">"gray"</span>)</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">1</span>].set_title(<span class="st">"Máscara binaria"</span>)</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">1</span>].axis(<span class="st">"off"</span>)</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="clase_1_descriptores_clasicos_files/figure-html/cell-8-output-1.png" width="806" height="374" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="cálculo-de-momentos-de-hu" class="level2">
+<h2 class="anchored" data-anchor-id="cálculo-de-momentos-de-hu">Cálculo de momentos de Hu</h2>
+<div id="73cbc84c" class="cell" data-execution_count="8">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>moments <span class="op">=</span> cv2.moments(mask)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>hu <span class="op">=</span> cv2.HuMoments(moments).flatten()</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>hu</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="44">
+<pre><code>array([ 1.08675575e-03,  6.86753193e-08,  9.57743180e-11,  1.70608565e-11,
+        3.86304811e-22, -6.43978504e-16,  5.71296096e-22])</code></pre>
+</div>
+</div>
+<p>Los valores pueden variar en magnitud de manera extrema. Por ello es muy común usar una transformación logarítmica con signo:</p>
+<p><span class="math display">\[
+h'_k = -\operatorname{sign}(h_k) \log_{10}(|h_k| + \varepsilon)
+\]</span></p>
+<div id="c4b270da" class="cell" data-execution_count="9">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> log_transform_hu(hu, eps<span class="op">=</span><span class="fl">1e-12</span>):</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    hu <span class="op">=</span> np.asarray(hu, dtype<span class="op">=</span><span class="bu">float</span>)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="op">-</span>np.sign(hu) <span class="op">*</span> np.log10(np.<span class="bu">abs</span>(hu) <span class="op">+</span> eps)</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>hu_log <span class="op">=</span> log_transform_hu(hu)</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>hu_log</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="45">
+<pre><code>array([  2.96386805,   7.16319299,  10.01423988,  10.74326166,
+        12.        , -11.99972041,  12.        ])</code></pre>
+</div>
+</div>
+</section>
+<section id="función-reusable-para-hu" class="level2">
+<h2 class="anchored" data-anchor-id="función-reusable-para-hu">Función reusable para Hu</h2>
+<div id="50de170c" class="cell" data-execution_count="10">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> extract_hu_features(image_gray, threshold<span class="op">=</span><span class="dv">110</span>):</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    _, mask <span class="op">=</span> cv2.threshold(image_gray, threshold, <span class="dv">255</span>, cv2.THRESH_BINARY)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    moments <span class="op">=</span> cv2.moments(mask)</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    hu <span class="op">=</span> cv2.HuMoments(moments).flatten()</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    hu_log <span class="op">=</span> <span class="op">-</span>np.sign(hu) <span class="op">*</span> np.log10(np.<span class="bu">abs</span>(hu) <span class="op">+</span> <span class="fl">1e-12</span>)</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    names <span class="op">=</span> [<span class="ss">f"hu_</span><span class="sc">{</span>i<span class="op">+</span><span class="dv">1</span><span class="sc">}</span><span class="ss">"</span> <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">7</span>)]</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> hu_log.astype(<span class="bu">float</span>), names</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="480fe603" class="cell" data-execution_count="11">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>hu_vec, hu_names <span class="op">=</span> extract_hu_features(img_gray_1)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="bu">list</span>(<span class="bu">zip</span>(hu_names, hu_vec))</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="47">
+<pre><code>[('hu_1', np.float64(2.9638680525788126)),
+ ('hu_2', np.float64(7.163192989003374)),
+ ('hu_3', np.float64(10.014239880588148)),
+ ('hu_4', np.float64(10.743261657891907)),
+ ('hu_5', np.float64(11.99999999983223)),
+ ('hu_6', np.float64(-11.999720413703225)),
+ ('hu_7', np.float64(11.99999999975189))]</code></pre>
+</div>
+</div>
+</section>
+<section id="comentarios-didácticos-sobre-hu" class="level2">
+<h2 class="anchored" data-anchor-id="comentarios-didácticos-sobre-hu">Comentarios didácticos sobre Hu</h2>
+<ul>
+<li>Resume <strong>forma global</strong>, no textura fina.</li>
+<li>Requiere una segmentación o máscara razonable.</li>
+<li>En imágenes reales, la calidad de la máscara afecta mucho el resultado.</li>
+<li>Son útiles cuando la clase depende de la <strong>geometría del objeto</strong>.</li>
+</ul>
+</section>
+</section>
+<section id="momentos-de-color-1" class="level1">
+<h1>3. Momentos de color</h1>
+<section id="idea-básica" class="level2">
+<h2 class="anchored" data-anchor-id="idea-básica">Idea básica</h2>
+<p>Los momentos de color resumen la distribución de intensidades en cada canal. El esquema más habitual usa, por canal:</p>
+<ul>
+<li>media,</li>
+<li>desviación estándar,</li>
+<li>asimetría.</li>
+</ul>
+<p>Si se trabaja con RGB, se obtienen 9 características:</p>
+<p><span class="math display">\[
+[\mu_R, \sigma_R, s_R, \mu_G, \sigma_G, s_G, \mu_B, \sigma_B, s_B]
+\]</span></p>
+</section>
+<section id="implementación-en-python" class="level2">
+<h2 class="anchored" data-anchor-id="implementación-en-python">Implementación en Python</h2>
+<div id="8ce2fa44" class="cell" data-execution_count="12">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> extract_color_moments(image_rgb):</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    feats <span class="op">=</span> []</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    names <span class="op">=</span> []</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    channel_names <span class="op">=</span> [<span class="st">"R"</span>, <span class="st">"G"</span>, <span class="st">"B"</span>]</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> idx, cname <span class="kw">in</span> <span class="bu">enumerate</span>(channel_names):</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>        channel <span class="op">=</span> image_rgb[:, :, idx].astype(np.float64).ravel()</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>        feats.extend([</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>            channel.mean(),</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>            channel.std(ddof<span class="op">=</span><span class="dv">0</span>),</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>            skew(channel, bias<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>        ])</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>        names.extend([</span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>            <span class="ss">f"color_mean_</span><span class="sc">{</span>cname<span class="sc">}</span><span class="ss">"</span>,</span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>            <span class="ss">f"color_std_</span><span class="sc">{</span>cname<span class="sc">}</span><span class="ss">"</span>,</span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>            <span class="ss">f"color_skew_</span><span class="sc">{</span>cname<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>        ])</span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.array(feats, dtype<span class="op">=</span><span class="bu">float</span>), names</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="32c8d750" class="cell" data-execution_count="13">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>color_vec, color_names <span class="op">=</span> extract_color_moments(img_color_1)</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="bu">list</span>(<span class="bu">zip</span>(color_names, np.<span class="bu">round</span>(color_vec, <span class="dv">4</span>)))</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="49">
+<pre><code>[('color_mean_R', np.float64(141.5625)),
+ ('color_std_R', np.float64(82.0389)),
+ ('color_skew_R', np.float64(-0.6208)),
+ ('color_mean_G', np.float64(105.7594)),
+ ('color_std_G', np.float64(76.6155)),
+ ('color_skew_G', np.float64(-0.0085)),
+ ('color_mean_B', np.float64(96.4751)),
+ ('color_std_B', np.float64(77.8534)),
+ ('color_skew_B', np.float64(0.2254))]</code></pre>
+</div>
+</div>
+</section>
+<section id="variante-en-hsv" class="level2">
+<h2 class="anchored" data-anchor-id="variante-en-hsv">Variante en HSV</h2>
+<p>En varias aplicaciones resulta más interpretable usar HSV o Lab en lugar de RGB, sobre todo cuando interesa separar tono, saturación e intensidad.</p>
+<div id="f9f81cfb" class="cell" data-execution_count="14">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>img_hsv <span class="op">=</span> cv2.cvtColor(img_color_1, cv2.COLOR_RGB2HSV)</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>img_hsv.shape</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="50">
+<pre><code>(512, 512, 3)</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="comparación-rápida-entre-imágenes" class="level1">
+<h1>4. Comparación rápida entre imágenes</h1>
+<p>Ahora comparemos dos imágenes de ejemplo usando los tres tipos de descriptores.</p>
+<div id="7e4f94c9" class="cell" data-execution_count="15">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>g1, _ <span class="op">=</span> extract_glcm_features(img_gray_1)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>g2, _ <span class="op">=</span> extract_glcm_features(img_gray_2)</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>h1, _ <span class="op">=</span> extract_hu_features(img_gray_1)</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>h2, _ <span class="op">=</span> extract_hu_features(img_gray_2)</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>c1, _ <span class="op">=</span> extract_color_moments(img_color_1)</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>c2, _ <span class="op">=</span> extract_color_moments(img_color_2)</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Distancia Euclidiana GLCM:"</span>, np.linalg.norm(g1 <span class="op">-</span> g2))</span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Distancia Euclidiana Hu:"</span>, np.linalg.norm(h1 <span class="op">-</span> h2))</span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Distancia Euclidiana Color:"</span>, np.linalg.norm(c1 <span class="op">-</span> c2))</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Distancia Euclidiana GLCM: 25.55148557353642
+Distancia Euclidiana Hu: 23.94679096361307
+Distancia Euclidiana Color: 62.80109738866211</code></pre>
+</div>
+</div>
+<p>Estas distancias no deben interpretarse todavía como un clasificador, pero muestran que los descriptores convierten imágenes en vectores comparables numéricamente.</p>
+</section>
+<section id="un-extractor-unificado-por-imagen" class="level1">
+<h1>5. Un extractor unificado por imagen</h1>
+<div id="fba56175" class="cell" data-execution_count="16">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> extract_classic_descriptors(image_rgb):</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>    image_gray <span class="op">=</span> img_as_ubyte(color.rgb2gray(image_rgb))</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>    glcm_vec, glcm_names <span class="op">=</span> extract_glcm_features(image_gray)</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>    hu_vec, hu_names <span class="op">=</span> extract_hu_features(image_gray)</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>    color_vec, color_names <span class="op">=</span> extract_color_moments(image_rgb)</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>    vec <span class="op">=</span> np.concatenate([glcm_vec, hu_vec, color_vec])</span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>    names <span class="op">=</span> glcm_names <span class="op">+</span> hu_names <span class="op">+</span> color_names</span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> vec, names</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="81ae015d" class="cell" data-execution_count="17">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>vec, names <span class="op">=</span> extract_classic_descriptors(img_color_1)</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="bu">len</span>(vec), names[<span class="op">-</span><span class="dv">10</span>:]</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="53">
+<pre><code>(88,
+ ['hu_7',
+  'color_mean_R',
+  'color_std_R',
+  'color_skew_R',
+  'color_mean_G',
+  'color_std_G',
+  'color_skew_G',
+  'color_mean_B',
+  'color_std_B',
+  'color_skew_B'])</code></pre>
+</div>
+</div>
+</section>
+<section id="discusión-cuándo-conviene-cada-descriptor" class="level1">
+<h1>Discusión: cuándo conviene cada descriptor</h1>
+<section id="glcm-1" class="level2">
+<h2 class="anchored" data-anchor-id="glcm-1">GLCM</h2>
+<p>Conviene cuando:</p>
+<ul>
+<li>la textura distingue clases;</li>
+<li>el color no es suficiente;</li>
+<li>hay patrones repetitivos como telas, hojas, suelos, superficies o tejidos.</li>
+</ul>
+</section>
+<section id="hu" class="level2">
+<h2 class="anchored" data-anchor-id="hu">Hu</h2>
+<p>Conviene cuando:</p>
+<ul>
+<li>la forma del objeto es relevante;</li>
+<li>se dispone de segmentación razonable;</li>
+<li>la clase depende más de silueta que de textura.</li>
+</ul>
+</section>
+<section id="color-moments" class="level2">
+<h2 class="anchored" data-anchor-id="color-moments">Color moments</h2>
+<p>Conviene cuando:</p>
+<ul>
+<li>las clases se distinguen por paleta cromática;</li>
+<li>se necesita un descriptor compacto y barato de calcular;</li>
+<li>no se requiere información espacial detallada.</li>
+</ul>
+</section>
+</section>
+<section id="actividad-sugerida-en-clase" class="level1">
+<h1>Actividad sugerida en clase</h1>
+<ol type="1">
+<li>Seleccionar 3 categorías de imágenes.</li>
+<li>Extraer GLCM, Hu y momentos de color para 10 imágenes por categoría.</li>
+<li>Construir una tabla donde cada fila sea una imagen.</li>
+<li>Comparar qué descriptor parece separar mejor las clases.</li>
+<li>Discutir qué información pierde cada descriptor.</li>
+</ol>
+</section>
+<section id="ejercicio-guiado" class="level1">
+<h1>Ejercicio guiado</h1>
+<p>Implementa una función que reciba una lista de imágenes y devuelva una matriz <code>X</code> donde:</p>
+<ul>
+<li>cada fila corresponda a una imagen;</li>
+<li>cada columna corresponda a una característica.</li>
+</ul>
+<p>Sugerencia:</p>
+<div id="ea5bbd89" class="cell" data-execution_count="18">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> build_feature_matrix(images):</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>    rows <span class="op">=</span> []</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> img <span class="kw">in</span> images:</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>        vec, _ <span class="op">=</span> extract_classic_descriptors(img)</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>        rows.append(vec)</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.vstack(rows)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="cierre-conceptual" class="level1">
+<h1>Cierre conceptual</h1>
+<p>Los descriptores clásicos no sustituyen a los métodos modernos basados en aprendizaje profundo, pero siguen siendo valiosos por varias razones:</p>
+<ul>
+<li>son interpretables;</li>
+<li>requieren menos datos;</li>
+<li>permiten entender qué aspecto visual está usando el sistema;</li>
+<li>son ideales para cursos introductorios y para conjuntos de datos pequeños.</li>
+</ul>
+<p>La siguiente clase tomará estos descriptores y construirá un flujo completo de trabajo para:</p>
+<ul>
+<li>fusionar características,</li>
+<li>escalar variables,</li>
+<li>reducir dimensionalidad con PCA,</li>
+<li>visualizar separabilidad entre clases.</li>
+</ul>
+</section>
+<section id="referencias-y-origen" class="level1">
+<h1>Referencias y origen</h1>
+<ul>
+<li>Haralick, R. M., Shanmugam, K., y Dinstein, I. (1973). <em>Textural Features for Image Classification</em>.</li>
+<li>Hu, M.-K. (1962). <em>Visual Pattern Recognition by Moment Invariants</em>.</li>
+<li>Stricker, M. A., y Orengo, M. (1995). <em>Similarity of Color Images</em>.</li>
+<li><code>scikit-image</code>: documentación de <code>graycomatrix</code> y <code>graycoprops</code>.</li>
+<li>OpenCV: documentación de <code>moments</code> y <code>HuMoments</code>.</li>
+</ul>
+</section>
+<section id="tarea-sugerida" class="level1">
+<h1>Tarea sugerida</h1>
+<p>Tomar un conjunto pequeño de imágenes organizadas por clase y preparar tres matrices de características:</p>
+<ul>
+<li>solo GLCM,</li>
+<li>solo Hu + color,</li>
+<li>fusión completa.</li>
+</ul>
+<p>Esas matrices se usarán en la siguiente clase para PCA y análisis de separabilidad.</p>
+<!-- -->
+
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copiado");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copiado");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+        for (let i=0; i<detailsSrc.length; i++) {
+          const details = detailsSrc[i].parentElement;
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Ejecutar el código</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Clase 1. Descriptores de imagen clásicos: GLCM, Momentos de Hu y Momentos de Color"</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Material de apoyo docente"</span></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a><span class="co">    toc-depth: 3</span></span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a><span class="co">    code-fold: false</span></span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a><span class="co">    code-tools: true</span></span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a><span class="co">    df-print: paged</span></span>
+<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a><span class="co">    css: style.css</span></span>
+<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a><span class="co">    incremental: false</span></span>
+<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a><span class="co">    footer: "MCDI | Procesamiento Digital de Imágenes | Unidad 4"</span></span>
+<span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a><span class="co">    revealjs:</span></span>
+<span id="cb29-15"><a href="#cb29-15" aria-hidden="true" tabindex="-1"></a><span class="co">        theme: [default]</span></span>
+<span id="cb29-16"><a href="#cb29-16" aria-hidden="true" tabindex="-1"></a><span class="co">        slide-number: c/t</span></span>
+<span id="cb29-17"><a href="#cb29-17" aria-hidden="true" tabindex="-1"></a><span class="co">        code-fold: false</span></span>
+<span id="cb29-18"><a href="#cb29-18" aria-hidden="true" tabindex="-1"></a><span class="co">        code-tools: true</span></span>
+<span id="cb29-19"><a href="#cb29-19" aria-hidden="true" tabindex="-1"></a><span class="co">        css: style.css</span></span>
+<span id="cb29-20"><a href="#cb29-20" aria-hidden="true" tabindex="-1"></a><span class="co">        incremental: false</span></span>
+<span id="cb29-21"><a href="#cb29-21" aria-hidden="true" tabindex="-1"></a><span class="co">        footer: "MCDI | Procesamiento Digital de Imágenes | Unidad 4"</span></span>
+<span id="cb29-22"><a href="#cb29-22" aria-hidden="true" tabindex="-1"></a><span class="an">execute:</span></span>
+<span id="cb29-23"><a href="#cb29-23" aria-hidden="true" tabindex="-1"></a><span class="co">  echo: true</span></span>
+<span id="cb29-24"><a href="#cb29-24" aria-hidden="true" tabindex="-1"></a><span class="co">  warning: false</span></span>
+<span id="cb29-25"><a href="#cb29-25" aria-hidden="true" tabindex="-1"></a><span class="co">  message: false</span></span>
+<span id="cb29-26"><a href="#cb29-26" aria-hidden="true" tabindex="-1"></a><span class="an">jupyter:</span><span class="co"> python3</span></span>
+<span id="cb29-27"><a href="#cb29-27" aria-hidden="true" tabindex="-1"></a><span class="an">lang:</span><span class="co"> es</span></span>
+<span id="cb29-28"><a href="#cb29-28" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb29-29"><a href="#cb29-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-30"><a href="#cb29-30" aria-hidden="true" tabindex="-1"></a><span class="fu"># Propósito de la clase</span></span>
+<span id="cb29-31"><a href="#cb29-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-32"><a href="#cb29-32" aria-hidden="true" tabindex="-1"></a>Esta clase introduce tres familias de descriptores clásicos de imagen que siguen siendo útiles para tareas de clasificación, recuperación y análisis exploratorio:</span>
+<span id="cb29-33"><a href="#cb29-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-34"><a href="#cb29-34" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>**GLCM (Gray-Level Co-occurrence Matrix)** para describir **textura**.</span>
+<span id="cb29-35"><a href="#cb29-35" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>**Momentos invariantes de Hu** para describir **forma**.</span>
+<span id="cb29-36"><a href="#cb29-36" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>**Momentos de color** para resumir la **distribución cromática**.</span>
+<span id="cb29-37"><a href="#cb29-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-38"><a href="#cb29-38" aria-hidden="true" tabindex="-1"></a>La idea central es que una imagen puede describirse mediante un vector numérico de características. En esta primera clase se estudia qué mide cada descriptor, cómo se calcula y cómo implementarlo en Python.</span>
+<span id="cb29-39"><a href="#cb29-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-40"><a href="#cb29-40" aria-hidden="true" tabindex="-1"></a><span class="fu"># Objetivos de aprendizaje</span></span>
+<span id="cb29-41"><a href="#cb29-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-42"><a href="#cb29-42" aria-hidden="true" tabindex="-1"></a>Al finalizar la sesión, el estudiante será capaz de:</span>
+<span id="cb29-43"><a href="#cb29-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-44"><a href="#cb29-44" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>explicar la diferencia entre descriptores de textura, forma y color;</span>
+<span id="cb29-45"><a href="#cb29-45" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>calcular matrices de co-ocurrencia y propiedades derivadas de GLCM;</span>
+<span id="cb29-46"><a href="#cb29-46" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>obtener momentos de Hu a partir de una máscara o contorno;</span>
+<span id="cb29-47"><a href="#cb29-47" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>calcular momentos de color por canal;</span>
+<span id="cb29-48"><a href="#cb29-48" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>construir vectores de características básicos para una imagen;</span>
+<span id="cb29-49"><a href="#cb29-49" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>reconocer fortalezas y limitaciones de estos descriptores en clasificación de imágenes.</span>
+<span id="cb29-50"><a href="#cb29-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-51"><a href="#cb29-51" aria-hidden="true" tabindex="-1"></a><span class="fu"># Origen y fundamento de los descriptores</span></span>
+<span id="cb29-52"><a href="#cb29-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-53"><a href="#cb29-53" aria-hidden="true" tabindex="-1"></a><span class="fu">## GLCM</span></span>
+<span id="cb29-54"><a href="#cb29-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-55"><a href="#cb29-55" aria-hidden="true" tabindex="-1"></a>La idea de describir textura mediante dependencias espaciales entre niveles de gris se formalizó en el trabajo clásico de **Haralick, Shanmugam y Dinstein (1973)**. En ese artículo se plantean características texturales calculadas a partir de la frecuencia con la que pares de intensidades aparecen con un desplazamiento espacial dado. Ese artículo es la referencia histórica central para GLCM.</span>
+<span id="cb29-56"><a href="#cb29-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-57"><a href="#cb29-57" aria-hidden="true" tabindex="-1"></a><span class="fu">## Momentos invariantes de Hu</span></span>
+<span id="cb29-58"><a href="#cb29-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-59"><a href="#cb29-59" aria-hidden="true" tabindex="-1"></a>Los **siete momentos invariantes de Hu** provienen del artículo de **Ming-Kuei Hu (1962)**. Su aporte fue construir combinaciones de momentos centralizados y normalizados que son invariantes a traslación, escala y rotación; el séptimo además cambia de signo ante reflexión.</span>
+<span id="cb29-60"><a href="#cb29-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-61"><a href="#cb29-61" aria-hidden="true" tabindex="-1"></a><span class="fu">## Momentos de color</span></span>
+<span id="cb29-62"><a href="#cb29-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-63"><a href="#cb29-63" aria-hidden="true" tabindex="-1"></a>El uso de los **primeros momentos estadísticos del color** como descriptor global se consolidó en la literatura de recuperación de imágenes por contenido durante la década de 1990. Una referencia muy citada es **Stricker y Orengo (1995)**, quienes emplean momentos de color como resumen compacto de la distribución cromática. En la práctica, suele usarse por canal el trío:</span>
+<span id="cb29-64"><a href="#cb29-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-65"><a href="#cb29-65" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>media,</span>
+<span id="cb29-66"><a href="#cb29-66" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>desviación estándar,</span>
+<span id="cb29-67"><a href="#cb29-67" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>asimetría.</span>
+<span id="cb29-68"><a href="#cb29-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-69"><a href="#cb29-69" aria-hidden="true" tabindex="-1"></a><span class="fu"># Idea general: una imagen como vector de características</span></span>
+<span id="cb29-70"><a href="#cb29-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-71"><a href="#cb29-71" aria-hidden="true" tabindex="-1"></a>Supongamos que tenemos una imagen y queremos clasificarla. En lugar de alimentar directamente todos sus pixeles a un algoritmo, podemos construir un vector como:</span>
+<span id="cb29-72"><a href="#cb29-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-73"><a href="#cb29-73" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb29-74"><a href="#cb29-74" aria-hidden="true" tabindex="-1"></a>\mathbf{x} = <span class="co">[</span><span class="ot">\text{GLCM}_1, \ldots, \text{GLCM}_p, \text{Hu}_1, \ldots, \text{Hu}_7, \text{Color}_1, \ldots, \text{Color}_q</span><span class="co">]</span></span>
+<span id="cb29-75"><a href="#cb29-75" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb29-76"><a href="#cb29-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-77"><a href="#cb29-77" aria-hidden="true" tabindex="-1"></a>Cada bloque resume un aspecto diferente:</span>
+<span id="cb29-78"><a href="#cb29-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-79"><a href="#cb29-79" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**GLCM**: textura local o regional;</span>
+<span id="cb29-80"><a href="#cb29-80" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Hu**: geometría global de la forma;</span>
+<span id="cb29-81"><a href="#cb29-81" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Color moments**: distribución tonal o cromática global.</span>
+<span id="cb29-82"><a href="#cb29-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-83"><a href="#cb29-83" aria-hidden="true" tabindex="-1"></a><span class="fu"># Preparación del entorno en Python</span></span>
+<span id="cb29-84"><a href="#cb29-84" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-87"><a href="#cb29-87" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb29-88"><a href="#cb29-88" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb29-89"><a href="#cb29-89" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> cv2</span>
+<span id="cb29-90"><a href="#cb29-90" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb29-91"><a href="#cb29-91" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-92"><a href="#cb29-92" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> skimage <span class="im">import</span> data, color, img_as_ubyte</span>
+<span id="cb29-93"><a href="#cb29-93" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> skimage.feature <span class="im">import</span> graycomatrix, graycoprops</span>
+<span id="cb29-94"><a href="#cb29-94" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.stats <span class="im">import</span> skew</span>
+<span id="cb29-95"><a href="#cb29-95" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb29-96"><a href="#cb29-96" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-97"><a href="#cb29-97" aria-hidden="true" tabindex="-1"></a><span class="fu"># Imágenes de ejemplo</span></span>
+<span id="cb29-98"><a href="#cb29-98" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-99"><a href="#cb29-99" aria-hidden="true" tabindex="-1"></a>Usaremos imágenes de ejemplo incluidas en <span class="in">`scikit-image`</span> para ilustrar los cálculos.</span>
+<span id="cb29-100"><a href="#cb29-100" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-103"><a href="#cb29-103" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb29-104"><a href="#cb29-104" aria-hidden="true" tabindex="-1"></a>img_color_1 <span class="op">=</span> data.astronaut()</span>
+<span id="cb29-105"><a href="#cb29-105" aria-hidden="true" tabindex="-1"></a>img_color_2 <span class="op">=</span> data.coffee()</span>
+<span id="cb29-106"><a href="#cb29-106" aria-hidden="true" tabindex="-1"></a>img_gray_1 <span class="op">=</span> img_as_ubyte(color.rgb2gray(img_color_1))</span>
+<span id="cb29-107"><a href="#cb29-107" aria-hidden="true" tabindex="-1"></a>img_gray_2 <span class="op">=</span> img_as_ubyte(color.rgb2gray(img_color_2))</span>
+<span id="cb29-108"><a href="#cb29-108" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-109"><a href="#cb29-109" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">2</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">8</span>))</span>
+<span id="cb29-110"><a href="#cb29-110" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">0</span>, <span class="dv">0</span>].imshow(img_color_1)</span>
+<span id="cb29-111"><a href="#cb29-111" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">0</span>, <span class="dv">0</span>].set_title(<span class="st">"Astronaut"</span>)</span>
+<span id="cb29-112"><a href="#cb29-112" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">0</span>, <span class="dv">0</span>].axis(<span class="st">"off"</span>)</span>
+<span id="cb29-113"><a href="#cb29-113" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-114"><a href="#cb29-114" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">0</span>, <span class="dv">1</span>].imshow(img_color_2)</span>
+<span id="cb29-115"><a href="#cb29-115" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">0</span>, <span class="dv">1</span>].set_title(<span class="st">"Coffee"</span>)</span>
+<span id="cb29-116"><a href="#cb29-116" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">0</span>, <span class="dv">1</span>].axis(<span class="st">"off"</span>)</span>
+<span id="cb29-117"><a href="#cb29-117" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-118"><a href="#cb29-118" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">1</span>, <span class="dv">0</span>].imshow(img_gray_1, cmap<span class="op">=</span><span class="st">"gray"</span>)</span>
+<span id="cb29-119"><a href="#cb29-119" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">1</span>, <span class="dv">0</span>].set_title(<span class="st">"Astronaut en gris"</span>)</span>
+<span id="cb29-120"><a href="#cb29-120" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">1</span>, <span class="dv">0</span>].axis(<span class="st">"off"</span>)</span>
+<span id="cb29-121"><a href="#cb29-121" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-122"><a href="#cb29-122" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">1</span>, <span class="dv">1</span>].imshow(img_gray_2, cmap<span class="op">=</span><span class="st">"gray"</span>)</span>
+<span id="cb29-123"><a href="#cb29-123" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">1</span>, <span class="dv">1</span>].set_title(<span class="st">"Coffee en gris"</span>)</span>
+<span id="cb29-124"><a href="#cb29-124" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">1</span>, <span class="dv">1</span>].axis(<span class="st">"off"</span>)</span>
+<span id="cb29-125"><a href="#cb29-125" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-126"><a href="#cb29-126" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb29-127"><a href="#cb29-127" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb29-128"><a href="#cb29-128" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb29-129"><a href="#cb29-129" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-130"><a href="#cb29-130" aria-hidden="true" tabindex="-1"></a><span class="fu"># 1. GLCM: textura basada en co-ocurrencia</span></span>
+<span id="cb29-131"><a href="#cb29-131" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-132"><a href="#cb29-132" aria-hidden="true" tabindex="-1"></a><span class="fu">## Intuición</span></span>
+<span id="cb29-133"><a href="#cb29-133" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-134"><a href="#cb29-134" aria-hidden="true" tabindex="-1"></a>La GLCM cuenta cuántas veces aparece un par de intensidades $(i, j)$ separado por una distancia y una dirección dadas. Si una textura tiene patrones repetitivos, su matriz de co-ocurrencia tendrá una estructura característica.</span>
+<span id="cb29-135"><a href="#cb29-135" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-136"><a href="#cb29-136" aria-hidden="true" tabindex="-1"></a>Formalmente, para una imagen cuantizada en $L$ niveles, la entrada $(i,j)$ de la GLCM representa la frecuencia con la que un pixel con valor $i$ aparece junto a otro con valor $j$ según un desplazamiento especificado.</span>
+<span id="cb29-137"><a href="#cb29-137" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-138"><a href="#cb29-138" aria-hidden="true" tabindex="-1"></a><span class="fu">## Decisiones prácticas importantes</span></span>
+<span id="cb29-139"><a href="#cb29-139" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-140"><a href="#cb29-140" aria-hidden="true" tabindex="-1"></a>Antes de calcular GLCM conviene decidir:</span>
+<span id="cb29-141"><a href="#cb29-141" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-142"><a href="#cb29-142" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>número de niveles de gris (<span class="in">`levels`</span>);</span>
+<span id="cb29-143"><a href="#cb29-143" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>distancia o distancias;</span>
+<span id="cb29-144"><a href="#cb29-144" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>ángulo o ángulos;</span>
+<span id="cb29-145"><a href="#cb29-145" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>si la matriz será simétrica;</span>
+<span id="cb29-146"><a href="#cb29-146" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>si se normalizará.</span>
+<span id="cb29-147"><a href="#cb29-147" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-148"><a href="#cb29-148" aria-hidden="true" tabindex="-1"></a>Reducir el número de niveles suele ser útil para estabilizar el cálculo y reducir costo computacional.</span>
+<span id="cb29-149"><a href="#cb29-149" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-150"><a href="#cb29-150" aria-hidden="true" tabindex="-1"></a><span class="fu">## Ejemplo básico con `graycomatrix`</span></span>
+<span id="cb29-151"><a href="#cb29-151" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-154"><a href="#cb29-154" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb29-155"><a href="#cb29-155" aria-hidden="true" tabindex="-1"></a><span class="co"># Cuantización simple a 32 niveles</span></span>
+<span id="cb29-156"><a href="#cb29-156" aria-hidden="true" tabindex="-1"></a>levels <span class="op">=</span> <span class="dv">32</span></span>
+<span id="cb29-157"><a href="#cb29-157" aria-hidden="true" tabindex="-1"></a>img_q <span class="op">=</span> (img_gray_1 <span class="op">/</span> <span class="dv">256</span> <span class="op">*</span> levels).astype(np.uint8)</span>
+<span id="cb29-158"><a href="#cb29-158" aria-hidden="true" tabindex="-1"></a>img_q <span class="op">=</span> np.clip(img_q, <span class="dv">0</span>, levels <span class="op">-</span> <span class="dv">1</span>)</span>
+<span id="cb29-159"><a href="#cb29-159" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-160"><a href="#cb29-160" aria-hidden="true" tabindex="-1"></a>glcm <span class="op">=</span> graycomatrix(</span>
+<span id="cb29-161"><a href="#cb29-161" aria-hidden="true" tabindex="-1"></a>    img_q,</span>
+<span id="cb29-162"><a href="#cb29-162" aria-hidden="true" tabindex="-1"></a>    distances<span class="op">=</span>[<span class="dv">1</span>, <span class="dv">3</span>],</span>
+<span id="cb29-163"><a href="#cb29-163" aria-hidden="true" tabindex="-1"></a>    angles<span class="op">=</span>[<span class="dv">0</span>, np.pi<span class="op">/</span><span class="dv">4</span>, np.pi<span class="op">/</span><span class="dv">2</span>, <span class="dv">3</span><span class="op">*</span>np.pi<span class="op">/</span><span class="dv">4</span>],</span>
+<span id="cb29-164"><a href="#cb29-164" aria-hidden="true" tabindex="-1"></a>    levels<span class="op">=</span>levels,</span>
+<span id="cb29-165"><a href="#cb29-165" aria-hidden="true" tabindex="-1"></a>    symmetric<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb29-166"><a href="#cb29-166" aria-hidden="true" tabindex="-1"></a>    normed<span class="op">=</span><span class="va">True</span></span>
+<span id="cb29-167"><a href="#cb29-167" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb29-168"><a href="#cb29-168" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-169"><a href="#cb29-169" aria-hidden="true" tabindex="-1"></a>glcm.shape</span>
+<span id="cb29-170"><a href="#cb29-170" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb29-171"><a href="#cb29-171" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-172"><a href="#cb29-172" aria-hidden="true" tabindex="-1"></a>La salida tiene dimensiones:</span>
+<span id="cb29-173"><a href="#cb29-173" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-174"><a href="#cb29-174" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb29-175"><a href="#cb29-175" aria-hidden="true" tabindex="-1"></a>(\text{levels}, \text{levels}, <span class="sc">\#</span>\text{distancias}, <span class="sc">\#</span>\text{ángulos})</span>
+<span id="cb29-176"><a href="#cb29-176" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb29-177"><a href="#cb29-177" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-178"><a href="#cb29-178" aria-hidden="true" tabindex="-1"></a><span class="fu">## Propiedades de Haralick más usadas</span></span>
+<span id="cb29-179"><a href="#cb29-179" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-180"><a href="#cb29-180" aria-hidden="true" tabindex="-1"></a><span class="in">`scikit-image`</span> implementa varias propiedades derivadas de la GLCM. Entre las más utilizadas están:</span>
+<span id="cb29-181"><a href="#cb29-181" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-182"><a href="#cb29-182" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`contrast`</span></span>
+<span id="cb29-183"><a href="#cb29-183" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`dissimilarity`</span></span>
+<span id="cb29-184"><a href="#cb29-184" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`homogeneity`</span></span>
+<span id="cb29-185"><a href="#cb29-185" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`ASM`</span></span>
+<span id="cb29-186"><a href="#cb29-186" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`energy`</span></span>
+<span id="cb29-187"><a href="#cb29-187" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`correlation`</span></span>
+<span id="cb29-188"><a href="#cb29-188" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-191"><a href="#cb29-191" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb29-192"><a href="#cb29-192" aria-hidden="true" tabindex="-1"></a>props <span class="op">=</span> [<span class="st">"contrast"</span>, <span class="st">"dissimilarity"</span>, <span class="st">"homogeneity"</span>, <span class="st">"ASM"</span>, <span class="st">"energy"</span>, <span class="st">"correlation"</span>]</span>
+<span id="cb29-193"><a href="#cb29-193" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-194"><a href="#cb29-194" aria-hidden="true" tabindex="-1"></a>features_glcm <span class="op">=</span> {}</span>
+<span id="cb29-195"><a href="#cb29-195" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> p <span class="kw">in</span> props:</span>
+<span id="cb29-196"><a href="#cb29-196" aria-hidden="true" tabindex="-1"></a>    values <span class="op">=</span> graycoprops(glcm, p)</span>
+<span id="cb29-197"><a href="#cb29-197" aria-hidden="true" tabindex="-1"></a>    features_glcm[p] <span class="op">=</span> values.mean()</span>
+<span id="cb29-198"><a href="#cb29-198" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-199"><a href="#cb29-199" aria-hidden="true" tabindex="-1"></a>features_glcm</span>
+<span id="cb29-200"><a href="#cb29-200" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb29-201"><a href="#cb29-201" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-202"><a href="#cb29-202" aria-hidden="true" tabindex="-1"></a><span class="fu">## Función reusable para extraer GLCM</span></span>
+<span id="cb29-203"><a href="#cb29-203" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-206"><a href="#cb29-206" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb29-207"><a href="#cb29-207" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> extract_glcm_features(</span>
+<span id="cb29-208"><a href="#cb29-208" aria-hidden="true" tabindex="-1"></a>    image_gray,</span>
+<span id="cb29-209"><a href="#cb29-209" aria-hidden="true" tabindex="-1"></a>    levels<span class="op">=</span><span class="dv">32</span>,</span>
+<span id="cb29-210"><a href="#cb29-210" aria-hidden="true" tabindex="-1"></a>    distances<span class="op">=</span>(<span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">5</span>),</span>
+<span id="cb29-211"><a href="#cb29-211" aria-hidden="true" tabindex="-1"></a>    angles<span class="op">=</span>(<span class="dv">0</span>, np.pi<span class="op">/</span><span class="dv">4</span>, np.pi<span class="op">/</span><span class="dv">2</span>, <span class="dv">3</span><span class="op">*</span>np.pi<span class="op">/</span><span class="dv">4</span>)</span>
+<span id="cb29-212"><a href="#cb29-212" aria-hidden="true" tabindex="-1"></a>):</span>
+<span id="cb29-213"><a href="#cb29-213" aria-hidden="true" tabindex="-1"></a>    img_q <span class="op">=</span> (image_gray <span class="op">/</span> <span class="dv">256</span> <span class="op">*</span> levels).astype(np.uint8)</span>
+<span id="cb29-214"><a href="#cb29-214" aria-hidden="true" tabindex="-1"></a>    img_q <span class="op">=</span> np.clip(img_q, <span class="dv">0</span>, levels <span class="op">-</span> <span class="dv">1</span>)</span>
+<span id="cb29-215"><a href="#cb29-215" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-216"><a href="#cb29-216" aria-hidden="true" tabindex="-1"></a>    glcm <span class="op">=</span> graycomatrix(</span>
+<span id="cb29-217"><a href="#cb29-217" aria-hidden="true" tabindex="-1"></a>        img_q,</span>
+<span id="cb29-218"><a href="#cb29-218" aria-hidden="true" tabindex="-1"></a>        distances<span class="op">=</span><span class="bu">list</span>(distances),</span>
+<span id="cb29-219"><a href="#cb29-219" aria-hidden="true" tabindex="-1"></a>        angles<span class="op">=</span><span class="bu">list</span>(angles),</span>
+<span id="cb29-220"><a href="#cb29-220" aria-hidden="true" tabindex="-1"></a>        levels<span class="op">=</span>levels,</span>
+<span id="cb29-221"><a href="#cb29-221" aria-hidden="true" tabindex="-1"></a>        symmetric<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb29-222"><a href="#cb29-222" aria-hidden="true" tabindex="-1"></a>        normed<span class="op">=</span><span class="va">True</span></span>
+<span id="cb29-223"><a href="#cb29-223" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb29-224"><a href="#cb29-224" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-225"><a href="#cb29-225" aria-hidden="true" tabindex="-1"></a>    props <span class="op">=</span> [<span class="st">"contrast"</span>, <span class="st">"dissimilarity"</span>, <span class="st">"homogeneity"</span>, <span class="st">"ASM"</span>, <span class="st">"energy"</span>, <span class="st">"correlation"</span>]</span>
+<span id="cb29-226"><a href="#cb29-226" aria-hidden="true" tabindex="-1"></a>    feats <span class="op">=</span> []</span>
+<span id="cb29-227"><a href="#cb29-227" aria-hidden="true" tabindex="-1"></a>    names <span class="op">=</span> []</span>
+<span id="cb29-228"><a href="#cb29-228" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-229"><a href="#cb29-229" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> prop <span class="kw">in</span> props:</span>
+<span id="cb29-230"><a href="#cb29-230" aria-hidden="true" tabindex="-1"></a>        vals <span class="op">=</span> graycoprops(glcm, prop)</span>
+<span id="cb29-231"><a href="#cb29-231" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> i, d <span class="kw">in</span> <span class="bu">enumerate</span>(distances):</span>
+<span id="cb29-232"><a href="#cb29-232" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> j, a <span class="kw">in</span> <span class="bu">enumerate</span>(angles):</span>
+<span id="cb29-233"><a href="#cb29-233" aria-hidden="true" tabindex="-1"></a>                feats.append(vals[i, j])</span>
+<span id="cb29-234"><a href="#cb29-234" aria-hidden="true" tabindex="-1"></a>                names.append(<span class="ss">f"glcm_</span><span class="sc">{</span>prop<span class="sc">}</span><span class="ss">_d</span><span class="sc">{</span>d<span class="sc">}</span><span class="ss">_a</span><span class="sc">{</span>j<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb29-235"><a href="#cb29-235" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-236"><a href="#cb29-236" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.array(feats, dtype<span class="op">=</span><span class="bu">float</span>), names</span>
+<span id="cb29-237"><a href="#cb29-237" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb29-238"><a href="#cb29-238" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-241"><a href="#cb29-241" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb29-242"><a href="#cb29-242" aria-hidden="true" tabindex="-1"></a>glcm_vec, glcm_names <span class="op">=</span> extract_glcm_features(img_gray_1)</span>
+<span id="cb29-243"><a href="#cb29-243" aria-hidden="true" tabindex="-1"></a><span class="bu">len</span>(glcm_vec), glcm_names[:<span class="dv">5</span>]</span>
+<span id="cb29-244"><a href="#cb29-244" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb29-245"><a href="#cb29-245" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-246"><a href="#cb29-246" aria-hidden="true" tabindex="-1"></a><span class="fu">## Comentarios didácticos sobre GLCM</span></span>
+<span id="cb29-247"><a href="#cb29-247" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-248"><a href="#cb29-248" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>GLCM funciona mejor cuando la **textura** es importante.</span>
+<span id="cb29-249"><a href="#cb29-249" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Es sensible a cómo se haga la **cuantización** de niveles.</span>
+<span id="cb29-250"><a href="#cb29-250" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>La elección de distancias y ángulos cambia la información capturada.</span>
+<span id="cb29-251"><a href="#cb29-251" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>En imágenes muy grandes puede ser conveniente trabajar por **parches** o regiones.</span>
+<span id="cb29-252"><a href="#cb29-252" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-253"><a href="#cb29-253" aria-hidden="true" tabindex="-1"></a><span class="fu"># 2. Momentos invariantes de Hu: forma global</span></span>
+<span id="cb29-254"><a href="#cb29-254" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-255"><a href="#cb29-255" aria-hidden="true" tabindex="-1"></a><span class="fu">## Idea básica de momentos</span></span>
+<span id="cb29-256"><a href="#cb29-256" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-257"><a href="#cb29-257" aria-hidden="true" tabindex="-1"></a>Los momentos de una imagen binaria o de una región describen cómo se distribuye su masa en el plano. A partir de los momentos espaciales, centrales y normalizados se construyen los **siete invariantes de Hu**.</span>
+<span id="cb29-258"><a href="#cb29-258" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-259"><a href="#cb29-259" aria-hidden="true" tabindex="-1"></a>En OpenCV, el flujo típico es:</span>
+<span id="cb29-260"><a href="#cb29-260" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-261"><a href="#cb29-261" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>obtener una máscara o contorno;</span>
+<span id="cb29-262"><a href="#cb29-262" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>calcular <span class="in">`cv2.moments`</span>;</span>
+<span id="cb29-263"><a href="#cb29-263" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>aplicar <span class="in">`cv2.HuMoments`</span>.</span>
+<span id="cb29-264"><a href="#cb29-264" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-265"><a href="#cb29-265" aria-hidden="true" tabindex="-1"></a><span class="fu">## Construcción de una máscara simple</span></span>
+<span id="cb29-266"><a href="#cb29-266" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-267"><a href="#cb29-267" aria-hidden="true" tabindex="-1"></a>Para ilustrar la idea, segmentaremos aproximadamente el objeto principal mediante umbralización en escala de grises.</span>
+<span id="cb29-268"><a href="#cb29-268" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-271"><a href="#cb29-271" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb29-272"><a href="#cb29-272" aria-hidden="true" tabindex="-1"></a>_, mask <span class="op">=</span> cv2.threshold(img_gray_1, <span class="dv">110</span>, <span class="dv">255</span>, cv2.THRESH_BINARY)</span>
+<span id="cb29-273"><a href="#cb29-273" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-274"><a href="#cb29-274" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">4</span>))</span>
+<span id="cb29-275"><a href="#cb29-275" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">0</span>].imshow(img_gray_1, cmap<span class="op">=</span><span class="st">"gray"</span>)</span>
+<span id="cb29-276"><a href="#cb29-276" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">0</span>].set_title(<span class="st">"Imagen en gris"</span>)</span>
+<span id="cb29-277"><a href="#cb29-277" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">0</span>].axis(<span class="st">"off"</span>)</span>
+<span id="cb29-278"><a href="#cb29-278" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-279"><a href="#cb29-279" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">1</span>].imshow(mask, cmap<span class="op">=</span><span class="st">"gray"</span>)</span>
+<span id="cb29-280"><a href="#cb29-280" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">1</span>].set_title(<span class="st">"Máscara binaria"</span>)</span>
+<span id="cb29-281"><a href="#cb29-281" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">1</span>].axis(<span class="st">"off"</span>)</span>
+<span id="cb29-282"><a href="#cb29-282" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-283"><a href="#cb29-283" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb29-284"><a href="#cb29-284" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb29-285"><a href="#cb29-285" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb29-286"><a href="#cb29-286" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-287"><a href="#cb29-287" aria-hidden="true" tabindex="-1"></a><span class="fu">## Cálculo de momentos de Hu</span></span>
+<span id="cb29-288"><a href="#cb29-288" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-291"><a href="#cb29-291" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb29-292"><a href="#cb29-292" aria-hidden="true" tabindex="-1"></a>moments <span class="op">=</span> cv2.moments(mask)</span>
+<span id="cb29-293"><a href="#cb29-293" aria-hidden="true" tabindex="-1"></a>hu <span class="op">=</span> cv2.HuMoments(moments).flatten()</span>
+<span id="cb29-294"><a href="#cb29-294" aria-hidden="true" tabindex="-1"></a>hu</span>
+<span id="cb29-295"><a href="#cb29-295" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb29-296"><a href="#cb29-296" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-297"><a href="#cb29-297" aria-hidden="true" tabindex="-1"></a>Los valores pueden variar en magnitud de manera extrema. Por ello es muy común usar una transformación logarítmica con signo:</span>
+<span id="cb29-298"><a href="#cb29-298" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-299"><a href="#cb29-299" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb29-300"><a href="#cb29-300" aria-hidden="true" tabindex="-1"></a>h'_k = -\operatorname{sign}(h_k) \log_{10}(|h_k| + \varepsilon)</span>
+<span id="cb29-301"><a href="#cb29-301" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb29-302"><a href="#cb29-302" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-305"><a href="#cb29-305" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb29-306"><a href="#cb29-306" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> log_transform_hu(hu, eps<span class="op">=</span><span class="fl">1e-12</span>):</span>
+<span id="cb29-307"><a href="#cb29-307" aria-hidden="true" tabindex="-1"></a>    hu <span class="op">=</span> np.asarray(hu, dtype<span class="op">=</span><span class="bu">float</span>)</span>
+<span id="cb29-308"><a href="#cb29-308" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="op">-</span>np.sign(hu) <span class="op">*</span> np.log10(np.<span class="bu">abs</span>(hu) <span class="op">+</span> eps)</span>
+<span id="cb29-309"><a href="#cb29-309" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-310"><a href="#cb29-310" aria-hidden="true" tabindex="-1"></a>hu_log <span class="op">=</span> log_transform_hu(hu)</span>
+<span id="cb29-311"><a href="#cb29-311" aria-hidden="true" tabindex="-1"></a>hu_log</span>
+<span id="cb29-312"><a href="#cb29-312" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb29-313"><a href="#cb29-313" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-314"><a href="#cb29-314" aria-hidden="true" tabindex="-1"></a><span class="fu">## Función reusable para Hu</span></span>
+<span id="cb29-315"><a href="#cb29-315" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-318"><a href="#cb29-318" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb29-319"><a href="#cb29-319" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> extract_hu_features(image_gray, threshold<span class="op">=</span><span class="dv">110</span>):</span>
+<span id="cb29-320"><a href="#cb29-320" aria-hidden="true" tabindex="-1"></a>    _, mask <span class="op">=</span> cv2.threshold(image_gray, threshold, <span class="dv">255</span>, cv2.THRESH_BINARY)</span>
+<span id="cb29-321"><a href="#cb29-321" aria-hidden="true" tabindex="-1"></a>    moments <span class="op">=</span> cv2.moments(mask)</span>
+<span id="cb29-322"><a href="#cb29-322" aria-hidden="true" tabindex="-1"></a>    hu <span class="op">=</span> cv2.HuMoments(moments).flatten()</span>
+<span id="cb29-323"><a href="#cb29-323" aria-hidden="true" tabindex="-1"></a>    hu_log <span class="op">=</span> <span class="op">-</span>np.sign(hu) <span class="op">*</span> np.log10(np.<span class="bu">abs</span>(hu) <span class="op">+</span> <span class="fl">1e-12</span>)</span>
+<span id="cb29-324"><a href="#cb29-324" aria-hidden="true" tabindex="-1"></a>    names <span class="op">=</span> [<span class="ss">f"hu_</span><span class="sc">{</span>i<span class="op">+</span><span class="dv">1</span><span class="sc">}</span><span class="ss">"</span> <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">7</span>)]</span>
+<span id="cb29-325"><a href="#cb29-325" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> hu_log.astype(<span class="bu">float</span>), names</span>
+<span id="cb29-326"><a href="#cb29-326" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb29-327"><a href="#cb29-327" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-330"><a href="#cb29-330" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb29-331"><a href="#cb29-331" aria-hidden="true" tabindex="-1"></a>hu_vec, hu_names <span class="op">=</span> extract_hu_features(img_gray_1)</span>
+<span id="cb29-332"><a href="#cb29-332" aria-hidden="true" tabindex="-1"></a><span class="bu">list</span>(<span class="bu">zip</span>(hu_names, hu_vec))</span>
+<span id="cb29-333"><a href="#cb29-333" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb29-334"><a href="#cb29-334" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-335"><a href="#cb29-335" aria-hidden="true" tabindex="-1"></a><span class="fu">## Comentarios didácticos sobre Hu</span></span>
+<span id="cb29-336"><a href="#cb29-336" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-337"><a href="#cb29-337" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Resume **forma global**, no textura fina.</span>
+<span id="cb29-338"><a href="#cb29-338" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Requiere una segmentación o máscara razonable.</span>
+<span id="cb29-339"><a href="#cb29-339" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>En imágenes reales, la calidad de la máscara afecta mucho el resultado.</span>
+<span id="cb29-340"><a href="#cb29-340" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Son útiles cuando la clase depende de la **geometría del objeto**.</span>
+<span id="cb29-341"><a href="#cb29-341" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-342"><a href="#cb29-342" aria-hidden="true" tabindex="-1"></a><span class="fu"># 3. Momentos de color</span></span>
+<span id="cb29-343"><a href="#cb29-343" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-344"><a href="#cb29-344" aria-hidden="true" tabindex="-1"></a><span class="fu">## Idea básica</span></span>
+<span id="cb29-345"><a href="#cb29-345" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-346"><a href="#cb29-346" aria-hidden="true" tabindex="-1"></a>Los momentos de color resumen la distribución de intensidades en cada canal. El esquema más habitual usa, por canal:</span>
+<span id="cb29-347"><a href="#cb29-347" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-348"><a href="#cb29-348" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>media,</span>
+<span id="cb29-349"><a href="#cb29-349" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>desviación estándar,</span>
+<span id="cb29-350"><a href="#cb29-350" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>asimetría.</span>
+<span id="cb29-351"><a href="#cb29-351" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-352"><a href="#cb29-352" aria-hidden="true" tabindex="-1"></a>Si se trabaja con RGB, se obtienen 9 características:</span>
+<span id="cb29-353"><a href="#cb29-353" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-354"><a href="#cb29-354" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb29-355"><a href="#cb29-355" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">\mu_R, \sigma_R, s_R, \mu_G, \sigma_G, s_G, \mu_B, \sigma_B, s_B</span><span class="co">]</span></span>
+<span id="cb29-356"><a href="#cb29-356" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb29-357"><a href="#cb29-357" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-358"><a href="#cb29-358" aria-hidden="true" tabindex="-1"></a><span class="fu">## Implementación en Python</span></span>
+<span id="cb29-359"><a href="#cb29-359" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-362"><a href="#cb29-362" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb29-363"><a href="#cb29-363" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> extract_color_moments(image_rgb):</span>
+<span id="cb29-364"><a href="#cb29-364" aria-hidden="true" tabindex="-1"></a>    feats <span class="op">=</span> []</span>
+<span id="cb29-365"><a href="#cb29-365" aria-hidden="true" tabindex="-1"></a>    names <span class="op">=</span> []</span>
+<span id="cb29-366"><a href="#cb29-366" aria-hidden="true" tabindex="-1"></a>    channel_names <span class="op">=</span> [<span class="st">"R"</span>, <span class="st">"G"</span>, <span class="st">"B"</span>]</span>
+<span id="cb29-367"><a href="#cb29-367" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-368"><a href="#cb29-368" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> idx, cname <span class="kw">in</span> <span class="bu">enumerate</span>(channel_names):</span>
+<span id="cb29-369"><a href="#cb29-369" aria-hidden="true" tabindex="-1"></a>        channel <span class="op">=</span> image_rgb[:, :, idx].astype(np.float64).ravel()</span>
+<span id="cb29-370"><a href="#cb29-370" aria-hidden="true" tabindex="-1"></a>        feats.extend([</span>
+<span id="cb29-371"><a href="#cb29-371" aria-hidden="true" tabindex="-1"></a>            channel.mean(),</span>
+<span id="cb29-372"><a href="#cb29-372" aria-hidden="true" tabindex="-1"></a>            channel.std(ddof<span class="op">=</span><span class="dv">0</span>),</span>
+<span id="cb29-373"><a href="#cb29-373" aria-hidden="true" tabindex="-1"></a>            skew(channel, bias<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb29-374"><a href="#cb29-374" aria-hidden="true" tabindex="-1"></a>        ])</span>
+<span id="cb29-375"><a href="#cb29-375" aria-hidden="true" tabindex="-1"></a>        names.extend([</span>
+<span id="cb29-376"><a href="#cb29-376" aria-hidden="true" tabindex="-1"></a>            <span class="ss">f"color_mean_</span><span class="sc">{</span>cname<span class="sc">}</span><span class="ss">"</span>,</span>
+<span id="cb29-377"><a href="#cb29-377" aria-hidden="true" tabindex="-1"></a>            <span class="ss">f"color_std_</span><span class="sc">{</span>cname<span class="sc">}</span><span class="ss">"</span>,</span>
+<span id="cb29-378"><a href="#cb29-378" aria-hidden="true" tabindex="-1"></a>            <span class="ss">f"color_skew_</span><span class="sc">{</span>cname<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb29-379"><a href="#cb29-379" aria-hidden="true" tabindex="-1"></a>        ])</span>
+<span id="cb29-380"><a href="#cb29-380" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-381"><a href="#cb29-381" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.array(feats, dtype<span class="op">=</span><span class="bu">float</span>), names</span>
+<span id="cb29-382"><a href="#cb29-382" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb29-383"><a href="#cb29-383" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-386"><a href="#cb29-386" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb29-387"><a href="#cb29-387" aria-hidden="true" tabindex="-1"></a>color_vec, color_names <span class="op">=</span> extract_color_moments(img_color_1)</span>
+<span id="cb29-388"><a href="#cb29-388" aria-hidden="true" tabindex="-1"></a><span class="bu">list</span>(<span class="bu">zip</span>(color_names, np.<span class="bu">round</span>(color_vec, <span class="dv">4</span>)))</span>
+<span id="cb29-389"><a href="#cb29-389" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb29-390"><a href="#cb29-390" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-391"><a href="#cb29-391" aria-hidden="true" tabindex="-1"></a><span class="fu">## Variante en HSV</span></span>
+<span id="cb29-392"><a href="#cb29-392" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-393"><a href="#cb29-393" aria-hidden="true" tabindex="-1"></a>En varias aplicaciones resulta más interpretable usar HSV o Lab en lugar de RGB, sobre todo cuando interesa separar tono, saturación e intensidad.</span>
+<span id="cb29-394"><a href="#cb29-394" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-397"><a href="#cb29-397" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb29-398"><a href="#cb29-398" aria-hidden="true" tabindex="-1"></a>img_hsv <span class="op">=</span> cv2.cvtColor(img_color_1, cv2.COLOR_RGB2HSV)</span>
+<span id="cb29-399"><a href="#cb29-399" aria-hidden="true" tabindex="-1"></a>img_hsv.shape</span>
+<span id="cb29-400"><a href="#cb29-400" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb29-401"><a href="#cb29-401" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-402"><a href="#cb29-402" aria-hidden="true" tabindex="-1"></a><span class="fu"># 4. Comparación rápida entre imágenes</span></span>
+<span id="cb29-403"><a href="#cb29-403" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-404"><a href="#cb29-404" aria-hidden="true" tabindex="-1"></a>Ahora comparemos dos imágenes de ejemplo usando los tres tipos de descriptores.</span>
+<span id="cb29-405"><a href="#cb29-405" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-408"><a href="#cb29-408" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb29-409"><a href="#cb29-409" aria-hidden="true" tabindex="-1"></a>g1, _ <span class="op">=</span> extract_glcm_features(img_gray_1)</span>
+<span id="cb29-410"><a href="#cb29-410" aria-hidden="true" tabindex="-1"></a>g2, _ <span class="op">=</span> extract_glcm_features(img_gray_2)</span>
+<span id="cb29-411"><a href="#cb29-411" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-412"><a href="#cb29-412" aria-hidden="true" tabindex="-1"></a>h1, _ <span class="op">=</span> extract_hu_features(img_gray_1)</span>
+<span id="cb29-413"><a href="#cb29-413" aria-hidden="true" tabindex="-1"></a>h2, _ <span class="op">=</span> extract_hu_features(img_gray_2)</span>
+<span id="cb29-414"><a href="#cb29-414" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-415"><a href="#cb29-415" aria-hidden="true" tabindex="-1"></a>c1, _ <span class="op">=</span> extract_color_moments(img_color_1)</span>
+<span id="cb29-416"><a href="#cb29-416" aria-hidden="true" tabindex="-1"></a>c2, _ <span class="op">=</span> extract_color_moments(img_color_2)</span>
+<span id="cb29-417"><a href="#cb29-417" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-418"><a href="#cb29-418" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Distancia Euclidiana GLCM:"</span>, np.linalg.norm(g1 <span class="op">-</span> g2))</span>
+<span id="cb29-419"><a href="#cb29-419" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Distancia Euclidiana Hu:"</span>, np.linalg.norm(h1 <span class="op">-</span> h2))</span>
+<span id="cb29-420"><a href="#cb29-420" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Distancia Euclidiana Color:"</span>, np.linalg.norm(c1 <span class="op">-</span> c2))</span>
+<span id="cb29-421"><a href="#cb29-421" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb29-422"><a href="#cb29-422" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-423"><a href="#cb29-423" aria-hidden="true" tabindex="-1"></a>Estas distancias no deben interpretarse todavía como un clasificador, pero muestran que los descriptores convierten imágenes en vectores comparables numéricamente.</span>
+<span id="cb29-424"><a href="#cb29-424" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-425"><a href="#cb29-425" aria-hidden="true" tabindex="-1"></a><span class="fu"># 5. Un extractor unificado por imagen</span></span>
+<span id="cb29-426"><a href="#cb29-426" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-429"><a href="#cb29-429" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb29-430"><a href="#cb29-430" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> extract_classic_descriptors(image_rgb):</span>
+<span id="cb29-431"><a href="#cb29-431" aria-hidden="true" tabindex="-1"></a>    image_gray <span class="op">=</span> img_as_ubyte(color.rgb2gray(image_rgb))</span>
+<span id="cb29-432"><a href="#cb29-432" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-433"><a href="#cb29-433" aria-hidden="true" tabindex="-1"></a>    glcm_vec, glcm_names <span class="op">=</span> extract_glcm_features(image_gray)</span>
+<span id="cb29-434"><a href="#cb29-434" aria-hidden="true" tabindex="-1"></a>    hu_vec, hu_names <span class="op">=</span> extract_hu_features(image_gray)</span>
+<span id="cb29-435"><a href="#cb29-435" aria-hidden="true" tabindex="-1"></a>    color_vec, color_names <span class="op">=</span> extract_color_moments(image_rgb)</span>
+<span id="cb29-436"><a href="#cb29-436" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-437"><a href="#cb29-437" aria-hidden="true" tabindex="-1"></a>    vec <span class="op">=</span> np.concatenate([glcm_vec, hu_vec, color_vec])</span>
+<span id="cb29-438"><a href="#cb29-438" aria-hidden="true" tabindex="-1"></a>    names <span class="op">=</span> glcm_names <span class="op">+</span> hu_names <span class="op">+</span> color_names</span>
+<span id="cb29-439"><a href="#cb29-439" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> vec, names</span>
+<span id="cb29-440"><a href="#cb29-440" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb29-441"><a href="#cb29-441" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-444"><a href="#cb29-444" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb29-445"><a href="#cb29-445" aria-hidden="true" tabindex="-1"></a>vec, names <span class="op">=</span> extract_classic_descriptors(img_color_1)</span>
+<span id="cb29-446"><a href="#cb29-446" aria-hidden="true" tabindex="-1"></a><span class="bu">len</span>(vec), names[<span class="op">-</span><span class="dv">10</span>:]</span>
+<span id="cb29-447"><a href="#cb29-447" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb29-448"><a href="#cb29-448" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-449"><a href="#cb29-449" aria-hidden="true" tabindex="-1"></a><span class="fu"># Discusión: cuándo conviene cada descriptor</span></span>
+<span id="cb29-450"><a href="#cb29-450" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-451"><a href="#cb29-451" aria-hidden="true" tabindex="-1"></a><span class="fu">## GLCM</span></span>
+<span id="cb29-452"><a href="#cb29-452" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-453"><a href="#cb29-453" aria-hidden="true" tabindex="-1"></a>Conviene cuando:</span>
+<span id="cb29-454"><a href="#cb29-454" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-455"><a href="#cb29-455" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>la textura distingue clases;</span>
+<span id="cb29-456"><a href="#cb29-456" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>el color no es suficiente;</span>
+<span id="cb29-457"><a href="#cb29-457" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>hay patrones repetitivos como telas, hojas, suelos, superficies o tejidos.</span>
+<span id="cb29-458"><a href="#cb29-458" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-459"><a href="#cb29-459" aria-hidden="true" tabindex="-1"></a><span class="fu">## Hu</span></span>
+<span id="cb29-460"><a href="#cb29-460" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-461"><a href="#cb29-461" aria-hidden="true" tabindex="-1"></a>Conviene cuando:</span>
+<span id="cb29-462"><a href="#cb29-462" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-463"><a href="#cb29-463" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>la forma del objeto es relevante;</span>
+<span id="cb29-464"><a href="#cb29-464" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>se dispone de segmentación razonable;</span>
+<span id="cb29-465"><a href="#cb29-465" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>la clase depende más de silueta que de textura.</span>
+<span id="cb29-466"><a href="#cb29-466" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-467"><a href="#cb29-467" aria-hidden="true" tabindex="-1"></a><span class="fu">## Color moments</span></span>
+<span id="cb29-468"><a href="#cb29-468" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-469"><a href="#cb29-469" aria-hidden="true" tabindex="-1"></a>Conviene cuando:</span>
+<span id="cb29-470"><a href="#cb29-470" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-471"><a href="#cb29-471" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>las clases se distinguen por paleta cromática;</span>
+<span id="cb29-472"><a href="#cb29-472" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>se necesita un descriptor compacto y barato de calcular;</span>
+<span id="cb29-473"><a href="#cb29-473" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>no se requiere información espacial detallada.</span>
+<span id="cb29-474"><a href="#cb29-474" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-475"><a href="#cb29-475" aria-hidden="true" tabindex="-1"></a><span class="fu"># Actividad sugerida en clase</span></span>
+<span id="cb29-476"><a href="#cb29-476" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-477"><a href="#cb29-477" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Seleccionar 3 categorías de imágenes.</span>
+<span id="cb29-478"><a href="#cb29-478" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Extraer GLCM, Hu y momentos de color para 10 imágenes por categoría.</span>
+<span id="cb29-479"><a href="#cb29-479" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>Construir una tabla donde cada fila sea una imagen.</span>
+<span id="cb29-480"><a href="#cb29-480" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>Comparar qué descriptor parece separar mejor las clases.</span>
+<span id="cb29-481"><a href="#cb29-481" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>Discutir qué información pierde cada descriptor.</span>
+<span id="cb29-482"><a href="#cb29-482" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-483"><a href="#cb29-483" aria-hidden="true" tabindex="-1"></a><span class="fu"># Ejercicio guiado</span></span>
+<span id="cb29-484"><a href="#cb29-484" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-485"><a href="#cb29-485" aria-hidden="true" tabindex="-1"></a>Implementa una función que reciba una lista de imágenes y devuelva una matriz <span class="in">`X`</span> donde:</span>
+<span id="cb29-486"><a href="#cb29-486" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-487"><a href="#cb29-487" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>cada fila corresponda a una imagen;</span>
+<span id="cb29-488"><a href="#cb29-488" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>cada columna corresponda a una característica.</span>
+<span id="cb29-489"><a href="#cb29-489" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-490"><a href="#cb29-490" aria-hidden="true" tabindex="-1"></a>Sugerencia:</span>
+<span id="cb29-491"><a href="#cb29-491" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-494"><a href="#cb29-494" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb29-495"><a href="#cb29-495" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> build_feature_matrix(images):</span>
+<span id="cb29-496"><a href="#cb29-496" aria-hidden="true" tabindex="-1"></a>    rows <span class="op">=</span> []</span>
+<span id="cb29-497"><a href="#cb29-497" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> img <span class="kw">in</span> images:</span>
+<span id="cb29-498"><a href="#cb29-498" aria-hidden="true" tabindex="-1"></a>        vec, _ <span class="op">=</span> extract_classic_descriptors(img)</span>
+<span id="cb29-499"><a href="#cb29-499" aria-hidden="true" tabindex="-1"></a>        rows.append(vec)</span>
+<span id="cb29-500"><a href="#cb29-500" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.vstack(rows)</span>
+<span id="cb29-501"><a href="#cb29-501" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb29-502"><a href="#cb29-502" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-503"><a href="#cb29-503" aria-hidden="true" tabindex="-1"></a><span class="fu"># Cierre conceptual</span></span>
+<span id="cb29-504"><a href="#cb29-504" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-505"><a href="#cb29-505" aria-hidden="true" tabindex="-1"></a>Los descriptores clásicos no sustituyen a los métodos modernos basados en aprendizaje profundo, pero siguen siendo valiosos por varias razones:</span>
+<span id="cb29-506"><a href="#cb29-506" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-507"><a href="#cb29-507" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>son interpretables;</span>
+<span id="cb29-508"><a href="#cb29-508" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>requieren menos datos;</span>
+<span id="cb29-509"><a href="#cb29-509" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>permiten entender qué aspecto visual está usando el sistema;</span>
+<span id="cb29-510"><a href="#cb29-510" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>son ideales para cursos introductorios y para conjuntos de datos pequeños.</span>
+<span id="cb29-511"><a href="#cb29-511" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-512"><a href="#cb29-512" aria-hidden="true" tabindex="-1"></a>La siguiente clase tomará estos descriptores y construirá un flujo completo de trabajo para:</span>
+<span id="cb29-513"><a href="#cb29-513" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-514"><a href="#cb29-514" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>fusionar características,</span>
+<span id="cb29-515"><a href="#cb29-515" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>escalar variables,</span>
+<span id="cb29-516"><a href="#cb29-516" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>reducir dimensionalidad con PCA,</span>
+<span id="cb29-517"><a href="#cb29-517" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>visualizar separabilidad entre clases.</span>
+<span id="cb29-518"><a href="#cb29-518" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-519"><a href="#cb29-519" aria-hidden="true" tabindex="-1"></a><span class="fu"># Referencias y origen</span></span>
+<span id="cb29-520"><a href="#cb29-520" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-521"><a href="#cb29-521" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Haralick, R. M., Shanmugam, K., y Dinstein, I. (1973). *Textural Features for Image Classification*.</span>
+<span id="cb29-522"><a href="#cb29-522" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Hu, M.-K. (1962). *Visual Pattern Recognition by Moment Invariants*.</span>
+<span id="cb29-523"><a href="#cb29-523" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Stricker, M. A., y Orengo, M. (1995). *Similarity of Color Images*.</span>
+<span id="cb29-524"><a href="#cb29-524" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`scikit-image`</span>: documentación de <span class="in">`graycomatrix`</span> y <span class="in">`graycoprops`</span>.</span>
+<span id="cb29-525"><a href="#cb29-525" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>OpenCV: documentación de <span class="in">`moments`</span> y <span class="in">`HuMoments`</span>.</span>
+<span id="cb29-526"><a href="#cb29-526" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-527"><a href="#cb29-527" aria-hidden="true" tabindex="-1"></a><span class="fu"># Tarea sugerida</span></span>
+<span id="cb29-528"><a href="#cb29-528" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-529"><a href="#cb29-529" aria-hidden="true" tabindex="-1"></a>Tomar un conjunto pequeño de imágenes organizadas por clase y preparar tres matrices de características:</span>
+<span id="cb29-530"><a href="#cb29-530" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-531"><a href="#cb29-531" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>solo GLCM,</span>
+<span id="cb29-532"><a href="#cb29-532" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>solo Hu + color,</span>
+<span id="cb29-533"><a href="#cb29-533" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>fusión completa.</span>
+<span id="cb29-534"><a href="#cb29-534" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-535"><a href="#cb29-535" aria-hidden="true" tabindex="-1"></a>Esas matrices se usarán en la siguiente clase para PCA y análisis de separabilidad.</span>
+</code></pre></div><button title="Copiar al portapapeles" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
