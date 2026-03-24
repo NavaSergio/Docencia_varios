@@ -72,7 +72,7 @@ $presentation-heading-text-align: center !default;
 $presentation-heading-text-transform: uppercase !default;
 
 .slide-background-content {
-  background-image: url("/figs/DCCD.png");
+  background-image: url("figs/DCCD.png");
   background-size: 100% 100%;
   background-position: left;
 }

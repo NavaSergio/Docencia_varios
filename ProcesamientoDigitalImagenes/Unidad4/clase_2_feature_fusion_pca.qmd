@@ -1,21 +1,16 @@
 ---
 title: "Clase 2. Fusión de características y PCA para visualización de espacios de características"
-author: "Material de apoyo docente"
+author: "Sergio Nava"
 format:
     html:
+        output-file: clase_2_feature_fusion_pca_handout.html
+        embed-resources: true
+        html-math-method: katex
         toc: true
         toc-depth: 3
         code-fold: false
-        code-tools: true
+        code-tools: false
         df-print: paged
-        css: style.css
-        incremental: false
-        footer: "MCDI | Procesamiento Digital de Imágenes | Unidad 4"
-    revealjs:
-        theme: [default]
-        slide-number: c/t
-        code-fold: false
-        code-tools: true
         css: style.css
         incremental: false
         footer: "MCDI | Procesamiento Digital de Imágenes | Unidad 4"
@@ -494,14 +489,14 @@ A partir de este flujo pueden proponerse variantes como:
 5. Entrenar un clasificador base.
 6. Comparar con el uso de un solo bloque de descriptores.
 
-# 18. Mini ejemplo real (opcional)
+# 18. Mini ejemplo real
 
-Para una demo completa con descarga de datos reales, fusión y PCA listos para clase, puedes usar:
+Ejemplo real completo con descarga de datos, fusión y PCA:
 
-- [ejemplo_real_clase_2_fusion_pca.qmd](ejemplo_real_clase_2_fusion_pca.qmd)
-- [ejemplo_real_clase_2_fusion_pca_slides.html](ejemplo_real_clase_2_fusion_pca_slides.html)
 
-Vista compacta de muestras por clase (si ya existe `datos_ejemplo/flower_photos`):
+- [ejemplo_real_clase_2_fusion_pca_handout.html](ejemplo_real_clase_2_fusion_pca_handout.html)
+
+Vista compacta de muestras por clase (con `datos_ejemplo/flower_photos` disponible):
 
 ```{python}
 FLOWERS_DIR = Path("datos_ejemplo") / "flower_photos"
@@ -529,7 +524,7 @@ if FLOWERS_DIR.exists():
     plt.tight_layout()
     plt.show()
 else:
-    print("No se encontro datos_ejemplo/flower_photos. Ejecuta el notebook de ejemplo real para descargar el dataset.")
+    print("No se encontro datos_ejemplo/flower_photos. Ejecuta ejemplo_real_clase_2_fusion_pca.qmd para descargar el dataset.")
 ```
 
 # 19. Cierre conceptual

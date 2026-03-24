@@ -1,24 +1,19 @@
 ---
 title: "Ejemplo Real Clase 2: Feature Fusion + PCA en un Dataset Real"
-author: "Material de apoyo docente"
+author: "Sergio Nava"
 format:
-  html:
-    toc: true
-    toc-depth: 3
-    code-fold: false
-    code-tools: true
-    df-print: paged
-    css: style.css
-    incremental: false
-    footer: "MCDI | Procesamiento Digital de Imagenes | Unidad 4"
-  revealjs:
-    theme: [default]
-    slide-number: c/t
-    code-fold: false
-    code-tools: true
-    css: style.css
-    incremental: false
-    footer: "MCDI | Procesamiento Digital de Imagenes | Unidad 4"
+    html:
+        output-file: ejemplo_real_clase_2_fusion_pca_handout.html
+        embed-resources: true
+        html-math-method: katex
+        toc: true
+        toc-depth: 3
+        code-fold: false
+        code-tools: false
+        df-print: paged
+        css: style.css
+        incremental: false
+        footer: "MCDI | Procesamiento Digital de Imagenes | Unidad 4"
 execute:
   echo: true
   warning: false
@@ -36,6 +31,16 @@ Construir un flujo completo y real:
 3. Fusionar caracteristicas en un unico vector por imagen.
 4. Escalar, aplicar PCA y visualizar separabilidad.
 5. Comparar contra descriptores individuales.
+
+## Mapeo rapido con Clase 2
+
+El flujo implementa las mismas piezas vistas en clase:
+
+- extraccion por bloques: `extract_glcm_features`, `extract_hu_features`, `extract_color_moments`;
+- fusion de caracteristicas: `extract_fused_features`;
+- construccion de matrices para analisis y modelo base.
+
+La diferencia es de contexto: en este ejemplo se ejecuta extremo a extremo con dataset real para mostrar resultados reproducibles.
 
 # 0. Librerias
 
@@ -162,6 +167,7 @@ def read_rgb(path, size=(160, 160)):
 
 def extract_color_moments(image_rgb):
     feats = []
+    names = []
     for idx in range(3):
         channel = image_rgb[:, :, idx].astype(np.float64).ravel()
         feats.extend([
@@ -169,18 +175,28 @@ def extract_color_moments(image_rgb):
             channel.std(ddof=0),
             skew(channel, bias=False),
         ])
-    return np.nan_to_num(np.array(feats, dtype=float), nan=0.0, posinf=0.0, neginf=0.0)
+        cname = ["R", "G", "B"][idx]
+        names.extend([
+            f"color_mean_{cname}",
+            f"color_std_{cname}",
+            f"color_skew_{cname}",
+        ])
+    return np.array(feats, dtype=float), names
 
 
-def extract_glcm(image_rgb, levels=32):
-    gray = cv2.cvtColor(image_rgb, cv2.COLOR_RGB2GRAY)
-    q = (gray / 256 * levels).astype(np.uint8)
+def extract_glcm_features(
+    image_gray,
+    levels=32,
+    distances=(1, 3, 5),
+    angles=(0, np.pi / 4, np.pi / 2, 3 * np.pi / 4),
+):
+    q = (image_gray / 256 * levels).astype(np.uint8)
     q = np.clip(q, 0, levels - 1)
 
     glcm = graycomatrix(
         q,
-        distances=[1, 3],
-        angles=[0, np.pi / 4, np.pi / 2, 3 * np.pi / 4],
+        distances=list(distances),
+        angles=list(angles),
         levels=levels,
         symmetric=True,
         normed=True,
@@ -188,45 +204,51 @@ def extract_glcm(image_rgb, levels=32):
 
     props = ["contrast", "dissimilarity", "homogeneity", "ASM", "energy", "correlation"]
     feats = []
+    names = []
     for prop in props:
         vals = graycoprops(glcm, prop)
-        feats.extend(vals.ravel().tolist())
+        for i, d in enumerate(distances):
+            for j, _ in enumerate(angles):
+                feats.append(vals[i, j])
+                names.append(f"glcm_{prop}_d{d}_a{j}")
 
-    return np.array(feats, dtype=float)
+    return np.array(feats, dtype=float), names
 
 
-def extract_hu(image_rgb):
-    gray = cv2.cvtColor(image_rgb, cv2.COLOR_RGB2GRAY)
-    blur = cv2.GaussianBlur(gray, (5, 5), 0)
-    _, mask = cv2.threshold(blur, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+def extract_hu_features(image_gray, threshold=110):
+    _, mask = cv2.threshold(image_gray, threshold, 255, cv2.THRESH_BINARY)
     moments = cv2.moments(mask)
     hu = cv2.HuMoments(moments).flatten()
     hu_log = -np.sign(hu) * np.log10(np.abs(hu) + 1e-12)
-    return np.nan_to_num(hu_log, nan=0.0, posinf=0.0, neginf=0.0)
+    names = [f"hu_{i+1}" for i in range(7)]
+    return hu_log.astype(float), names
 
 
-def extract_fused(image_rgb):
-    g = extract_glcm(image_rgb)
-    h = extract_hu(image_rgb)
-    c = extract_color_moments(image_rgb)
-    return np.concatenate([g, h, c])
+def extract_fused_features(image_rgb):
+    gray = cv2.cvtColor(image_rgb, cv2.COLOR_RGB2GRAY)
+    g, g_names = extract_glcm_features(gray)
+    h, h_names = extract_hu_features(gray)
+    c, c_names = extract_color_moments(image_rgb)
+    return np.concatenate([g, h, c]), g_names + h_names + c_names
 ```
 
 # 3. Matrices de caracteristicas
 
 ```{python}
-def build_matrix(paths, extractor):
+def build_matrix(paths, extractor, input_type="rgb"):
     rows = []
     for p in paths:
         img = read_rgb(p)
-        rows.append(extractor(img))
+        src = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY) if input_type == "gray" else img
+        vec, _ = extractor(src)
+        rows.append(vec)
     return np.vstack(rows)
 
 
-X_glcm = build_matrix(paths_img, extract_glcm)
-X_hu = build_matrix(paths_img, extract_hu)
-X_color = build_matrix(paths_img, extract_color_moments)
-X_fused = build_matrix(paths_img, extract_fused)
+X_glcm = build_matrix(paths_img, extract_glcm_features, input_type="gray")
+X_hu = build_matrix(paths_img, extract_hu_features, input_type="gray")
+X_color = build_matrix(paths_img, extract_color_moments, input_type="rgb")
+X_fused = build_matrix(paths_img, extract_fused_features, input_type="rgb")
 
 X_glcm.shape, X_hu.shape, X_color.shape, X_fused.shape
 ```
