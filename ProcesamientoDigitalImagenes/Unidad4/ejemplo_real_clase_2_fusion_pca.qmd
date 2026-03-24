@@ -351,5 +351,3 @@ Este ejemplo aterriza la narrativa de la Clase 2 con un flujo real completo:
 3. fusion,
 4. PCA,
 5. comparacion cuantitativa.
-
-Es ideal para una demostracion en vivo y para tarea de reproduccion por parte del estudiante.

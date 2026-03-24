@@ -394,4 +394,4 @@ summary
 - **GLCM**: utiles cuando hay patron de textura discriminativo.
 - **Hu**: utiles cuando la decision depende de la geometria de forma.
 
-En clase puedes cerrar con una idea clave: no existe descriptor "mejor" universal; su utilidad depende del tipo de variacion visual del problema real.
+No existe descriptor "mejor" universal; su utilidad depende del tipo de variacion visual del problema real.
