@@ -485,7 +485,7 @@ A partir de este flujo pueden proponerse variantes como:
 - incorporar selección de variables;
 - comparar varios clasificadores sobre los vectores fusionados.
 
-# Actividad sugerida en clase
+# 17. Actividad sugerida en clase
 
 1. Organizar un conjunto de imágenes por carpetas.
 2. Extraer vectores fusionados.
@@ -494,7 +494,7 @@ A partir de este flujo pueden proponerse variantes como:
 5. Entrenar un clasificador base.
 6. Comparar con el uso de un solo bloque de descriptores.
 
-# Mini ejemplo real (opcional)
+# 18. Mini ejemplo real (opcional)
 
 Para una demo completa con descarga de datos reales, fusión y PCA listos para clase, puedes usar:
 
@@ -532,7 +532,7 @@ else:
     print("No se encontro datos_ejemplo/flower_photos. Ejecuta el notebook de ejemplo real para descargar el dataset.")
 ```
 
-# Cierre conceptual
+# 19. Cierre conceptual
 
 Este flujo de trabajo resume una práctica clásica y pedagógicamente muy valiosa en visión por computadora:
 
@@ -543,7 +543,7 @@ Este flujo de trabajo resume una práctica clásica y pedagógicamente muy valio
 
 Además, prepara el terreno para métodos más complejos, ya que mantiene una lógica experimental clara y reproducible.
 
-# Referencias y origen
+# 20. Referencias y origen
 
 - Haralick, R. M., Shanmugam, K., y Dinstein, I. (1973). *Textural Features for Image Classification*.
 - Hu, M.-K. (1962). *Visual Pattern Recognition by Moment Invariants*.
@@ -552,7 +552,7 @@ Además, prepara el terreno para métodos más complejos, ya que mantiene una l�
 - Documentación de OpenCV para `moments` y `HuMoments`.
 - Documentación de `scikit-learn` para `StandardScaler`, `PCA` y `Pipeline`.
 
-# Tarea sugerida
+# 21. Tarea sugerida
 
 Preparar un experimento corto con tres categorías de imágenes y entregar:
 

@@ -365,7 +365,7 @@ summary = pd.DataFrame(
 summary
 ```
 
-# Conclusiones para presentar
+# 7. Conclusiones para presentar
 
 - **Color moments**: fuertes cuando la diferencia visual principal es cromatica.
 - **GLCM**: utiles cuando hay patron de textura discriminativo.

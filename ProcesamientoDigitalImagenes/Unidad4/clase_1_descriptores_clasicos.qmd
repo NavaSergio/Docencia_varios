@@ -131,6 +131,12 @@ La GLCM cuenta cuántas veces aparece un par de intensidades $(i, j)$ separado p
 
 Formalmente, para una imagen cuantizada en $L$ niveles, la entrada $(i,j)$ de la GLCM representa la frecuencia con la que un pixel con valor $i$ aparece junto a otro con valor $j$ según un desplazamiento especificado.
 
+## Construyendo la matriz de co-ocurrencia
+
+Imagina una tabla con filas y columnas etiquetadas con todos los valores posibles de escala de grises (p. ej., 0–255). Cada celda representa la frecuencia con la que un par específico de niveles de gris aparece junto a un desplazamiento y dirección determinados. Por ejemplo, si la celda (50, 60) tiene un valor de 20, significa que el nivel de gris 50 aparece 20 veces junto a un píxel con intensidad 60 en el desplazamiento y dirección especificados.
+
+![Matriz de co-ocurrencia](Matriz-Co-ocurrencia.jpg)
+
 ## Decisiones prácticas importantes
 
 Antes de calcular GLCM conviene decidir:
@@ -190,6 +196,83 @@ for p in props:
 
 features_glcm
 ```
+
+## Características obtenidas a partir de la matriz de co-ocurrencia
+
+Sea $P(i,j)$ la **matriz de co-ocurrencia de niveles de gris (GLCM)** normalizada, de modo que sus elementos representan la probabilidad de observar un par de intensidades $i$ y $j$ en una cierta relación espacial. A partir de esta matriz pueden obtenerse diversas medidas estadísticas que describen propiedades de textura en la imagen.
+
+### Contrast
+
+La característica **contrast** mide el grado de variación local en los niveles de gris. Se calcula como
+
+$$
+\text{Contrast} = \sum_{i,j} (i-j)^2 P(i,j)
+$$
+
+y asigna mayor peso a las parejas de píxeles con diferencias grandes de intensidad. Por ello, valores altos de contraste suelen asociarse con texturas más marcadas o con cambios bruscos de intensidad.
+
+### Dissimilarity
+
+La **dissimilarity** también cuantifica diferencias entre intensidades vecinas, pero usando una penalización lineal:
+
+$$
+\text{Dissimilarity} = \sum_{i,j} |i-j| P(i,j)
+$$
+
+Esta medida crece cuando los pares de píxeles tienden a presentar distintos niveles de gris, aunque es menos sensible que el contraste a diferencias extremas.
+
+### Homogeneity
+
+La **homogeneity** evalúa qué tan concentrada está la GLCM alrededor de su diagonal principal, es decir, qué tanto predominan pares de píxeles con intensidades similares. Se define por
+
+$$
+\text{Homogeneity} = \sum_{i,j} \frac{P(i,j)}{1+(i-j)^2}
+$$
+
+Cuando la mayoría de los valores de la matriz se ubican cerca de la diagonal, esta medida toma valores altos, lo que sugiere una textura más uniforme.
+
+### ASM
+
+La medida **ASM** (*Angular Second Moment*) cuantifica la uniformidad de la distribución de probabilidades en la GLCM:
+
+$$
+\text{ASM} = \sum_{i,j} P(i,j)^2
+$$
+
+Si unas pocas entradas concentran gran parte de la probabilidad, el valor de ASM aumenta. Por ello, esta característica suele relacionarse con texturas regulares y poco dispersas.
+
+### Energy
+
+La **energy** se define como la raíz cuadrada de ASM:
+
+$$
+\text{Energy} = \sqrt{\text{ASM}}
+$$
+
+Al igual que ASM, describe la uniformidad o el orden de la textura. Valores altos indican una distribución más concentrada en pocos patrones de co-ocurrencia.
+
+### Correlation
+
+La **correlation** mide el grado de dependencia lineal entre los niveles de gris de los pares de píxeles considerados. Su expresión es
+
+$$
+\text{Correlation} =
+\sum_{i,j}
+\frac{(i-\mu_i)(j-\mu_j)P(i,j)}{\sigma_i \sigma_j}
+$$
+
+donde $\mu_i$ y $\mu_j$ representan las medias marginales, y $\sigma_i$ y $\sigma_j$ las desviaciones estándar marginales de la GLCM. Esta medida permite identificar si existe una relación sistemática entre las intensidades vecinas.
+
+## Interpretación general
+
+En términos generales:
+
+- **contrast** y **dissimilarity** describen la magnitud de las diferencias locales de intensidad;
+- **homogeneity** indica qué tan similares son los niveles de gris de píxeles vecinos;
+- **ASM** y **energy** miden la uniformidad o regularidad de la textura;
+- **correlation** evalúa la dependencia estadística entre intensidades vecinas.
+
+Estas características son ampliamente utilizadas en análisis de textura porque resumen distintos aspectos estructurales de una imagen a partir de la distribución espacial de sus niveles de gris.
 
 ## Función reusable para extraer GLCM
 
@@ -310,6 +393,178 @@ hu_vec, hu_names = extract_hu_features(img_gray_1)
 list(zip(hu_names, hu_vec))
 ```
 
+## Momentos de Hu (interpretación general)
+
+Los **momentos de Hu** son un conjunto de siete descriptores construidos a partir de los **momentos geométricos** y **momentos centrales** de una imagen. Se utilizan para describir la forma de un objeto y tienen la propiedad de ser invariantes ante ciertas transformaciones geométricas, en particular **traslación, escala y rotación**.
+
+En términos generales, la idea consiste en resumir la distribución espacial de los píxeles de un objeto mediante cantidades numéricas que capturan propiedades globales de su forma.
+
+### 1. Momentos geométricos
+
+Sea $f(x,y)$ la intensidad de la imagen en la posición $(x,y)$. El momento geométrico de orden $p+q$ se define como
+
+$$
+m_{pq} = \sum_x \sum_y x^p y^q f(x,y)
+$$
+
+En imágenes binarias, donde el objeto toma valor 1 y el fondo 0, estos momentos describen directamente la geometría del objeto.
+
+Por ejemplo:
+
+- $m_{00}$ representa el área del objeto;
+- $m_{10}$ y $m_{01}$ permiten localizar su centroide.
+
+### 2. Centroide del objeto
+
+A partir de los momentos geométricos de primer orden, el centroide se obtiene como
+
+$$
+\bar{x} = \frac{m_{10}}{m_{00}}, \qquad \bar{y} = \frac{m_{01}}{m_{00}}
+$$
+
+El centroide representa el “centro de masa” del objeto.
+
+### 3. Momentos centrales
+
+Para eliminar el efecto de la posición del objeto en la imagen, se calculan los **momentos centrales**:
+
+$$
+\mu_{pq} = \sum_x \sum_y (x-\bar{x})^p (y-\bar{y})^q f(x,y)
+$$
+
+Estos momentos ya no dependen de la traslación del objeto, porque se calculan respecto a su propio centroide.
+
+### 4. Momentos centrales normalizados
+
+Para hacer que la descripción también sea invariante a cambios de escala, se definen los momentos centrales normalizados:
+
+$$
+\eta_{pq} = \frac{\mu_{pq}}{\mu_{00}^{\gamma}}
+$$
+
+donde
+
+$$
+\gamma = \frac{p+q}{2} + 1
+$$
+
+Los valores $\eta_{pq}$ son la base para construir los momentos invariantes de Hu.
+
+### 5. Los siete momentos de Hu
+
+A partir de los momentos normalizados, Hu propuso siete combinaciones algebraicas que permanecen invariantes ante traslación, escala y rotación.
+
+#### Primer momento de Hu
+
+$$
+\phi_1 = \eta_{20} + \eta_{02}
+$$
+
+#### Segundo momento de Hu
+
+$$
+\phi_2 = (\eta_{20} - \eta_{02})^2 + 4\eta_{11}^2
+$$
+
+#### Tercer momento de Hu
+
+$$
+\phi_3 = (\eta_{30} - 3\eta_{12})^2 + (3\eta_{21} - \eta_{03})^2
+$$
+
+#### Cuarto momento de Hu
+
+$$
+\phi_4 = (\eta_{30} + \eta_{12})^2 + (\eta_{21} + \eta_{03})^2
+$$
+
+#### Quinto momento de Hu
+
+$$
+\phi_5 =
+(\eta_{30} - 3\eta_{12})(\eta_{30} + \eta_{12})
+\left[
+(\eta_{30} + \eta_{12})^2 - 3(\eta_{21} + \eta_{03})^2
+\right]
++
+(3\eta_{21} - \eta_{03})(\eta_{21} + \eta_{03})
+\left[
+3(\eta_{30} + \eta_{12})^2 - (\eta_{21} + \eta_{03})^2
+\right]
+$$
+
+#### Sexto momento de Hu
+
+$$
+\phi_6 =
+(\eta_{20} - \eta_{02})
+\left[
+(\eta_{30} + \eta_{12})^2 - (\eta_{21} + \eta_{03})^2
+\right]
++
+4\eta_{11}(\eta_{30} + \eta_{12})(\eta_{21} + \eta_{03})
+$$
+
+#### Séptimo momento de Hu
+
+$$
+\phi_7 =
+(3\eta_{21} - \eta_{03})(\eta_{30} + \eta_{12})
+\left[
+(\eta_{30} + \eta_{12})^2 - 3(\eta_{21} + \eta_{03})^2
+\right]
+-
+(\eta_{30} - 3\eta_{12})(\eta_{21} + \eta_{03})
+\left[
+3(\eta_{30} + \eta_{12})^2 - (\eta_{21} + \eta_{03})^2
+\right]
+$$
+
+### 6. Interpretación general
+
+Los momentos de Hu no suelen interpretarse uno por uno de manera tan directa como ocurre con algunas características de la GLCM. Más bien, funcionan como un **vector de características de forma** que resume propiedades globales del objeto.
+
+En términos generales:
+
+- $\phi_1$ y $\phi_2$ se relacionan con la dispersión global de la forma;
+- $\phi_3$ y $\phi_4$ capturan aspectos asociados con asimetrías y distribución de masa;
+- $\phi_5$, $\phi_6$ y $\phi_7$ describen relaciones más complejas de la geometría del contorno y la estructura de la forma.
+
+En aplicaciones prácticas, estos siete valores se utilizan conjuntamente para comparar objetos o para alimentar algoritmos de clasificación.
+
+### 7. Propiedad de invariancia
+
+La principal ventaja de los momentos de Hu es que permiten describir objetos de manera robusta cuando cambian su posición, tamaño u orientación en la imagen. Esto significa que dos objetos con la misma forma básica producirán valores similares aunque uno esté desplazado, escalado o rotado respecto al otro.
+
+Por ello, los momentos de Hu son útiles en tareas como:
+
+- reconocimiento de formas;
+- clasificación de objetos;
+- análisis de contornos;
+- visión por computadora y procesamiento digital de imágenes.
+
+### 8. Consideración práctica
+
+En la práctica, los valores de los momentos de Hu pueden variar mucho en magnitud, por lo que frecuentemente se aplica una transformación logarítmica para facilitar su análisis numérico y visualización:
+
+$$
+h_i = -\operatorname{sign}(\phi_i)\log_{10}(|\phi_i|)
+$$
+
+Esta transformación ayuda a trabajar con valores muy pequeños y a comparar mejor los descriptores.
+
+## Resumen
+
+El procedimiento para obtener los momentos de Hu puede resumirse así:
+
+1. Calcular los momentos geométricos $m_{pq}$.
+2. Obtener el centroide $(\bar{x},\bar{y})$.
+3. Calcular los momentos centrales $\mu_{pq}$.
+4. Normalizar para obtener $\eta_{pq}$.
+5. Construir las siete combinaciones invariantes propuestas por Hu.
+
+De este modo, se obtiene un conjunto compacto de características que describen la **forma global** de un objeto de manera invariante ante transformaciones geométricas básicas.
+
 ## Comentarios didácticos sobre Hu
 
 - Resume **forma global**, no textura fina.
@@ -362,6 +617,56 @@ color_vec, color_names = extract_color_moments(img_color_1)
 list(zip(color_names, np.round(color_vec, 4)))
 ```
 
+## Interpretación guiada con histogramas RGB
+
+Para enlazar los valores numéricos con una lectura visual rápida, podemos comparar dos imágenes y observar:
+
+1. desplazamiento del histograma por canal (relacionado con la media);
+2. anchura de la distribución (relacionada con la desviación estándar);
+3. presencia de colas (relacionada con la asimetría).
+
+```{python}
+def plot_rgb_histograms_with_moments(image_rgb, title="Imagen"):
+    fig, axes = plt.subplots(1, 2, figsize=(10, 3.8))
+
+    # Imagen
+    axes[0].imshow(image_rgb)
+    axes[0].set_title(title)
+    axes[0].axis("off")
+
+    # Histogramas por canal
+    colors = ["r", "g", "b"]
+    labels = ["R", "G", "B"]
+
+    for c, lbl in zip(colors, labels):
+        channel = image_rgb[:, :, labels.index(lbl)].ravel()
+        axes[1].hist(channel, bins=256, range=(0, 255), density=True,
+                     alpha=0.35, color=c, label=lbl)
+
+    axes[1].set_title("Histogramas de intensidad por canal")
+    axes[1].set_xlabel("Intensidad")
+    axes[1].set_ylabel("Densidad")
+    axes[1].legend(loc="upper right")
+
+    plt.tight_layout()
+    plt.show()
+
+    vals, names = extract_color_moments(image_rgb)
+    print(title)
+    for n, v in zip(names, vals):
+        print(f"  {n}: {v:.4f}")
+
+
+plot_rgb_histograms_with_moments(img_color_1, "Astronaut")
+plot_rgb_histograms_with_moments(img_color_2, "Coffee")
+```
+
+Con esta visualización, una lectura didáctica útil es:
+
+- picos desplazados a la derecha en un canal $\Rightarrow$ mayor media de ese canal;
+- histogramas más anchos $\Rightarrow$ mayor desviación estándar;
+- colas pronunciadas hacia un extremo $\Rightarrow$ mayor asimetría (positiva o negativa).
+
 ## Variante en HSV
 
 En varias aplicaciones resulta más interpretable usar HSV o Lab en lugar de RGB, sobre todo cuando interesa separar tono, saturación e intensidad.
@@ -412,7 +717,7 @@ vec, names = extract_classic_descriptors(img_color_1)
 len(vec), names[-10:]
 ```
 
-# Discusión: cuándo conviene cada descriptor
+# 6. Discusión: cuándo conviene cada descriptor
 
 ## GLCM
 
@@ -438,7 +743,7 @@ Conviene cuando:
 - se necesita un descriptor compacto y barato de calcular;
 - no se requiere información espacial detallada.
 
-# Actividad sugerida en clase
+# 7. Actividad sugerida en clase
 
 1. Seleccionar 3 categorías de imágenes.
 2. Extraer GLCM, Hu y momentos de color para 10 imágenes por categoría.
@@ -446,7 +751,7 @@ Conviene cuando:
 4. Comparar qué descriptor parece separar mejor las clases.
 5. Discutir qué información pierde cada descriptor.
 
-# Ejercicio guiado
+# 8. Ejercicio guiado
 
 Implementa una función que reciba una lista de imágenes y devuelva una matriz `X` donde:
 
@@ -464,7 +769,7 @@ def build_feature_matrix(images):
     return np.vstack(rows)
 ```
 
-# Mini ejemplo real (opcional)
+# 9. Mini ejemplo real (opcional)
 
 Si quieres mostrar un caso con datos reales durante esta clase, puedes usar el material completo en:
 
@@ -504,7 +809,7 @@ else:
     print("No se encontro datos_ejemplo/flower_photos. Ejecuta el notebook de ejemplo real para descargar el dataset.")
 ```
 
-# Cierre conceptual
+# 10. Cierre conceptual
 
 Los descriptores clásicos no sustituyen a los métodos modernos basados en aprendizaje profundo, pero siguen siendo valiosos por varias razones:
 
@@ -520,7 +825,7 @@ La siguiente clase tomará estos descriptores y construirá un flujo completo de
 - reducir dimensionalidad con PCA,
 - visualizar separabilidad entre clases.
 
-# Referencias y origen
+# 11. Referencias y origen
 
 - Haralick, R. M., Shanmugam, K., y Dinstein, I. (1973). *Textural Features for Image Classification*.
 - Hu, M.-K. (1962). *Visual Pattern Recognition by Moment Invariants*.
@@ -528,7 +833,7 @@ La siguiente clase tomará estos descriptores y construirá un flujo completo de
 - `scikit-image`: documentación de `graycomatrix` y `graycoprops`.
 - OpenCV: documentación de `moments` y `HuMoments`.
 
-# Tarea sugerida
+# 12. Tarea sugerida
 
 Tomar un conjunto pequeño de imágenes organizadas por clase y preparar tres matrices de características:
 

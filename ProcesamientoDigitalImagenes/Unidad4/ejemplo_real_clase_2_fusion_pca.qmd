@@ -320,7 +320,7 @@ plt.show()
   - otros espacios de color (HSV o Lab),
   - clasificadores no lineales.
 
-# Cierre
+# 7. Cierre
 
 Este ejemplo aterriza la narrativa de la Clase 2 con un flujo real completo:
 
