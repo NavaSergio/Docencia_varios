@@ -1,0 +1,467 @@
+---
+title: "Unidad 5.1-5.3: Algoritmos supervisados y no-supervisados para clasificación de imágenes"
+author: "Sergio Nava"
+format:
+    html:
+        output-file: Unidad5_01_Algoritmos_Supervisados_NoSupervisados_handout.html
+        embed-resources: true
+        html-math-method: katex
+        toc: true
+        toc-depth: 3
+        code-fold: false
+        code-tools: false
+        df-print: paged
+        css: ../Unidad4/style.css
+        incremental: false
+        footer: "MCDI | Procesamiento Digital de Imágenes | Unidad 5"
+execute:
+  eval: false
+  echo: true
+  warning: false
+  message: false
+jupyter: python3
+lang: es
+---
+
+# Propósito de la clase
+
+En esta clase aprendemos a usar algoritmos de aprendizaje automático para clasificar imágenes basadas en características extraídas en la Unidad 4. Cubrimos:
+
+1. **Algoritmos supervisados**: modelos entrenados con etiquetas conocidas (Logistic Regression, SVM, Árboles de Decisión, Random Forest).
+2. **Algoritmos no-supervisados**: descubren patrones sin etiquetas (K-means, clustering jerárquico).
+3. **Intuición y práctica**: cuándo usar cada uno y cómo implementar en scikit-learn.
+
+# Objetivos de aprendizaje
+
+Al finalizar, el estudiante será capaz de:
+
+- explicar la diferencia entre aprendizaje supervisado y no-supervisado;
+- implementar algoritmos básicos de clasificación en scikit-learn;
+- entrenar y evaluar modelos sobre características extraídas de imágenes;
+- interpretar parámetros de cada algoritmo y su impacto;
+- reconocer fortalezas y limitaciones de cada enfoque;
+- justificar la elección de algoritmo según el problema y los datos.
+
+# Introducción: flujo general de reconocimiento de imágenes
+
+Un flujo típico de clasificación automática consta de:
+
+1. **Recopilación**: obtener imágenes etiquetadas (dataset).
+2. **Preprocesamiento**: normalización, aumentación, etc.
+3. **Extracción de características** (Unidad 4): GLCM, Hu, color, etc. → vector numérico.
+4. **División de datos**: separar en entrenamiento y prueba.
+5. **Escalamiento**: estandarizar características (media 0, varianza 1).
+6. **Entrenamiento**: ajustar un modelo a los datos de entrenamiento.
+7. **Predicción y evaluación**: medir desempeño en datos no vistos.
+
+En esta unidad nos enfocamos en los pasos 4–7.
+
+# 1. Aprendizaje supervisado
+
+## Idea general
+
+**Aprendizaje supervisado** significa que contamos con un conjunto de entrenamien to $\{(x_i, y_i)\}$ donde:
+
+- $x_i$ es el vector de características (ej. concatenación de GLCM, Hu, color).
+- $y_i$ es la etiqueta correcta (ej. 0 = "rosa", 1 = "margarita").
+
+El objetivo es aprender una función $f(x) \approx y$ que generalice a imágenes nuevas.
+
+## 1.1. Regresión Logística
+
+### Idea matemática
+
+La regresión logística modeliza la probabilidad de pertenecer a la clase positiva:
+
+$$
+P(y=1 | x) = \frac{1}{1 + e^{-(\beta_0 + \beta^T x)}}
+$$
+
+La curva sigmoidea transforma el producto escalar $\beta^T x$ en una probabilidad.
+
+### Ventajas
+
+- Simple, interpretable.
+- Rápido de entrenar.
+- Da probabilidades, no solo predicciones binarias.
+- Funciona bien si las clases son aproximadamente linealmente separables.
+
+### Limitaciones
+
+- Supone relación lineal entre características y log-odds.
+- Puede no capturar estructuras complejas.
+
+### Implementación en scikit-learn
+
+```{python}
+from sklearn.linear_model import LogisticRegression
+
+model = LogisticRegression(
+    max_iter=1000,
+    random_state=42,
+    C=1.0,  # inversa de la regularización
+)
+model.fit(X_train, y_train)
+y_pred = model.predict(X_test)
+y_proba = model.predict_proba(X_test)  # probabilidades
+```
+
+## 1.2. Máquinas de Vectores de Soporte (SVM)
+
+### Idea matemática
+
+SVM busca el hiperplano de separación con máximo margen entre clases:
+
+$$
+\max_{\beta, \beta_0} \frac{2}{||\beta||} \quad \text{s.a.} \quad y_i(\beta^T x_i + \beta_0) \geq 1
+$$
+
+Para datos no linealmente separables, usa un **truco del kernel** que proyecta los datos a un espacio de mayor dimensión.
+
+### Vantas
+
+- Maneja bien espacios de alta dimensión.
+- Kernels permiten fronteras de decisión no-lineales.
+- Robusto a outliers (minimiza margen, no suma de errores).
+
+### Limitaciones
+
+- Parámetro de kernel requiere sintonización.
+- Lento en datasets muy grandes.
+- Menos interpretable que Logistic Regression.
+
+### Implementación en scikit-learn
+
+```{python}
+from sklearn.svm import SVC
+
+model = SVC(kernel='rbf', C=1.0, gamma='scale', random_state=42, probability=True)
+model.fit(X_train, y_train)
+y_pred = model.predict(X_test)
+```
+
+Kernels comunes: `'linear'`, `'rbf'` (Gaussian), `'poly'` (polinómico).
+
+## 1.3. Árboles de Decisión
+
+### Idea
+
+Un árbol de decisión particiona el espacio de características mediante preguntas binarias sucesivas. Cada nodo representa una prueba sobre una característica.
+
+Ejemplo:
+```
+¿GLCM_contraste > 0.5?
+├─ SÍ: ¿Hu_1 > 0.3?
+│  ├─ SÍ: Clase A
+│  └─ NO: Clase B
+└─ NO: Clase C
+```
+
+### Ventajas
+
+- Muy interpretable (visualizable).
+- Maneja características numéricas y categóricas.
+- No requiere escalamiento.
+- Captura interacciones no-lineales.
+
+### Limitaciones
+
+- Tiende a sobreajustarse (overfitting).
+- Inestable: cambios pequeños en datos crean árboles muy distintos.
+- Parcial a clases desequilibradas.
+
+### Implementación en scikit-learn
+
+```{python}
+from sklearn.tree import DecisionTreeClassifier
+
+model = DecisionTreeClassifier(
+    max_depth=5,             # controla profundidad
+    min_samples_split=5,     # muestras mínimas en nodo interno
+    min_samples_leaf=2,      # muestras mínimas en hoja
+    random_state=42
+)
+model.fit(X_train, y_train)
+```
+
+## 1.4. Random Forest
+
+### Idea
+
+Random Forest combina múltiples árboles de decisión entrenados en subconjuntos aleatorios de datos (boostrap) y características. La predicción final es el voto mayoritario (o promedio de probabilidades).
+
+$$
+\hat{y} = \text{moda}\left\{ T_1(x), T_2(x), \ldots, T_B(x) \right\}
+$$
+
+donde $T_b$ es el $b$-ésimo árbol.
+
+### Ventajas
+
+- Reduce sobreajuste del árbol individual.
+- Más robusto que un árbol único.
+- Paralelizable.
+- Proporciona importancia de características.
+
+### Limitaciones
+
+- Menos interpretable que un árbol único.
+- Más lento en predicción que regresión logística.
+
+### Implementación en scikit-learn
+
+```{python}
+from sklearn.ensemble import RandomForestClassifier
+
+model = RandomForestClassifier(
+    n_estimators=100,        # cantidad de árboles
+    max_depth=10,
+    min_samples_split=5,
+    random_state=42,
+    n_jobs=-1                # usar todos los cores
+)
+model.fit(X_train, y_train)
+
+# Importancia de características
+importances = model.feature_importances_
+```
+
+# 2. Aprendizaje no-supervisado
+
+## Idea general
+
+En aprendizaje no-supervisado no tenemos etiquetas $y_i$. Solo contamos con características $x_i$ y buscamos descubrir estructura:
+
+- **Clustering**: agrupa muestras similares.
+- **Reducción de dimensión**: proyecta a espacio de menor dimensión preservando estructura.
+
+## 2.1. K-means (breve repaso)
+
+Ya vimos K-means en la Unidad 3 para segmentación de píxeles. Aquí lo aplicamos a características de imagen:
+
+$$
+\text{Objetivo:} \quad \min \sum_{k=1}^{K} \sum_{x_i \in C_k} ||x_i - \mu_k||^2
+$$
+
+Donde $\mu_k$ es el centroide del cluster $k$.
+
+### Implementación en scikit-learn
+
+```{python}
+from sklearn.cluster import KMeans
+
+model = KMeans(n_clusters=3, random_state=42, n_init=10)
+labels = model.fit_predict(X)  # etiquetas asignadas
+centers = model.cluster_centers_
+inertia = model.inertia_  # suma de distancias intra-cluster
+```
+
+### Cuándo usar K-means con características
+
+- Cuando el número de clases/grupos es conocido a priori.
+- Como preprocesamiento para descubrir grupos naturales.
+- Para inicializar otro modelo (ej. mezcla de Gaussianas).
+
+## 2.2. Clustering jerárquico
+
+### Idea
+
+Construye un árbol (dendrograma) que organiza las muestras por similaridad:
+
+1. **Aglomerativo** (bottom-up): inicia con cada muestra como cluster; iterativamente fusiona los dos clusters más cercanos.
+2. **Divisivo** (top-down): inicia todo junto; iterativamente divide hasta un criterio de parada.
+
+Los métodos de enlace definen "distancia entre clusters":
+
+- **Single linkage**: distancia mínima (propenso al efecto cadena).
+- **Complete linkage**: distancia máxima (genera clusters compactos).
+- **Average linkage**: distancia promedio (equilibrado).
+- **Ward**: minimiza varianza intra-cluster (recomendado).
+
+### Ventajas
+
+- No requiere especificar $K$ a priori; se elige podando el árbol.
+- Dendrograma es interpretable.
+- Flexible en métricas de distancia.
+
+### Limitaciones
+
+- O(n²) o peor en complejidad (lento para n grande).
+- Decisiones tempranas no se pueden deshacer.
+
+### Implementación en scikit-learn
+
+```{python}
+from sklearn.cluster import AgglomerativeClustering
+
+model = AgglomerativeClustering(
+    n_clusters=3,
+    linkage='ward'  # {'ward', 'complete', 'average', 'single'}
+)
+labels = model.fit_predict(X)
+```
+
+Para visualizar el dendrograma:
+
+```{python}
+from scipy.cluster.hierarchy import dendrogram, linkage
+
+Z = linkage(X, method='ward')
+plt.figure(figsize=(10, 5))
+dendrogram(Z)
+plt.xlabel("Sample or Cluster Index")
+plt.ylabel("Distance")
+plt.title("Dendrograma de Clustering Jerárquico")
+plt.show()
+```
+
+# 3. Reducción de dimensionalidad
+
+## 3.1. Análisis de Componentes Principales (PCA)
+
+Ya vimos PCA en la Unidad 4. Recordatorio:
+
+- Proyecta datos a componentes ortogonales que explican máxima varianza.
+- Reduce ruido y colinealidad.
+- Requiere escalamiento previo.
+
+Ecuación:
+
+$$
+\mathbf{z} = \mathbf{W}^T (\mathbf{x} - \boldsymbol{\mu})
+$$
+
+donde $\mathbf{W}$ es la matriz de carga (eigenvectores de la matriz de covarianza).
+
+### Cuándo usar PCA
+
+- Para visualizar datos en 2D o 3D.
+- Reducir dimensión antes de entrenar modelos lentos (SVM con kernel RBF).
+- Eliminar multicolinealidad.
+- Análisis exploratorio: ¿qué fuentes de variación dominan?
+
+### Implementación
+
+```{python}
+from sklearn.decomposition import PCA
+
+pca = PCA(n_components=2)  # o n_components=0.95 para mantener 95% varianza
+Z = pca.fit_transform(X)
+
+print(f"Varianza explicada acumulada: {pca.explained_variance_ratio_.cumsum()}")
+print(f"Carga de características en PC1: {pca.components_[0, :]}")
+```
+
+## 3.2. t-SNE
+
+### Idea
+
+t-SNE (t-distributed Stochastic Neighbor Embedding) es una técnica de reducción no-lineal que preserva estructuras locales. Muy útil para visualización.
+
+Ventajas:
+
+- Revela clusters en datos complejos.
+- Excepcional para visualización.
+
+Limitaciones:
+
+- Computacionalmente costosa.
+- Parámetros `perplexity`, `learning_rate` requieren ajuste.
+- Interpretación más difícil que PCA (no es proyección lineal).
+
+### Implementación
+
+```{python}
+from sklearn.manifold import TSNE
+
+tsne = TSNE(n_components=2, random_state=42, perplexity=30, n_iter=1000)
+Z = tsne.fit_transform(X)
+```
+
+# 4. Pipeline típico: de características a predicción
+
+```{python}
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+
+# Crear un pipeline
+pipe = Pipeline([
+    ('scaler', StandardScaler()),
+    ('classifier', LogisticRegression(max_iter=1000, random_state=42))
+])
+
+# Entrenar
+pipe.fit(X_train, y_train)
+
+# Predecir
+y_pred = pipe.predict(X_test)
+y_proba = pipe.predict_proba(X_test)
+
+# Evaluar (veremos métricas en la próxima clase)
+from sklearn.metrics import accuracy_score
+acc = accuracy_score(y_test, y_pred)
+print(f"Exactitud: {acc:.3f}")
+```
+
+# 5. Comparación cualitativa
+
+| Algoritmo | Tipo | Escalabilidad | Interpretabilidad | Manejo no-lineal | Mejor para |
+|-----------|------|---------------|-------------------|------------------|-----------|
+| **Logistic Regression** | Supervisado | Excelente | Excelente | Bajo | Dataset pequeño, precisión |
+| **SVM** | Supervisado | Bueno | Bajo | Excelente | Alta dimensión, separación compleja |
+| **Árbol de Decisión** | Supervisado | Excelente | Excelente | Excelente | Interpretabilidad, interacciones |
+| **Random Forest** | Supervisado | Bueno | Medio | Excelente | Balance: precisión + velocidad |
+| **K-means** | No-supervisado | Excelente | Bueno | Bajo | Clustering con K conocido |
+| **Clustering Jerárquico** | No-supervisado | Regular ($O(n^2)$) | Excelente | Bajo | Exploración, dendrograma |
+| **PCA** | Reducción | Excelente | Excelente | Bajo | Visualización, preprocesamiento |
+| **t-SNE** | Reducción | Lenta | Bajo | Excelente | Visualización exploradora |
+
+# 6. Consideraciones prácticas
+
+## Escalamiento
+
+Siempre escalar antes de entrenar la mayoría de algoritmos (excepto árboles):
+
+```{python}
+from sklearn.preprocessing import StandardScaler
+
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)  # usar fit del entrenamiento
+```
+
+## Selección de hiperparámetros
+
+Usar **validación cruzada** + **búsqueda en grilla** (en próxima clase):
+
+```{python}
+from sklearn.model_selection import GridSearchCV
+
+param_grid = {'C': [0.1, 1, 10], 'max_iter': [500, 1000]}
+grid = GridSearchCV(LogisticRegression(random_state=42), param_grid, cv=5)
+grid.fit(X_train, y_train)
+print(f"Mejores parámetros: {grid.best_params_}")
+```
+
+## Evitar data leakage
+
+📌 **Importante**: ajustar `StandardScaler` y otros transformadores **solo en datos de entrenamiento**, luego aplicar a prueba:
+
+```{python}
+# ✗ INCORRECTO:
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)  # en TODO, incluyendo test
+X_train = X_scaled[:n_train]
+X_test = X_scaled[n_train:]
+
+# ✓ CORRECTO:
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)  # solo transformar, no fit
+```
+
+# Referencias
+
+1. Scikit-learn: https://scikit-learn.org/stable/
+2. Hastie, T., Tibshirani, R., & Friedman, J. (2009). The Elements of Statistical Learning (2nd ed.).
+3. Murphy, K. P. (2012). Machine Learning: A Probabilistic Perspective.

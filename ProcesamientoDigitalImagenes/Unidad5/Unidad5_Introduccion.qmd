@@ -1,0 +1,241 @@
+---
+title: "Unidad 5: Reconocimiento de imágenes"
+subtitle: "Aprendizaje automático, algoritmos supervisados y no-supervisados, evaluación del desempeño"
+author: "Sergio Nava"
+format:
+    html:
+        output-file: Unidad5_Introduccion.html
+        embed-resources: true
+        html-math-method: katex
+        toc: true
+        toc-depth: 2
+        code-fold: false
+        code-tools: false
+        css: ../Unidad4/style.css
+        incremental: false
+        footer: "MCDI | Procesamiento Digital de Imágenes | Unidad 5"
+lang: es
+---
+
+# Propósito de la Unidad
+
+La Unidad 5 cierra el flujo completo de procesamiento digital de imágenes para **reconocimiento automático**. Después de segmentar imágenes (Unidad 3) y extraer características numéricas (Unidad 4), ahora aprendemos a construir **modelos predictivos** que clasifiquen imágenes nuevas de forma automática.
+
+Cubrimos:
+
+- **Aprendizaje automático**: conceptos fundamentales (supervisado vs no-supervisado).
+- **Algoritmos supervisados**: regresión logística, SVM, árboles, bosques aleatorios.
+- **Algoritmos no-supervisados**: clustering (K-means, jerárquico).
+- **Evaluación rigurosa**: métricas, validación cruzada, curvas ROC.
+
+# Estructura de la Unidad
+
+## Teoría: 2 documentos
+
+### 1. [Unidad5_01_Algoritmos_Supervisados_NoSupervisados_handout.html](Unidad5_01_Algoritmos_Supervisados_NoSupervisados_handout.html)
+
+**Contenidos:**
+
+- Flujo general de reconocimiento.
+- Algoritmos supervisados:
+  - Regresión Logística (interpretabilidad).
+  - SVM (kernels, separación compleja).
+  - Árboles de Decisión (interpretabilidad, overfitting).
+  - Random Forest (ensemble, robustez).
+- Algoritmos no-supervisados:
+  - K-means (clustering simple).
+  - Clustering Jerárquico (dendrograma).
+- Reducción de dimensionalidad:
+  - PCA (análisis exploratorio).
+  - t-SNE (visualización avanzada).
+- Pipelines en scikit-learn.
+- Evitar data leakage.
+
+**Duración sugerida:** 2-3 horas de clase + ejercicios.
+
+---
+
+### 2. [Unidad5_02_Evaluacion_Desempeno_handout.html](Unidad5_02_Evaluacion_Desempeno_handout.html)
+
+**Contenidos:**
+
+- Por qué la exactitud sola es insuficiente.
+- Matriz de confusión y métricas derivadas:
+  - Exactitud, Precisión, Recall, F1.
+  - Especificidad, AUC.
+- Validación cruzada (k-fold, stratified).
+- Curvas ROC (trade-off FPR-TPR).
+- Curvas Precision-Recall (desbalance severo).
+- Búsqueda de hiperparámetros:
+  - GridSearchCV (búsqueda exhaustiva).
+  - RandomizedSearchCV (eficiente para grandes espacios).
+- Evitar overfitting durante búsqueda.
+- Flujo completo de evaluación.
+
+**Duración sugerida:** 2 horas de clase + ejercicios prácticos.
+
+---
+
+## Ejemplo Real: 1 documento ejecutable
+
+### 3. [ejemplo_real_Unidad5_clasificacion_flores_handout.html](ejemplo_real_Unidad5_clasificacion_flores_handout.html)
+
+**Contenido:**
+
+Flujo **completamente reproducible** de clasificación de flores que integra todo lo aprendido:
+
+1. **Descarga de dataset** (reutiliza flores de Unidad 4).
+2. **Extracción de características** (GLCM, Hu, Color).
+3. **División train-test** y escalamiento.
+4. **Entrenamiento de múltiples modelos**:
+   - Logistic Regression
+   - SVM
+   - Random Forest
+   - Decision Tree
+   - K-Means
+5. **Evaluación integral**:
+   - Acciónuracy y F1 por modelo
+   - Validación cruzada (5-fold).
+   - Matrices de confusión.
+   - Curvas ROC (one-vs-rest).
+   - Importancia de características.
+6. **Comparación**, recomendaciones.
+
+**Tipo de actividad:** 
+
+- Puede ejecutarse en Jupyter o como documento Quarto renderizado.
+- Código comentado, visualizaciones extensas.
+- Ideal para aprendizaje práctico y experimentación.
+
+**Duración sugerida:** 3-4 horas de clase práctica + exploración libre.
+
+---
+
+# Flujo Recomendado
+
+```
+Semana 1 (Clase Teórica):
+  Día 1: Unidad5_01 (Algoritmos)
+  Día 2: Unidad5_02 (Evaluación)
+
+Semana 2 (Práctica Integrada):
+  Día 1-2: ejemplo_real_Unidad5 (en laboratorio / con asistencia)
+           Experimentos: cambiar K, comparar kernels, etc.
+           
+Proyecto Final:
+  Aplicar flujo a dataset propio del estudiante.
+  Reportar: qué algoritmo escogió, por qué, evaluación.
+```
+
+# Relación con unidades previas
+
+```
+Unidad 1 (Lectura, Operaciones Básicas)
+    ↓
+Unidad 2 (Realce, Filtrado, Detección de Bordes)
+    ↓
+Unidad 3 (Segmentación: umbrales, clustering de píxeles)
+    ↓
+Unidad 4 (Descriptores: GLCM, Hu, Color) ← **Características numéricas**
+    ↓
+Unidad 5 (Reconocimiento: aprendizaje automático, evaluación) ← **Estamos aquí**
+    ↓
+Proyecto Final: Pipeline completo imagen → predicción
+```
+
+**Clave**: todo lo de Unidad 5 depende de características bien extraídas (Unidad 4) de imágenes bien preprocesadas (Unidades 1-3).
+
+# Competencias que desarrollarás
+
+Al completar esta unidad, serás capaz de:
+
+1. **Diseñar experimentos** de clasificación de imágenes con rigor científico.
+2. **Implementar** modelos supervisados y no-supervisados en scikit-learn.
+3. **Evaluar** resultados no solo con exactitud, sino con métricas contextuales (F1, AUC, etc.).
+4. **Interpretar** matrices de confusión y curvas ROC.
+5. **Evitar errores comunes**: data leakage, overfitting, desbalance de clases.
+6. **Comparar modelos** de forma sistemática (validación cruzada, búsqueda de parámetros).
+7. **Reportar** hallazgos de forma clara y reproducible.
+
+# Recursos complementarios
+
+## Librerías principales
+
+- **scikit-learn** (https://scikit-learn.org/stable/)
+  - Algoritmos, pipelines, evaluación.
+  - Documentación excepcional con ejemplos.
+  
+- **OpenCV** (https://opencv.org/)
+  - Visión por computadora, preprocesamiento.
+
+- **matplotlib / seaborn** 
+  - Visualización de datos y resultados.
+
+## Lecturas sugeridas
+
+1. **Hastie, T., Tibshirani, R., & Friedman, J.** (2009). *The Elements of Statistical Learning* (2nd ed.).
+   - Referencia clásica en aprendizaje automático.
+   - Cobertura completa de teoría y práctica.
+
+2. **Murphy, K. P.** (2012). *Machine Learning: A Probabilistic Perspective*.
+   - Enfoque probabilístico, más riguroso matemáticamente.
+   - Capítulos sobre clasificación, evaluación.
+
+3. **Scikit-learn User Guide**: Especialmente:
+   - [Model selection and evaluation](https://scikit-learn.org/stable/modules/model_evaluation.html)
+   - [Supervised learning](https://scikit-learn.org/stable/supervised_learning.html)
+
+# Preguntas frecuentes
+
+## ¿Qué algoritmo debo usar?
+
+Depende del contexto:
+
+- **Logistic Regression**: dataset pequeño, interpretabilidad crucial, baseline rápida.
+- **SVM**: datos en alta dimensión, separación no-lineal, tiempo de entrenamiento no es crítico.
+- **Random Forest**: balance entre exactitud y velocidad, importancia de características, robustez.
+- **Decision Tree**: máxima interpretabilidad, datos con interacciones claras.
+- **K-Means**: sin etiquetas, exploración de estructura.
+
+**Respuesta honesta**: **prueba varios** y compara con validación cruzada.
+
+## ¿Cómo sé si mi modelo sobreaajusta (overfitting)?
+
+- Exactitud en entrenamiento >> exactitud en prueba (diferencia > 10-15%).
+- Validación cruzada da puntuaciones muy variables among folds.
+- Matriz de confusión en test tiene errores sistemáticos.
+
+**Remedio**:
+
+- Regularización (C en Logistic Regression/SVM, max_depth en árboles).
+- Más datos o aumentación.
+- Validación cruzada para mejorar estimación.
+
+## ¿Qué pasa si mis clases están desbalanceadas?
+
+- No uses exactitud como única métrica.
+- Usa **F1 o AUC** que penalizan mejor el desbalance.
+- En scikit-learn: `scoring='f1_weighted'`.
+- Considera **SMOTE** (oversampling sintético) o **class_weight** en el modelo.
+
+## ¿Por qué escalamos características?
+
+Algoritmos como SVM, Logistic Regression, PCA son sensibles a escala:
+
+- Una característica con rango [0, 10000] domina una con rango [0, 1].
+- StandardScaler ajusta a media 0, desviación 1.
+
+**⚠️ Importante**: ajustar (`fit`) solo en entrenamiento, aplicar (`transform`) a prueba.
+
+# Próximos pasos
+
+1. **Lee** [Unidad5_01_Algoritmos_Supervisados_NoSupervisados_handout.html](Unidad5_01_Algoritmos_Supervisados_NoSupervisados_handout.html) con cuidado.
+2. **Ejecuta** los bloques de código en tu Jupyter/Colab favorito.
+3. **Lee** [Unidad5_02_Evaluacion_Desempeno_handout.html](Unidad5_02_Evaluacion_Desempeno_handout.html).
+4. **Corre** [ejemplo_real_Unidad5_clasificacion_flores_handout.html](ejemplo_real_Unidad5_clasificacion_flores_handout.html) paso a paso.
+5. **Experimenta**: cambia parámetros, agrega algoritmos, prueba con tu propio dataset.
+6. **Reporta**: deja un resumen de lo que aprendiste y hallazgos interesantes.
+
+---
+
+**¡Bienvenido a la Unidad 5! Ahora estás listo para construir sistemas de reconocimiento automático de imágenes.**

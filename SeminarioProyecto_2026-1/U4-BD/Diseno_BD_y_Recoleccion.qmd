@@ -483,7 +483,7 @@ README.md          # explicación del proyecto
 
 ---
 
-## Actividad 
+## Actividad {.smaller}
 
 1) **Decide** si tu proyecto requiere una tabla o varias, y justifica la respuesta.  
 2) **Construye** una mini matriz de coherencia: pregunta específica → objetivo → hipótesis → variable/métrica.

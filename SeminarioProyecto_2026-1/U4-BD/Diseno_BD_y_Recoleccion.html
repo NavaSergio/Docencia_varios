@@ -95,7 +95,27 @@
     code span.va { color: #111111; } /* Variable */
     code span.vs { color: #20794d; } /* VerbatimString */
     code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
-  </style>
+    /* CSS for citations */
+    div.csl-bib-body { }
+    div.csl-entry {
+      clear: both;
+      margin-bottom: 0em;
+    }
+    .hanging-indent div.csl-entry {
+      margin-left:2em;
+      text-indent:-2em;
+    }
+    div.csl-left-margin {
+      min-width:2em;
+      float:left;
+    }
+    div.csl-right-inline {
+      margin-left:2em;
+      padding-left:1em;
+    }
+    div.csl-indent {
+      margin-left: 2em;
+    }  </style>
   <link rel="stylesheet" href="Diseno_BD_y_Recoleccion_files/libs/revealjs/dist/theme/quarto-5f66212b01f094180b8d10b5b9960144.css">
   <link rel="stylesheet" href="style.css">
   <link href="Diseno_BD_y_Recoleccion_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
@@ -823,7 +843,7 @@ Sergio Martín Nava Muñoz
 </div>
 </div>
 <blockquote>
-<p>Identificar el mecanismo de ausencia es el primer paso antes de elegir cualquier método.</p>
+<p>Identificar el mecanismo de ausencia es el primer paso antes de elegir cualquier método <span class="citation" data-cites="Rubin1976 LittleRubin2002">(<a href="#/referencias" role="doc-biblioref" onclick="">Little &amp; Rubin, 2002</a>; <a href="#/referencias" role="doc-biblioref" onclick="">Rubin, 1976</a>)</span>.</p>
 </blockquote>
 </section>
 <section id="métodos-de-imputación-comunes" class="slide level2 smaller scrollable">
@@ -895,6 +915,9 @@ Sergio Martín Nava Muñoz
 </div>
 </div>
 </div>
+<blockquote>
+<p>Para imputación múltiple se recomienda consultar <span class="citation" data-cites="vanBuuren2018">Buuren (<a href="#/referencias" role="doc-biblioref" onclick="">2018</a>)</span> (disponible en línea), <span class="citation" data-cites="Sterne2009">Sterne et al. (<a href="#/referencias" role="doc-biblioref" onclick="">2009</a>)</span> y la implementación en R de <span class="citation" data-cites="vanBuurenMice2011">Buuren &amp; Groothuis-Oudshoorn (<a href="#/referencias" role="doc-biblioref" onclick="">2011</a>)</span>. <span class="citation" data-cites="Schafer2002">Schafer &amp; Graham (<a href="#/referencias" role="doc-biblioref" onclick="">2002</a>)</span> ofrece una revisión metodológica accesible.</p>
+</blockquote>
 </section>
 <section id="consideraciones-éticas-y-de-privacidad" class="slide level2">
 <h2>Consideraciones éticas y de privacidad</h2>
@@ -1042,7 +1065,7 @@ README.md          # explicación del proyecto</code></pre>
 <li><label><input type="checkbox"><strong>Documento PDF</strong> con enlace al video y capturas de pantalla.</label></li>
 </ul>
 </section>
-<section id="actividad" class="slide level2">
+<section id="actividad" class="slide level2 smaller">
 <h2>Actividad</h2>
 <ol type="1">
 <li><strong>Decide</strong> si tu proyecto requiere una tabla o varias, y justifica la respuesta.<br>
@@ -1074,6 +1097,29 @@ README.md          # explicación del proyecto</code></pre>
 <blockquote>
 <p>La calidad de tu análisis depende directamente de la calidad y preparación de tus datos.</p>
 </blockquote>
+</section>
+<section id="referencias" class="slide level2 smaller scrollable">
+<h2>Referencias</h2>
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" data-line-spacing="2" role="list">
+<div id="ref-vanBuuren2018" class="csl-entry" role="listitem">
+Buuren, S. van. (2018). <em>Flexible imputation of missing data</em> (2nd ed.). CRC Press / Chapman &amp; Hall. <a href="https://stefvanbuuren.name/fimd/">https://stefvanbuuren.name/fimd/</a>
+</div>
+<div id="ref-vanBuurenMice2011" class="csl-entry" role="listitem">
+Buuren, S. van, &amp; Groothuis-Oudshoorn, K. (2011). Mice: Multivariate imputation by chained equations in <span>R</span>. <em>Journal of Statistical Software</em>, <em>45</em>(3), 1–67. <a href="https://doi.org/10.18637/jss.v045.i03">https://doi.org/10.18637/jss.v045.i03</a>
+</div>
+<div id="ref-LittleRubin2002" class="csl-entry" role="listitem">
+Little, R. J. A., &amp; Rubin, D. B. (2002). <em>Statistical analysis with missing data</em> (2nd ed.). John Wiley &amp; Sons.
+</div>
+<div id="ref-Rubin1976" class="csl-entry" role="listitem">
+Rubin, D. B. (1976). Inference and missing data. <em>Biometrika</em>, <em>63</em>(3), 581–592. <a href="https://doi.org/10.1093/biomet/63.3.581">https://doi.org/10.1093/biomet/63.3.581</a>
+</div>
+<div id="ref-Schafer2002" class="csl-entry" role="listitem">
+Schafer, J. L., &amp; Graham, J. W. (2002). Missing data: Our view of the state of the art. <em>Psychological Methods</em>, <em>7</em>(2), 147–177. <a href="https://doi.org/10.1037/1082-989X.7.2.147">https://doi.org/10.1037/1082-989X.7.2.147</a>
+</div>
+<div id="ref-Sterne2009" class="csl-entry" role="listitem">
+Sterne, J. A. C., White, I. R., Carlin, J. B., Spratt, M., Royston, P., Kenward, M. G., Wood, A. M., &amp; Carpenter, J. R. (2009). Multiple imputation for missing data in epidemiological and clinical research: Potential and pitfalls. <em>BMJ</em>, <em>338</em>, b2393. <a href="https://doi.org/10.1136/bmj.b2393">https://doi.org/10.1136/bmj.b2393</a>
+</div>
+</div>
 </section>
 <section id="recursos-adicionales-12" class="slide level2 smaller scrollable">
 <h2>Recursos adicionales (1/2)</h2>

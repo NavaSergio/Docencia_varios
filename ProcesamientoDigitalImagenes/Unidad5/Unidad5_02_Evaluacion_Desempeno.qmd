@@ -1,0 +1,463 @@
+---
+title: "Unidad 5.5: Evaluación del desempeño de modelos de clasificación"
+author: "Sergio Nava"
+format:
+    html:
+        output-file: Unidad5_02_Evaluacion_Desempeno_handout.html
+        embed-resources: true
+        html-math-method: katex
+        toc: true
+        toc-depth: 3
+        code-fold: false
+        code-tools: false
+        df-print: paged
+        css: ../Unidad4/style.css
+        incremental: false
+        footer: "MCDI | Procesamiento Digital de Imágenes | Unidad 5"
+execute:
+  eval: false
+  echo: true
+  warning: false
+  message: false
+jupyter: python3
+lang: es
+---
+
+# Propósito de la clase
+
+En esta clase aprendemos a evaluar rigurosamente el desempeño de modelos de clasificación. Cubrimos:
+
+1. **Métricas básicas**: exactitud, precisión, recall, F1.
+2. **Matriz de confusión**: desglose de errores por clase.
+3. **Validación cruzada**: estimar desempeño generalizable.
+4. **Curvas ROC y PR**: evaluar trade-off entre sensibilidad y especificidad.
+5. **Selección de hiperparámetros**: búsqueda en grilla y búsqueda aleatoria.
+
+# Objetivos de aprendizaje
+
+Al finalizar, el estudiante será capaz de:
+
+- seleccionar métricas apropiadas según el problema y el desbalance de clases;
+- calcular matriz de confusión, precisión, recall y F1;
+- aplicar validación cruzada para estimar error verdadero;
+- interpretar curvas ROC y áreas bajo la curva (AUC);
+- ajustar hiperparámetros de forma sistemática;
+- reconocer la diferencia entre desempeño en entrenamiento y generalización.
+
+# 1. Motivación: ¿por qué más allá de la exactitud?
+
+Suponga que un hospital desarrolla un clasificador para detectar cáncer:
+
+- Dataset: 10,000 imágenes (9,900 sanas, 100 con cáncer).
+- Modelo ingenuo: predice siempre "sano".
+- Exactitud: 99 %.
+
+¡El modelo parece excelente! Pero es inútil: tiene exactitud alta precisamente porque ignora los casos positivos raros. En realidad, necesitamos saber si el modelo detecta el cáncer cuando está presente.
+
+**Lección**: la exactitud sola es insuficiente cuando las clases están desbalanceadas o cuando los errores tienen costos distintos.
+
+# 2. Matriz de confusión y métricas derivadas
+
+## 2.1. Definición
+
+Para un problema binario con clases Positivo (P) y Negativo (N):
+
+|  | Predicción P | Predicción N |
+|---|---|---|
+| **Real P** | Verdadero Positivo (TP) | Falso Negativo (FN) |
+| **Real N** | Falso Positivo (FP) | Verdadero Negativo (TN) |
+
+Interpretación:
+
+- **TP**: el modelo acertó en clasificar como Positivo.
+- **FP**: el modelo cometió error (predijo + pero era −).
+- **FN**: el modelo cometió error (predijo − pero era +).
+- **TN**: el modelo acertó en clasificar como Negativo.
+
+## 2.2. Métricas derivadas
+
+### Exactitud (Accuracy)
+
+$$
+\text{Exactitud} = \frac{TP + TN}{TP + TN + FP + FN}
+$$
+
+Proporción de predicciones correctas del total. **Uso**: clases balanceadas.
+
+### Precisión (Precision)
+
+$$
+\text{Precisión} = \frac{TP}{TP + FP}
+$$
+
+De todas las predicciones positivas, ¿cuántas fueron correctas? **Uso**: cuando los falsos positivos son costosos (ej. spam, fraude).
+
+### Recall (Sensibilidad, Tasa de Verdaderos Positivos)
+
+$$
+\text{Recall} = \frac{TP}{TP + FN}
+$$
+
+De todos los positivos reales, ¿cuántos fueron detectados? **Uso**: cuando los falsos negativos son costosos (ej. diagnóstico médico).
+
+### Especificidad (Tasa de Verdaderos Negativos)
+
+$$
+\text{Especificidad} = \frac{TN}{TN + FP}
+$$
+
+De todos los negativos reales, ¿cuántos fueron clasificados correctamente?
+
+### F1-Score
+
+Media armónica de precisión y recall:
+
+$$
+F1 = 2 \cdot \frac{\text{Precisión} \cdot \text{Recall}}{\text{Precisión} + \text{Recall}}
+$$
+
+Rango: 0 a 1, donde 1 es perfecto. **Uso**: balance entre precisión y recall; clases desbalanceadas.
+
+### Área Bajo la Curva ROC (AUC-ROC)
+
+Veremos en detalle en sección 4.
+
+## 2.3. Ejemplo de cálculo
+
+Suponga un clasificador binario con predicciones en 100 muestras:
+
+```
+TP = 70
+FP = 10
+FN = 15
+TN = 5
+```
+
+Entonces:
+
+```
+Exactitud = (70 + 5) / 100 = 0.75
+Precisión = 70 / (70 + 10) = 70/80 = 0.875
+Recall = 70 / (70 + 15) = 70/85 ≈ 0.824
+F1 = 2 * (0.875 * 0.824) / (0.875 + 0.824) ≈ 0.848
+```
+
+## 2.4. Multiclase
+
+Para problemas con $K > 2$ clases:
+
+- **Matriz de confusión K×K**.
+- **Macro-averaging**: promediar métrica sobre clases sin pesar.
+- **Micro-averaging**: agregar TP, FP, FN de todas las clases, luego calcular métrica global.
+- **Weighted-averaging**: promediar ponderando por frecuencia de clase.
+
+### Implementación en scikit-learn
+
+```{python}
+from sklearn.metrics import (
+    confusion_matrix,
+    accuracy_score,
+    precision_score,
+    recall_score,
+    f1_score,
+    classification_report
+)
+
+# Predicciones de ejemplo
+y_true = [0, 1, 2, 0, 1, 2]
+y_pred = [0, 1, 1, 0, 1, 2]
+
+# Matriz de confusión
+cm = confusion_matrix(y_true, y_pred)
+print(cm)
+
+# Métricas por clase
+print(classification_report(y_true, y_pred, target_names=['Clase 0', 'Clase 1', 'Clase 2']))
+```
+
+# 3. Validación cruzada
+
+## 3.1. Motivación
+
+Cuando entrenamos un modelo, estimamos su desempeño usando un conjunto de prueba. Pero:
+
+- Si el conjunto de prueba es pequeño, la estimación es ruidosa.
+- Si reutilizamos el mismo conjunto de prueba para múltiples decisiones, corremos riesgo de sobreajustar a ese conjunto.
+
+**Validación cruzada** (cross-validation) divide los datos en $k$ pliegues (folds) y entrena/evalúa $k$ veces, cada vez usando un fold diferente como prueba.
+
+## 3.2. k-Fold Cross-Validation
+
+1. Dividir datos en $k$ subconjuntos de tamaño aproximadamente igual.
+2. Para $i = 1, \ldots, k$:
+   - Usar fold $i$ como prueba.
+   - Usar los $k-1$ pliegues restantes como entrenamiento.
+   - Entrenar modelo y evaluar en fold $i$.
+3. Reportar promedio de errores/métricas sobre los $k$ folds.
+
+### Ventajas
+
+- Usa todos los datos para entrenamiento y validación.
+- Menos dependencia de la partición aleatoria inicial.
+- Mejor estimación de error generalizable.
+
+### $k$ típico
+
+- $k = 5$ o $k = 10$: balance entre sesgo y varianza.
+- Datos pequeños ($n < 1000$): considerar $k$ más alto.
+- Datos muy grandes: $k = 3$ o 5 puede ser suficiente.
+
+### Implementación
+
+```{python}
+from sklearn.model_selection import cross_val_score, cross_validate
+
+model = LogisticRegression(max_iter=1000, random_state=42)
+
+# Puntuaciones de validación cruzada (por defecto usa accuracy)
+scores = cross_val_score(model, X, y, cv=5, scoring='accuracy')
+print(f"Exactitud CV: {scores.mean():.3f} (+/- {scores.std():.3f})")
+
+# Múltiples métricas
+scoring = {'accuracy': 'accuracy', 'precision': 'precision_weighted', 'f1': 'f1_weighted'}
+results = cross_validate(model, X, y, cv=5, scoring=scoring)
+print(results['test_accuracy'])
+```
+
+## 3.3. Variantes
+
+- **Stratified k-Fold**: garantiza que cada fold tenga proporción similar de clases (recomendado para clasificación).
+- **Leave-One-Out (LOO)**: cada muestra es un fold (costoso pero sin sesgo, para $n$ muy pequeño).
+- **Time Series Split**: para datos temporales.
+
+```{python}
+from sklearn.model_selection import StratifiedKFold
+
+skf = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+scores = cross_val_score(model, X, y, cv=skf, scoring='f1_weighted')
+```
+
+# 4. Curvas ROC y PR
+
+## 4.1. Curva ROC (Receiver Operating Characteristic)
+
+### Idea
+
+Una curva ROC visualiza el trade-off entre Tasa de Verdaderos Positivos (TPR = recall) y Tasa de Falsos Positivos (FPR) mientras variamos el umbral de decisión.
+
+$$
+\text{TPR} = \frac{TP}{TP + FN}
+$$
+
+$$
+\text{FPR} = \frac{FP}{FP + TN}
+$$
+
+### Interpretación
+
+- **Diagonal (0,0) a (1,1)**: modelo aleatorio (AUC = 0.5).
+- **Esquina superior-izquierda (0,1)**: modelo perfecto (AUC = 1.0).
+- **Área Bajo la Curva (AUC)**: probabilidad de que el modelo rank una muestra positiva más alta que una negativa.
+
+### Cuándo usar ROC
+
+- Clasificación binaria.
+- Debes elegir un umbral de decisión.
+- Desbalance de clases moderado.
+
+```{python}
+from sklearn.metrics import roc_curve, auc, RocCurveDisplay
+
+# Obtener probabilidades predichas para clase positiva
+y_proba = model.predict_proba(X_test)[:, 1]
+
+# Calcular curva ROC
+fpr, tpr, thresholds = roc_curve(y_test, y_proba)
+roc_auc = auc(fpr, tpr)
+
+# Graficar
+plt.figure(figsize=(8, 6))
+plt.plot(fpr, tpr, label=f'ROC Curve (AUC = {roc_auc:.3f})')
+plt.plot([0, 1], [0, 1], 'k--', label='Random Classifier')
+plt.xlabel('Tasa de Falsos Positivos')
+plt.ylabel('Tasa de Verdaderos Positivos')
+plt.legend()
+plt.grid(alpha=0.3)
+plt.show()
+```
+
+## 4.2. Curva Precision-Recall (PR)
+
+### Idea
+
+Para datos con clases muy desbalanceadas, la curva PR es más informativa que ROC:
+
+$$
+\text{Recalled} = \text{TPR} = \frac{TP}{TP + FN}
+$$
+
+$$
+\text{Precision} = \frac{TP}{TP + FP}
+$$
+
+- **Diagonal**: modelo aleatorio.
+- **Esquina superior-derecha**: modelo perfecto.
+
+### Cuando usar PR
+
+- Desbalance severo.
+- Cuando importan los costos de FP y FN.
+
+```{python}
+from sklearn.metrics import precision_recall_curve, PrecisionRecallDisplay
+
+precision, recall, _ = precision_recall_curve(y_test, y_proba)
+
+plt.figure(figsize=(8, 6))
+plt.plot(recall, precision, label=f'PR Curve')
+plt.xlabel('Recall')
+plt.ylabel('Precision')
+plt.grid(alpha=0.3)
+plt.legend()
+plt.show()
+```
+
+# 5. Búsqueda de hiperparámetros
+
+## 5.1. GridSearchCV
+
+Realiza búsqueda exhaustiva sobre una grilla de parámetros.
+
+```{python}
+from sklearn.model_selection import GridSearchCV
+
+param_grid = {
+    'C': [0.1, 1, 10, 100],
+    'max_iter': [500, 1000],
+    'solver': ['liblinear', 'lbfgs']
+}
+
+grid = GridSearchCV(
+    LogisticRegression(random_state=42),
+    param_grid,
+    cv=5,
+    scoring='f1_weighted',
+    n_jobs=-1
+)
+
+grid.fit(X_train, y_train)
+
+print(f"Mejores parámetros: {grid.best_params_}")
+print(f"Mejor puntuación CV: {grid.best_score_:.3f}")
+
+y_pred = grid.predict(X_test)
+```
+
+## 5.2. RandomizedSearchCV
+
+Para espacios grandes, búsqueda aleatoria es eficiente:
+
+```{python}
+from sklearn.model_selection import RandomizedSearchCV
+from scipy.stats import uniform, loguniform
+
+param_dist = {
+    'C': loguniform(0.1, 100),
+    'max_iter': [500, 1000, 2000],
+}
+
+random_search = RandomizedSearchCV(
+    LogisticRegression(random_state=42),
+    param_dist,
+    n_iter=20,
+    cv=5,
+    n_jobs=-1,
+    random_state=42
+)
+
+random_search.fit(X_train, y_train)
+```
+
+## 5.3. Evitar overfitting durante búsqueda
+
+⚠️ Importante: evaluar en test completamente separado:
+
+```{python}
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y
+)
+
+grid = GridSearchCV(model, param_grid, cv=5)
+grid.fit(X_train, y_train)
+
+y_pred = grid.predict(X_test)
+final_score = accuracy_score(y_test, y_pred)
+```
+
+# 6. Flujo completo de evaluación
+
+```{python}
+from sklearn.model_selection import train_test_split, GridSearchCV
+from sklearn.linear_model import LogisticRegression
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import Pipeline
+from sklearn.metrics import (
+    accuracy_score, f1_score, classification_report, 
+    ConfusionMatrixDisplay, roc_curve, auc
+)
+import matplotlib.pyplot as plt
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y
+)
+
+pipe = Pipeline([
+    ('scaler', StandardScaler()),
+    ('classifier', LogisticRegression(random_state=42))
+])
+
+param_grid = {'classifier__C': [0.1, 1, 10, 100]}
+grid = GridSearchCV(pipe, param_grid, cv=5, scoring='f1_weighted')
+grid.fit(X_train, y_train)
+
+y_pred = grid.predict(X_test)
+y_proba = grid.predict_proba(X_test)[:, 1] if y.nunique() == 2 else None
+
+print(f"Exactitud: {accuracy_score(y_test, y_pred):.3f}")
+print(f"F1 (weighted): {f1_score(y_test, y_pred, average='weighted'):.3f}")
+print(classification_report(y_test, y_pred))
+
+plt.figure(figsize=(6, 5))
+ConfusionMatrixDisplay.from_predictions(y_test, y_pred)
+plt.title("Matriz de Confusión")
+plt.show()
+
+if y.nunique() == 2:
+    fpr, tpr, _ = roc_curve(y_test, y_proba)
+    roc_auc = auc(fpr, tpr)
+    plt.figure(figsize=(8, 6))
+    plt.plot(fpr, tpr, label=f'AUC = {roc_auc:.3f}')
+    plt.plot([0, 1], [0, 1], 'k--')
+    plt.xlabel('FPR')
+    plt.ylabel('TPR')
+    plt.legend()
+    plt.grid(alpha=0.3)
+    plt.show()
+```
+
+# 7. Resumen de métricas según contexto
+
+| Contexto | Métrica primaria | Métrica secundaria |
+|----------|---|---|
+| Clases balanceadas | Exactitud | F1 |
+| Clases desbalanceadas leves | F1 (weighted) | Recall |
+| Clases desbalanceadas severas | F1 (weighted) o AUC | Precision o Recall |
+| Diagnóstico médico | Recall | Especificidad |
+| Filtrado de spam | Precision | F1 |
+| Ranking | AUC | Recall |
+
+# Referencias
+
+1. Scikit-learn metrics: https://scikit-learn.org/stable/modules/model_evaluation.html
+2. Davis, J., & Goadrich, M. (2006). The relationship between precision-recall and ROC curves.
+3. Fawcett, T. (2006). An introduction to ROC analysis.
