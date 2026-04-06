@@ -165,25 +165,6 @@ def read_rgb(path, size=(160, 160)):
     return img_rgb
 
 
-def extract_color_moments(image_rgb):
-    feats = []
-    names = []
-    for idx in range(3):
-        channel = image_rgb[:, :, idx].astype(np.float64).ravel()
-        feats.extend([
-            channel.mean(),
-            channel.std(ddof=0),
-            skew(channel, bias=False),
-        ])
-        cname = ["R", "G", "B"][idx]
-        names.extend([
-            f"color_mean_{cname}",
-            f"color_std_{cname}",
-            f"color_skew_{cname}",
-        ])
-    return np.array(feats, dtype=float), names
-
-
 def extract_glcm_features(
     image_gray,
     levels=32,
@@ -222,6 +203,25 @@ def extract_hu_features(image_gray, threshold=110):
     hu_log = -np.sign(hu) * np.log10(np.abs(hu) + 1e-12)
     names = [f"hu_{i+1}" for i in range(7)]
     return hu_log.astype(float), names
+
+
+def extract_color_moments(image_rgb):
+    feats = []
+    names = []
+    for idx in range(3):
+        channel = image_rgb[:, :, idx].astype(np.float64).ravel()
+        feats.extend([
+            channel.mean(),
+            channel.std(ddof=0),
+            skew(channel, bias=False),
+        ])
+        cname = ["R", "G", "B"][idx]
+        names.extend([
+            f"color_mean_{cname}",
+            f"color_std_{cname}",
+            f"color_skew_{cname}",
+        ])
+    return np.array(feats, dtype=float), names
 
 
 def extract_fused_features(image_rgb):
