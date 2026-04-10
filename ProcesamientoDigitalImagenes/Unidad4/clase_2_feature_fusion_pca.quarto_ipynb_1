@@ -257,7 +257,7 @@
       "cell_type": "code",
       "metadata": {},
       "source": [
-        "# Sustituir por la ruta local del estudiante\n",
+        "# Ejemplo de uso con un conjunto de imágenes organizado por carpetas\n",
         "# X, y, feature_names, meta = build_dataset_from_folders(\"dataset\")"
       ],
       "id": "09e680b1",
@@ -268,7 +268,7 @@
       "cell_type": "markdown",
       "metadata": {},
       "source": [
-        "Si no se desea ejecutar todavía con archivos locales, puede revisarse la estructura esperada de salida:"
+        "Si todavía no se ejecuta esta parte, puede revisarse la estructura esperada de salida:"
       ],
       "id": "1b148129"
     },

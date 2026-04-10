@@ -210,11 +210,11 @@ def build_dataset_from_folders(root_dir):
 # 3. Construcción de la matriz de características
 
 ```{python}
-# Sustituir por la ruta local del estudiante
+# Ejemplo de uso con un conjunto de imágenes organizado por carpetas
 # X, y, feature_names, meta = build_dataset_from_folders("dataset")
 ```
 
-Si no se desea ejecutar todavía con archivos locales, puede revisarse la estructura esperada de salida:
+Si todavía no se ejecuta esta parte, puede revisarse la estructura esperada de salida:
 
 ```{python}
 print("Salida esperada:")
