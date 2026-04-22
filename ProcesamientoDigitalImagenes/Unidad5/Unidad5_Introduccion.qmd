@@ -51,7 +51,6 @@ Cubrimos:
 - Pipelines en scikit-learn.
 - Evitar data leakage.
 
-**Duración sugerida:** 2-3 horas de clase + ejercicios.
 
 ---
 
@@ -72,7 +71,6 @@ Cubrimos:
 - Evitar overfitting durante búsqueda.
 - Flujo completo de evaluación.
 
-**Duración sugerida:** 2 horas de clase + ejercicios prácticos.
 
 ---
 
@@ -101,13 +99,6 @@ Flujo **completamente reproducible** de clasificación de flores que integra tod
    - Importancia de características.
 6. **Comparación**, recomendaciones.
 
-**Tipo de actividad:** 
-
-- Puede ejecutarse en Jupyter o como documento Quarto renderizado.
-- Código comentado, visualizaciones extensas.
-- Ideal para aprendizaje práctico y experimentación.
-
-**Duración sugerida:** 3-4 horas de clase práctica + exploración libre.
 
 ---
 
@@ -185,48 +176,6 @@ Al completar esta unidad, serás capaz de:
    - [Model selection and evaluation](https://scikit-learn.org/stable/modules/model_evaluation.html)
    - [Supervised learning](https://scikit-learn.org/stable/supervised_learning.html)
 
-# Preguntas frecuentes
-
-## ¿Qué algoritmo debo usar?
-
-Depende del contexto:
-
-- **Logistic Regression**: dataset pequeño, interpretabilidad crucial, baseline rápida.
-- **SVM**: datos en alta dimensión, separación no-lineal, tiempo de entrenamiento no es crítico.
-- **Random Forest**: balance entre exactitud y velocidad, importancia de características, robustez.
-- **Decision Tree**: máxima interpretabilidad, datos con interacciones claras.
-- **K-Means**: sin etiquetas, exploración de estructura.
-
-**Respuesta honesta**: **prueba varios** y compara con validación cruzada.
-
-## ¿Cómo sé si mi modelo sobreaajusta (overfitting)?
-
-- Exactitud en entrenamiento >> exactitud en prueba (diferencia > 10-15%).
-- Validación cruzada da puntuaciones muy variables among folds.
-- Matriz de confusión en test tiene errores sistemáticos.
-
-**Remedio**:
-
-- Regularización (C en Logistic Regression/SVM, max_depth en árboles).
-- Más datos o aumentación.
-- Validación cruzada para mejorar estimación.
-
-## ¿Qué pasa si mis clases están desbalanceadas?
-
-- No uses exactitud como única métrica.
-- Usa **F1 o AUC** que penalizan mejor el desbalance.
-- En scikit-learn: `scoring='f1_weighted'`.
-- Considera **SMOTE** (oversampling sintético) o **class_weight** en el modelo.
-
-## ¿Por qué escalamos características?
-
-Algoritmos como SVM, Logistic Regression, PCA son sensibles a escala:
-
-- Una característica con rango [0, 10000] domina una con rango [0, 1].
-- StandardScaler ajusta a media 0, desviación 1.
-
-**⚠️ Importante**: ajustar (`fit`) solo en entrenamiento, aplicar (`transform`) a prueba.
-
 # Próximos pasos
 
 1. **Lee** [Unidad5_01_Algoritmos_Supervisados_NoSupervisados_handout.html](Unidad5_01_Algoritmos_Supervisados_NoSupervisados_handout.html) con cuidado.
@@ -235,7 +184,3 @@ Algoritmos como SVM, Logistic Regression, PCA son sensibles a escala:
 4. **Corre** [ejemplo_real_Unidad5_clasificacion_flores_handout.html](ejemplo_real_Unidad5_clasificacion_flores_handout.html) paso a paso.
 5. **Experimenta**: cambia parámetros, agrega algoritmos, prueba con tu propio dataset.
 6. **Reporta**: deja un resumen de lo que aprendiste y hallazgos interesantes.
-
----
-
-**¡Bienvenido a la Unidad 5! Ahora estás listo para construir sistemas de reconocimiento automático de imágenes.**
